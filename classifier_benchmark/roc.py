@@ -73,6 +73,7 @@ def plot_ROC_curve(
     identifier_column="identifier",
     interaction_column="Acts as agonist",
     prediction_column="InteractionProbability",
+    remove_similar=False,
 ):
     """
     Plot the ROC curve for the models.
@@ -81,14 +82,28 @@ def plot_ROC_curve(
 
     match the rows based on the identifier column
     """
+    if remove_similar:
+        print("Removing similar decoys.")
+        truth_df = truth_df[truth_df["Decoy Type"] != "Similar"]
+
     pos_identifiers = truth_df[truth_df[interaction_column]][identifier_column]
     neg_identifiers = truth_df[~truth_df[interaction_column]][identifier_column]
+    print("Positive identifiers:", len(pos_identifiers))
+    print("Negative identifiers:", len(neg_identifiers))
 
     # plot
     plt.figure()
     plt.plot([0, 1], [0, 1], "k--")
     for model_name, prediction_df in prediction_list:
         print("Plotting ROC curve for", model_name)
+        if remove_similar:
+            # keep only identifiers in truth_df
+            prediction_df = prediction_df[
+                prediction_df[identifier_column].isin(truth_df[identifier_column])
+            ]
+        if not len(prediction_df) == len(truth_df):
+            raise ValueError("Prediction and truth dataframes are not the same length.")
+
         # match the rows based on the identifier column
         prediction_df = prediction_df.set_index(identifier_column)
         pos_predictions = prediction_df.loc[pos_identifiers][prediction_column]
@@ -98,15 +113,33 @@ def plot_ROC_curve(
         y_true = np.concatenate(
             [np.ones_like(pos_predictions), np.zeros_like(neg_predictions)]
         )
-        y_score = np.concatenate([pos_predictions, neg_predictions])
-        fpr, tpr, _ = roc_curve(y_true, y_score)
+        y_pred = np.concatenate([pos_predictions, neg_predictions])
+
+        # get nan indexes in y_pred
+        nan_idx = np.isnan(y_pred)
+        if np.any(nan_idx):
+            nan_count = np.sum(nan_idx)
+            print(f"Found {nan_count} NaN values in the predictions.")
+            y_true = y_true[~nan_idx]
+            y_pred = y_pred[~nan_idx]
+            label_start = f"{model_name}\n{nan_count} NaN values removed.\n"
+        else:
+            label_start = f"{model_name}"
+
+        fpr, tpr, _ = roc_curve(y_true, y_pred)
         roc_auc = auc(fpr, tpr)
-        plt.plot(fpr, tpr, label=f"{model_name} (AUC = {roc_auc:.2f})")
+        plt.plot(fpr, tpr, label=f"{label_start} (AUC = {roc_auc:.2f})")
 
     plt.xlabel("False Positive Rate")
     plt.ylabel("True Positive Rate")
-    plt.title("ROC Curve")
+    plt.title("ROC Curve, classifier benchmark")
     plt.legend(loc="lower right")
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.0])
+    # add number of positive and negative interactions
+    sample_label = f"n_pos={len(pos_identifiers)}\nn_neg={len(neg_identifiers)}"
+    plt.text(0.01, 0.99, sample_label, ha="left", va="top")
+
     plt.savefig(save_path, dpi=300)
 
 
@@ -132,4 +165,14 @@ if __name__ == "__main__":
         SCRIPT_DIR / "plots/roc_curve.png",
         interaction_column=INTERACTION_COLUMN,
         prediction_column=PREDICTION_COLUMN,
+    )
+
+    # remove similar decoys
+    plot_ROC_curve(
+        TRUTH_DF,
+        PREDICTION_LIST,
+        SCRIPT_DIR / "plots/roc_curve_no_similar.png",
+        interaction_column=INTERACTION_COLUMN,
+        prediction_column=PREDICTION_COLUMN,
+        remove_similar=True,
     )
