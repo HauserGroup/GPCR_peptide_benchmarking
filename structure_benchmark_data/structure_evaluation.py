@@ -349,7 +349,10 @@ def run_dockq_scoring(script_path, dockq_path, input_df, model_paths, output_fil
 
             # Remove renumbered and cleaned paths
             os.remove(renumbered_path)
-            os.remove(cleaned_path)
+            try:
+                os.remove(cleaned_path)
+            except FileNotFoundError:
+                pass
 
             # Run DockQ and save results into a dictionary
             try:
@@ -403,7 +406,8 @@ if __name__ == "__main__":
         "RFAA" : f"{repo_dir}/structure_benchmark/RFAA_chain",
         "RFAA_no_templates" : f"{repo_dir}/structure_benchmark/RFAA_chain_no_templates",
         "AF2" : f"{repo_dir}/structure_benchmark/AF2",
-        "AF2_no_templates" : f"{repo_dir}/structure_benchmark/AF2_no_templates"
+        "AF2_no_templates" : f"{repo_dir}/structure_benchmark/AF2_no_templates",
+        "ESMFold" : f"{repo_dir}/structure_benchmark/ESMFold"
     }
 
     # Output file path
