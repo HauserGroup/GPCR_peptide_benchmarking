@@ -10,7 +10,7 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import precision_recall_curve
 
 # Load DockQ data
-dockq_path = "/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/DockQ_results.csv"
+dockq_path = "/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/DockQ_results_new.csv"
 data = pd.read_csv(dockq_path)
 
 # Rename RFAA_no_templates to RF-AA (without templates)
@@ -67,4 +67,4 @@ ax.set_xticklabels(list(colors.keys()), rotation=45, ha="center", fontsize=12)
 
 
 plt.tight_layout()
-plt.savefig("DockQ_scores_swarm.png")
+plt.savefig("DockQ_scores_swarm_new.png")

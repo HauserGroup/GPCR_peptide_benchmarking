@@ -7,6 +7,7 @@ import subprocess
 import ast
 from Bio.PDB import PDBParser, PDBIO, Select, PDBList
 from pathlib import Path
+from DockQ.DockQ import load_PDB, run_on_all_native_interfaces, run_on_chains
 
 def list_missing_residues(pdb_filename):
     """
@@ -291,7 +292,7 @@ def parse_dataset(input_path, output_file, pdb_dir, overwrite = False):
 
     return dataset_df
 
-def run_dockq_scoring(script_path, dockq_path, input_df, model_paths, output_file):
+def run_dockq_scoring(input_df, model_paths, output_file):
     """
     Function to run DockQ scoring for the models in the dataset.
     
@@ -332,52 +333,25 @@ def run_dockq_scoring(script_path, dockq_path, input_df, model_paths, output_fil
             else:
                 cleaned_path = remove_missing_residues(renumbered_path, missing_residues)
 
-            # Running DockQ command and waiting for it to complete
-            dockq_command = [script_path, cleaned_path, row['pdb_path']]
-            result = subprocess.run(dockq_command, capture_output=True, text=True)
+            model = load_PDB(cleaned_path)
+            model.id = cleaned_path
+            native = load_PDB(row['pdb_path'])  
+            native.id = row['pdb_path']          
+            chain_map = {"A": "A", "B": "B"}
 
-            # Checking if the command was successful
-            if result.returncode != 0:
-                print(f"Error running DockQ for {model_name} on {row['pdb']}")
-                continue
-
-            # Rename .pdb.fixed
-            fixed_pdb_folder = os.path.join(os.path.dirname(cleaned_path), "fixed_pdbs")
-            os.makedirs(fixed_pdb_folder, exist_ok=True)
-            fixed_pdb = os.path.join(fixed_pdb_folder, row["pdb"] + "_fixed.pdb")
-            os.rename(cleaned_path + ".fixed", fixed_pdb)
-
-            # Remove renumbered and cleaned paths
-            os.remove(renumbered_path)
-            try:
-                os.remove(cleaned_path)
-            except FileNotFoundError:
-                pass
-
-            # Run DockQ and save results into a dictionary
-            try:
-                dockq_command = [dockq_path, fixed_pdb, row['pdb_path']]
-                results = subprocess.run(dockq_command, stdout=subprocess.PIPE, text=True)
-                results = results.stdout
-                results_dict = ast.literal_eval(results.split("Info dictionary:  ")[-1])
-            except SyntaxError:
-                print(f"Error running DockQ for {model_name} on {row['pdb']}")
-                continue
-
-            # Save results into the dataframe 
-            if results_dict["len1"] > results_dict["len2"]:
-                results_dict["receptor_matching_AA"] = results_dict["len1"]
-                results_dict["ligand_matching_AA"] = results_dict["len2"]
-            else:
-                results_dict["receptor_matching_AA"] = results_dict["len2"]
-                results_dict["ligand_matching_AA"] = results_dict["len1"]
-
-            results_dict["model"] = model_name
-            results_dict["pdb"] = row["pdb"]        
-            results_dicts.append(results_dict)
+            results = run_on_all_native_interfaces(model, native, chain_map=chain_map)
+            results = results[0]
+            results = results[("A", "B")]
+            results["model"] = model_name
+            results["pdb"] = row["pdb"]
+            results_dicts.append(results)
 
     # Make a dataframe from the results and save it
     results_df = pd.DataFrame(results_dicts)
+
+    # Drop chain_map column
+    results_df = results_df.drop(columns=["chain_map"])
+
     results_df.to_csv(output_file, index=False)
 
     return results_df
@@ -396,10 +370,6 @@ if __name__ == "__main__":
     # Parse the dataset
     input_df = parse_dataset(dataset_path, parsed_file, pdb_dir)
 
-    # Paths to DockQ scripts
-    script_path = "/projects/ilfgrid/people/pqh443/Git_projects/DockQ/scripts/fix_numbering.pl"
-    dockq_path = "/projects/ilfgrid/people/pqh443/Git_projects/DockQ/DockQ.py"
-
     # Paths for predicted models
     model_paths = {
         "NeuralPLexer" : f"{repo_dir}/structure_benchmark/neuralplexer_chain",
@@ -411,7 +381,7 @@ if __name__ == "__main__":
     }
 
     # Output file path
-    output_file = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
+    output_file = f"{repo_dir}/structure_benchmark_data/DockQ_results_new.csv"
 
     # Run DockQ scoring
-    run_dockq_scoring(script_path, dockq_path, input_df, model_paths, output_file)
+    run_dockq_scoring(input_df, model_paths, output_file)
