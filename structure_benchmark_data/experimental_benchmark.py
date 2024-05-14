@@ -67,6 +67,16 @@ def download_pdb(pdb_id, output_folder, overwrite = False):
         print(f"Failed to download PDB file {pdb_id}. Status code: {response.status_code}")
         return ""
 
+def sequence_similarity(seq1, seq2):
+    from Bio import pairwise2
+    """Calculate the sequence similarity by finding the best alignment and considering the number of identical matches."""
+    alignments = pairwise2.align.globalxx(seq1, seq2)
+    # Best alignment is taken as the first alignment returned by Biopython, which has the highest score
+    best_alignment = alignments[0]
+    max_length = max(len(seq1), len(seq2))
+    similarity = best_alignment.score / max_length
+    return similarity
+
 def get_receptor_sequence(uniprot_id):
     '''
     Function to get fasta sequence of the receptor without its signal peptide using UniProt API.
@@ -272,6 +282,9 @@ def parse_dataset(filepath):
     # Drop rows where ligand_chain and receptor_chain are the same
     benchmark_set = benchmark_set[benchmark_set["ligand_chain"] != benchmark_set["receptor_chain"]]
 
+    # Remove rows where ligand_pdb_sequence is not at least 4 amino acids long
+    benchmark_set = benchmark_set[benchmark_set["ligand_pdb_seq"].str.len() >= 4]
+
     # Drop duplicates based on ligand_pdb_seq and receptor_pdb_seq
     benchmark_set = benchmark_set.sort_values(by=["receptor", "resolution"])
     pdbs_before = benchmark_set["pdb"]
@@ -298,7 +311,28 @@ def parse_dataset(filepath):
     benchmark_set.loc[benchmark_set["pdb"] == "7Y66", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7Y66", "ligand_pdb_seq"].str[1:]
     benchmark_set.loc[benchmark_set["pdb"] == "7XAV", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7XAV", "ligand_pdb_seq"].str[1:]
 
+    # Drop duplicates based on ligand_pdb_seq + name and receptor
+    benchmark_set = benchmark_set.drop_duplicates(subset=["ligand_pdb_seq", "receptor"])
+    benchmark_set = benchmark_set.drop_duplicates(subset=["ligand_name", "receptor"])
+
+    # Filter out nearly identical ligands per each receptor
+    filtered_ligands = {}
+    for receptor, group in benchmark_set.groupby('receptor'):
+        unique_ligands = []
+        for _, row in group.iterrows():
+            add_ligand = True
+            for unique in unique_ligands:
+                # Calculate similarity between current row's ligand sequence and already added unique ligand sequences
+                sim = sequence_similarity(row['ligand_pdb_seq'], unique['ligand_pdb_seq'])
+                if sim > 0.80:
+                    add_ligand = False
+                    break
+            if add_ligand:
+                unique_ligands.append(row)
+        filtered_ligands[receptor] = unique_ligands
+
     # Save the benchmark set to a CSV file
+    benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
     benchmark_set.reset_index(drop=True, inplace=True)
     benchmark_set.to_csv("3f_known_structures_benchmark_2021-09-30.csv", index=False)
 
@@ -324,4 +358,3 @@ def parse_dataset(filepath):
 
 if __name__ == "__main__":
     parse_dataset("3f_known_structures_summary_2021-09-30.csv")
-
