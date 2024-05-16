@@ -30,6 +30,7 @@ colors = {
     'RF-AA\n(without templates)': '#7352bf', 
     'AF2\n(with templates)': '#115185', 
     'AF2\n(without templates)': '#008fd7',
+    'AF3': '#008fd7',
 } 
 
 data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
@@ -64,7 +65,6 @@ ax.set_xlabel('', fontsize=0)
 ax.set_ylabel('DockQ Score', fontsize=16)
 ax.set_title('DockQ Scores for Predicted Peptide-GPCR Complexes\n', fontsize=18)
 ax.set_xticklabels(list(colors.keys()), rotation=45, ha="center", fontsize=12)
-
 
 plt.tight_layout()
 plt.savefig("DockQ_scores_swarm_new.png")

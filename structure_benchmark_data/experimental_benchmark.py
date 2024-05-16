@@ -282,9 +282,6 @@ def parse_dataset(filepath):
     # Drop rows where ligand_chain and receptor_chain are the same
     benchmark_set = benchmark_set[benchmark_set["ligand_chain"] != benchmark_set["receptor_chain"]]
 
-    # Remove rows where ligand_pdb_sequence is not at least 4 amino acids long
-    benchmark_set = benchmark_set[benchmark_set["ligand_pdb_seq"].str.len() >= 4]
-
     # Drop duplicates based on ligand_pdb_seq and receptor_pdb_seq
     benchmark_set = benchmark_set.sort_values(by=["receptor", "resolution"])
     pdbs_before = benchmark_set["pdb"]
@@ -314,6 +311,9 @@ def parse_dataset(filepath):
     # Drop duplicates based on ligand_pdb_seq + name and receptor
     benchmark_set = benchmark_set.drop_duplicates(subset=["ligand_pdb_seq", "receptor"])
     benchmark_set = benchmark_set.drop_duplicates(subset=["ligand_name", "receptor"])
+
+    # Remove rows where ligand_pdb_sequence is not at least 4 amino acids long
+    benchmark_set = benchmark_set[benchmark_set["ligand_pdb_seq"].str.len() >= 4]
 
     # Filter out nearly identical ligands per each receptor
     filtered_ligands = {}

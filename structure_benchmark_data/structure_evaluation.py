@@ -332,6 +332,7 @@ def run_dockq_scoring(input_df, model_paths, output_file):
                 cleaned_path = renumbered_path
             else:
                 cleaned_path = remove_missing_residues(renumbered_path, missing_residues)
+                os.remove(renumbered_path)
 
             model = load_PDB(cleaned_path)
             model.id = cleaned_path
@@ -346,12 +347,12 @@ def run_dockq_scoring(input_df, model_paths, output_file):
             results["pdb"] = row["pdb"]
             results_dicts.append(results)
 
+
     # Make a dataframe from the results and save it
     results_df = pd.DataFrame(results_dicts)
 
     # Drop chain_map column
     results_df = results_df.drop(columns=["chain_map"])
-
     results_df.to_csv(output_file, index=False)
 
     return results_df
@@ -363,8 +364,8 @@ if __name__ == "__main__":
     repo_dir = os.path.dirname(script_dir)
 
     # Path to the directory where the predicted models are stored
-    dataset_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_fixed_2022-04-01.csv"
-    parsed_file = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_fixed_2022-04-01_cleaned.csv"
+    dataset_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30.csv"
+    parsed_file = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv"
     pdb_dir = f"{repo_dir}/structure_benchmark_data/pdbs/"
 
     # Parse the dataset
@@ -377,7 +378,8 @@ if __name__ == "__main__":
         "RFAA_no_templates" : f"{repo_dir}/structure_benchmark/RFAA_chain_no_templates",
         "AF2" : f"{repo_dir}/structure_benchmark/AF2",
         "AF2_no_templates" : f"{repo_dir}/structure_benchmark/AF2_no_templates",
-        "ESMFold" : f"{repo_dir}/structure_benchmark/ESMFold"
+        "ESMFold" : f"{repo_dir}/structure_benchmark/ESMFold",
+        "AF3": f"{repo_dir}/structure_benchmark/AF3"
     }
 
     # Output file path
