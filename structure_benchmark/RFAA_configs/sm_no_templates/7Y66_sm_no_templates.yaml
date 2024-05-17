@@ -1,0 +1,16 @@
+defaults:
+  - base
+job_name: "7Y66_sm_no_templates"
+output_path: "/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/RFAA_sm_no_templates/7Y66_sm_no_templates"
+
+loader_params:
+  n_templ: 0
+
+protein_inputs:
+  A:
+    fasta_file: /projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/fastas/receptors/7Y66_receptor.fasta
+
+sm_inputs:
+  B:
+    input: /projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/sdfs/7Y66_ligand.sdf
+    input_type: "sdf"

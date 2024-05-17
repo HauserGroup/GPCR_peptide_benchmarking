@@ -1,0 +1,13 @@
+defaults:
+  - base
+job_name: "7RBT"
+output_path: "/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/RFAA_chain/7RBT"
+
+loader_params:
+  n_templ: 4
+
+protein_inputs:
+  A:
+    fasta_file: /projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/fastas/receptors/7RBT_receptor.fasta
+  B:
+    fasta_file: /projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/fastas/ligands/7RBT_ligand.fasta
