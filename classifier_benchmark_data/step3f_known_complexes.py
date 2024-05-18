@@ -518,9 +518,7 @@ if __name__ == "__main__":
     # read test.csv
     DF = read_csv_with_all_known_structs_csv(OUT_PATH)
     # (the cutoff date for when the AlphaFold2 2.3 model was trained)
-    # CUTOFF_DATE = datetime.datetime(2021, 9, 30)
-    # the latest was neuralplexer
-    CUTOFF_DATE = datetime.datetime(2022, 4, 1)
+    CUTOFF_DATE = datetime.datetime(2021, 9, 30)
 
     # summarize the structures known for each GPCR
     SUMMARY_P = (
