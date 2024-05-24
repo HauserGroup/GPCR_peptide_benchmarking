@@ -59,3 +59,17 @@ def get_ground_truth_values(
             ].values[0]
         )
     return np.array(values)
+
+
+def get_gpcr_class(gpcr_id):
+    """
+    5ht1a_human -> Class A (Rhodopsin)
+    """
+    # directory of this file
+    file_dir = pathlib.Path(__file__).parent
+    # path to the GPCR class file
+    class_csv = file_dir / "gpcr_list_human.csv"
+    df = pd.read_csv(class_csv)
+    # get the class
+    gpcr_class = df.loc[df["gpcr"] == gpcr_id, "receptor_class"].values
+    return gpcr_class[0]
