@@ -9,6 +9,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, auc
 
+from parse_predictions import get_models
+
 
 def get_ground_truth(
     path_to_decoy_csv,
@@ -36,34 +38,6 @@ def get_ground_truth(
     # make decoy type column categorical
     df[decoy_type_column] = df[decoy_type_column].astype("category")
     return df
-
-
-def get_models(model_dir, identifier_column="identifier"):
-    """Get the models in the model directory.
-
-    returns a list of tuples with the model name and the prediction df.
-    """
-    models = []
-    for model in model_dir.iterdir():
-        if model.is_dir():
-            # get name of model
-            model_name = model.name
-            print("Getting data for model", model_name)
-            # get path to prediction csv
-            prediction_csv = model / "predictions.csv"
-            if not prediction_csv.exists():
-                print(f"Predictions not found for {model_name}. Skipping...")
-                continue
-            # read df
-            prediction_csv = pd.read_csv(prediction_csv)
-            # check identifier column is unique
-            assert prediction_csv[
-                identifier_column
-            ].is_unique, "Identifier column is not unique."
-            # append list and df
-            models.append((model_name, prediction_csv))
-
-    return models
 
 
 def plot_ROC_curve(
@@ -102,6 +76,7 @@ def plot_ROC_curve(
                 prediction_df[identifier_column].isin(truth_df[identifier_column])
             ]
         if not len(prediction_df) == len(truth_df):
+            print(len(prediction_df), len(truth_df))
             raise ValueError("Prediction and truth dataframes are not the same length.")
 
         # match the rows based on the identifier column

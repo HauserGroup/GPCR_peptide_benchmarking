@@ -1,0 +1,61 @@
+import pandas as pd
+import numpy as np
+import pathlib
+
+
+def get_models(model_dir, identifier_column="identifier"):
+    """Get the models in the model directory.
+
+    returns a list of tuples with the model name and the prediction df.
+    """
+    models = []
+    for model in model_dir.iterdir():
+        if model.is_dir():
+            # get name of model
+            model_name = model.name
+            print("Getting data for model", model_name)
+            # get path to prediction csv
+            prediction_csv = model / "predictions.csv"
+            if not prediction_csv.exists():
+                print(f"Predictions not found for {model_name}. Skipping...")
+                continue
+            # read df
+            prediction_csv = pd.read_csv(prediction_csv)
+            # check identifier column is unique
+            assert prediction_csv[
+                identifier_column
+            ].is_unique, "Identifier column is not unique."
+            # append list and df
+            models.append((model_name, prediction_csv))
+
+    return models
+
+
+def get_ground_truth_df():
+    script_dir = pathlib.Path(__file__).parent
+    ground_truth_p = (
+        script_dir.parent
+        / "classifier_benchmark_data/output/6_interactions_with_decoys.csv"
+    )
+    ground_truth = pd.read_csv(ground_truth_p)
+    if "identifier" not in ground_truth.columns:
+        ground_truth["identifier"] = (
+            ground_truth["Target ID"] + "___" + ground_truth["Decoy ID"].astype(str)
+        )
+    return ground_truth
+
+
+def get_ground_truth_values(
+    ground_truth, identifiers, interaction_column="Acts as agonist"
+):
+    """Get the ground truth values for the identifier."""
+    values = []
+    for identifier in identifiers:
+        if identifier not in ground_truth["identifier"].values:
+            continue
+        values.append(
+            ground_truth.loc[
+                ground_truth["identifier"] == identifier, interaction_column
+            ].values[0]
+        )
+    return np.array(values)
