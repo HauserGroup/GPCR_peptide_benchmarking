@@ -16,7 +16,11 @@ def make_protein_chain_dict(sequence, count):
 
 
 def make_af3_json(
-    csv_file, json_dir, receptor_col="receptor_pdb_seq", ligand_col="ligand_pdb_seq"
+    csv_file,
+    json_dir,
+    receptor_col="receptor_pdb_seq",
+    ligand_col="ligand_pdb_seq",
+    name_col="pdb",
 ):
     # Read in the data
     df = pd.read_csv(csv_file)
@@ -28,7 +32,7 @@ def make_af3_json(
     batch_size = 20
     for i, row in df.iterrows():
         # Get name, receptor and ligand sequences
-        name = row["pdb"]
+        name = row[name_col]
         receptor_sequence = row[receptor_col]
         ligand_sequence = row[ligand_col]
         count = 1
@@ -76,9 +80,17 @@ def parse_args():
         default="ligand_pdb_seq",
         help="Name of the column containing the ligand sequences",
     )
+    args.add_argument(
+        "--name_col",
+        type=str,
+        default="pdb",
+        help="Name of the column containing the pdb id",
+    )
     args = args.parse_args()
 
-    make_af3_json(args.csv, args.json, args.receptor_col, args.ligand_col)
+    make_af3_json(
+        args.csv, args.json, args.receptor_col, args.ligand_col, args.name_col
+    )
 
 
 if __name__ == "__main__":
