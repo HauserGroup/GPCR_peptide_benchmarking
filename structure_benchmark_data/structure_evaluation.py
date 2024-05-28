@@ -347,6 +347,9 @@ def run_dockq_scoring(input_df, model_paths, output_file):
             results["pdb"] = row["pdb"]
             results_dicts.append(results)
 
+            # Remove temporary files
+            os.remove(cleaned_path)
+
 
     # Make a dataframe from the results and save it
     results_df = pd.DataFrame(results_dicts)

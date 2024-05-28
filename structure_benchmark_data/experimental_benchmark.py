@@ -334,7 +334,7 @@ def parse_dataset(filepath):
     # Save the benchmark set to a CSV file
     benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
     benchmark_set.reset_index(drop=True, inplace=True)
-    benchmark_set.to_csv("3f_known_structures_benchmark_2021-09-30.csv", index=False)
+    benchmark_set.to_csv("3f_known_structures_benchmark_c.csv", index=False)
 
     # Save fastas to separate folders
     os.makedirs("fastas", exist_ok=True)
