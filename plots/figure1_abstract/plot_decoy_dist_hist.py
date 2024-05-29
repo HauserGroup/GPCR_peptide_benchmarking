@@ -35,16 +35,17 @@ def main(
     """
     # settings
     bin_count = 10
-    bin_size = int(100 / bin_count)
     # data
     decoy_p = pathlib.Path(decoy_p)
     decoy_df = pd.read_csv(decoy_p)
+    # remove principal agonists
+    decoy_df = decoy_df[decoy_df["Decoy Type"] != "Principal Agonist"]
     # Columns: 'Target ID', 'Decoy ID', 'Acts as agonist', 'Decoy Type', 'Decoy Rank', 'Original Target', 'Target Similarity to Original Target', 'Ligand Sequence', 'GPCR Sequence'
 
     # hues
     color_dict = {}
     # the hue of PA is 220, 139, 3
-    color_dict["Principal Agonist"] = (220 / 255, 139 / 255, 3 / 255)
+    # color_dict["Principal Agonist"] = (220 / 255, 139 / 255, 3 / 255)
     # we have to choose a decoy color. They are bad binders so red.
     color_dict["Dissimilar"] = rgb_to_sns(hex_to_rgb("#99231b"))
     color_dict["Similar"] = rgb_to_sns(hex_to_rgb("#c62d1f"))
@@ -53,19 +54,34 @@ def main(
     sns.set(style="whitegrid")
     sns.set_context("talk")
 
+    # normalize df so that we can plot the density and it sums to 1
+    # decoy_df["Target Similarity to Original Target"] = (
+    #     decoy_df["Target Similarity to Original Target"] / 100
+    # )
+    print(len(decoy_df))
+
     # set xlim
     fig, ax = plt.subplots(figsize=(8, 6))
-    # plot distribution, not histogram
-    sns.kdeplot(
-        data=decoy_df,
+    sns.histplot(
+        decoy_df,
         x="Target Similarity to Original Target",
         hue="Decoy Type",
         palette=color_dict,
-        fill=True,
-        alpha=0.5,
-        linewidth=0,
+        element="step",
+        stat="percent",  # instead of count or density
+        common_norm=False,
         ax=ax,
+        # bar outline a little bigger
+        linewidth=3,
+        # binwidth=bin_size,
+        bins=bin_count,
+        binrange=(0, 100),
     )
+
+    plt.xlim(-0.3, 100)
+    # set y min to 0
+    plt.ylim(0, 100)
+    # plt.ylim(0, 100)
 
     # dashed line for 30
     ax.axvline(
@@ -77,12 +93,12 @@ def main(
     )
     # remove the percent ylabel
     plt.ylabel("")
+    plt.xlabel("")
     # increase all fonts by percentage
     increase_perc = 125
 
     # title
-    plt.title("Similarities of interactions")
-    plt.xlabel("Similarity to original receptor (%)")
+    plt.title("Pocket similarity")
     for item in (
         [ax.title, ax.xaxis.label, ax.yaxis.label]
         + ax.get_xticklabels()
@@ -90,9 +106,6 @@ def main(
     ):
         item.set_fontsize(item.get_fontsize() * increase_perc / 100)
 
-    # add % to each ytick
-    yticks = ax.get_yticks()
-    ax.set_yticklabels([f"{int(y)}%" for y in yticks])
     # add a legend
     legend_values = ["Similar", "Dissimilar", "Principal Agonist"]
     plt.legend(
@@ -102,12 +115,13 @@ def main(
         handles=[
             plt.Line2D([0], [0], color=color_dict["Similar"], lw=4),
             plt.Line2D([0], [0], color=color_dict["Dissimilar"], lw=4),
-            plt.Line2D([0], [0], color=color_dict["Principal Agonist"], lw=4),
+            # plt.Line2D([0], [0], color=color_dict["Principal Agonist"], lw=4),
         ],
-        loc="upper center",
-        bbox_to_anchor=(0.6, 1.0),
+        loc="upper right",
+        bbox_to_anchor=(1.0, 1.0),
     )
-
+    # grid, with opacity
+    plt.grid(alpha=0.5)
     # same for xticks
     plt.tight_layout()
     plt.savefig(out_p, bbox_inches="tight", dpi=300)

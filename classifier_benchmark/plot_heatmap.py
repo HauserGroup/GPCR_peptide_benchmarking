@@ -121,17 +121,18 @@ def plot_heatmap(metric_df, out_p, title):
 
     sns.heatmap(
         metric_df,
-        annot=True,        
+        annot=True,
         fmt=".2f",
-        cmap="coolwarm_r", # RdYlBu, coolwarm, viridis, plasma, inferno, magma, cividis
+        cmap="coolwarm_r",  # RdYlBu, coolwarm, viridis, plasma, inferno, magma, cividis
         cbar=True,
         # make cbar smaller
-        cbar_kws={"shrink": 0.5,
-                  # move cbar to the right
-                    "location": "right",
-                    # pad between cbar and plot
-                    # move on x-axis
-                    "anchor": (1.0, 0.5),
+        cbar_kws={
+            "shrink": 0.5,
+            # move cbar to the right
+            "location": "right",
+            # pad between cbar and plot
+            # move on x-axis
+            "anchor": (1.0, 0.5),
         },
         # set cbar limit to 0-1
         vmin=0,
@@ -181,7 +182,6 @@ def plot_heatmap_for_all():
     plot_heatmap(metric_df, plot_p, title="Classifier Performance on all decoys (1:11)")
 
 
-
 def plot_heatmap_for_similar():
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/heatmap_dissimilar.png"
@@ -202,8 +202,7 @@ def plot_heatmap_for_similar():
 
     # filter models
     models = [
-        (name, df[df["identifier"].isin(valid_identifiers)])
-        for name, df in models
+        (name, df[df["identifier"].isin(valid_identifiers)]) for name, df in models
     ]
 
     # apply first pick to predictions
@@ -215,9 +214,10 @@ def plot_heatmap_for_similar():
     # get metrics
     metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
     # plot heatmap
-    plot_heatmap(metric_df, plot_p, title="Classifier performance on similar decoys (1:5)")
-    
-    
+    plot_heatmap(
+        metric_df, plot_p, title="Classifier performance on similar decoys (1:5)"
+    )
+
 
 def plot_heatmap_for_pa_and_most_dissimilar():
     script_dir = pathlib.Path(__file__).parent
@@ -242,8 +242,7 @@ def plot_heatmap_for_pa_and_most_dissimilar():
 
     # filter models
     models = [
-        (name, df[df["identifier"].isin(valid_identifiers)])
-        for name, df in models
+        (name, df[df["identifier"].isin(valid_identifiers)]) for name, df in models
     ]
 
     # apply first pick to predictions
@@ -255,10 +254,12 @@ def plot_heatmap_for_pa_and_most_dissimilar():
     # get metrics
     metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
     # plot heatmap
-    plot_heatmap(metric_df, plot_p, title="Classifier performance on most dissimilar (1:1)")
+    plot_heatmap(
+        metric_df, plot_p, title="Classifier performance on most dissimilar (1:1)"
+    )
+
 
 if __name__ == "__main__":
     plot_heatmap_for_all()
     plot_heatmap_for_similar()
     plot_heatmap_for_pa_and_most_dissimilar()
-

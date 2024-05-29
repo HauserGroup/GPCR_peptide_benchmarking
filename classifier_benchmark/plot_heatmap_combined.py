@@ -258,8 +258,15 @@ def show_nans_as_x(df):
     for i, j in itertools.product(range(df.shape[0]), range(df.shape[1])):
         value = df.iat[i, j]
         if pd.isna(value):
-            plt.text(j + 0.5, i + 0.5, "x", ha="center", va="center", color="black", fontsize=12)
-    
+            plt.text(
+                j + 0.5,
+                i + 0.5,
+                "x",
+                ha="center",
+                va="center",
+                color="black",
+                fontsize=12,
+            )
 
 
 def plot_combined():
@@ -277,18 +284,18 @@ def plot_combined():
     rows = models
     cols = ["Accuracy", "Precision", "Recall", "F1"]
     metric_1on1 = metric_1on1.loc[rows, cols]
-    metric_1on1 = metric_1on1.apply(pd.to_numeric, errors='coerce')
+    metric_1on1 = metric_1on1.apply(pd.to_numeric, errors="coerce")
 
     metric_similar = get_metrics_for_similar()
     for col in cols:
         metric_similar.loc["AF3", col] = np.nan
-    metric_similar = metric_similar.apply(pd.to_numeric, errors='coerce')
+    metric_similar = metric_similar.apply(pd.to_numeric, errors="coerce")
     metric_similar = metric_similar.loc[rows, cols]
 
     metric_all = get_metrics_for_all()
     for col in cols:
         metric_all.loc["AF3", col] = np.nan
-    metric_all = metric_all.apply(pd.to_numeric, errors='coerce')
+    metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
     metric_all = metric_all.loc[rows, cols]
 
     script_dir = pathlib.Path(__file__).parent
@@ -305,7 +312,7 @@ def plot_combined():
     cell_height = 5
     linewidths = 0.5
     square = True
-    
+
     # plot 1on1 first in slot 1
     metric_1on1 = metric_1on1.astype(float)
     plt.sca(axs[0])
@@ -323,7 +330,6 @@ def plot_combined():
     plt.xlabel("")
     plt.ylabel("")
     plt.title("1on1")
-
 
     # plot 5on1 in slot 2
     metric_similar = metric_similar.astype(float)
@@ -347,7 +353,6 @@ def plot_combined():
     show_nans_as_x(metric_similar)
     plt.title("5on1")
 
-
     # plot all in slot 3
     metric_all = metric_all.astype(float)
     plt.sca(axs[2])
@@ -357,14 +362,14 @@ def plot_combined():
         vmin=vmin,
         vmax=vmax,
         # hide cbar
-        fmt = fmt,
+        fmt=fmt,
         annot=annot,
         mask=metric_all.isna(),
         linewidths=linewidths,
         cbar=False,
         square=square,
     )
-    
+
     # disable the row labels (already in slot 1)
     plt.yticks([])
     plt.xlabel("")
@@ -376,9 +381,9 @@ def plot_combined():
     for ax in axs:
         ax.xaxis.set_ticks_position("top")
         # remove ticks
-        ax.tick_params(axis='both', which='both', length=0)
+        ax.tick_params(axis="both", which="both", length=0)
         # tighten the layout
-        ax.set_aspect("equal") # auto instead of equal
+        ax.set_aspect("equal")  # auto instead of equal
 
     # in the 4th plot, place the cbar (no heatmap)
     plt.sca(axs[3])
@@ -406,14 +411,16 @@ def plot_combined():
 
     # increase font size of heatmap labels
     for ax in axs:
-        for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] +
-                     ax.get_xticklabels() + ax.get_yticklabels()):
+        for item in (
+            [ax.title, ax.xaxis.label, ax.yaxis.label]
+            + ax.get_xticklabels()
+            + ax.get_yticklabels()
+        ):
             item.set_fontsize(11)
-        
+
         # increase font size of annotations
         for text in ax.texts:
             text.set_fontsize(14)
-
 
     plt.savefig(plot_p, dpi=300)
 
