@@ -9,11 +9,11 @@ import seaborn as sns
 # sns uses rgb values between 0 and 1
 COLOR = {
     # compounds
-    "receptor": "#0b3d91",
-    "ligand": "#f9aa43",
-    "agonist": "#f9aa43",
-    "dissimilar_decoy": "#99231b",
-    "similar_decoy": "#c62d1f",
+    "Receptor": "#0b3d91",
+    "Ligand": "#f9aa43",
+    "Agonist": "#f9aa43",
+    "Dissimilar decoy": "#99231b",
+    "Similar decoy": "#c62d1f",
     # models (3D)
     "NeuralPLexer": "#5b616b",
     "ESMFold": "#478347",
@@ -22,8 +22,11 @@ COLOR = {
     "AF2": "#115185",
     "AF2 (no templates)": "#008FD7",
     "AF3": "#061f4a",
-    # models (2D)
-    "": "#aeb0b5",
+    # models (no structure)
+    "Peptriever" : "#aeb0b5",
+    "D-SCRIPT2" : "#aeb0b5",
+    "AF2-LIS" : "#02bfe7",
+    
     # classes
     "Class A (Rhodopsin)": "#115185",
     "Class B1 (Secretin)": "#478347",

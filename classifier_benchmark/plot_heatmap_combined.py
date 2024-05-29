@@ -18,6 +18,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import itertools
 
+# colors.py is in working directory
+sys.path.append(".")
+from colors import CMAP_GOOD_BAD
+
 from sklearn.metrics import (
     confusion_matrix,
     precision_score,
@@ -303,7 +307,7 @@ def plot_combined():
 
     # create a figure with 3 subplots
     fig, axs = plt.subplots(1, 4, figsize=(15, 5))
-    cmap = "coolwarm_r"
+    cmap = CMAP_GOOD_BAD
     vmin = 0
     vmax = 1.0
     fmt = ".2f"
