@@ -16,18 +16,12 @@ data = data.sort_values(by=['model', 'pdb'])
 # Perform pairwise Wilcoxon signed-rank tests between all models
 for model1, model2 in itertools.combinations(models, 2):
 
-    print(data[data['model'] == model1]["pdb"])
-    print(data[data['model'] == model2]["pdb"])
-
-    dockq1 = data[data['model'] == model1]['DockQ']
-    dockq2 = data[data['model'] == model2]['DockQ']
-    
-    # Ensure the lengths of both series are equal for paired test
-    min_length = min(len(dockq1), len(dockq2))
-    dockq1 = dockq1.iloc[:min_length]
-    dockq2 = dockq2.iloc[:min_length]
-
-    stat, p_value = wilcoxon(dockq1, dockq2)
+    # Get subset of data for each model
+    dockq1 = data[data['model'] == model1][['DockQ', 'pdb', 'model']]
+    dockq2 = data[data['model'] == model2][['DockQ', 'pdb', 'model']]
+    # Merge the two subsets on PDB code
+    merged = dockq1.merge(dockq2, on='pdb', suffixes=(f'_{model1}', f'_{model2}'))
+    stat, p_value = wilcoxon(merged[f'DockQ_{model1}'], merged[f'DockQ_{model2}'])
     wilcoxon_results.append((model1, model2, stat, p_value))
 
 # Create a DataFrame from the results
@@ -38,4 +32,27 @@ _, corrected_p_values, _, _ = multipletests(wilcoxon_results_df['P-value'], meth
 
 # Add corrected p-values to the DataFrame
 wilcoxon_results_df['Corrected P-value'] = corrected_p_values
-print(wilcoxon_results_df.head())
+
+# Round the p-values to 4 numbers
+wilcoxon_results_df['P-value'] = wilcoxon_results_df['P-value'].apply(lambda x: round(x, 10) if x < 1 else round(x, 3))
+wilcoxon_results_df['Corrected P-value'] = wilcoxon_results_df['Corrected P-value'].apply(lambda x: round(x, 10) if x < 1 else round(x, 3))
+
+# Define a function to assign significance stars based on p-value
+def significance_stars(p):
+    if p < 0.0001:
+        return '****'
+    elif p < 0.001:
+        return '***'
+    elif p < 0.01:
+        return '**'
+    elif p < 0.05:
+        return '*'
+    else:
+        return 'ns'
+
+# Apply the function to create a new column with significance stars
+wilcoxon_results_df['Significance'] = wilcoxon_results_df['Corrected P-value'].apply(significance_stars)
+
+# Save the results to a CSV file
+wilcoxon_results_df.to_csv('wilcoxon_results.csv', index=False)
+

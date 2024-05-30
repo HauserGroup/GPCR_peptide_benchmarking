@@ -23,13 +23,13 @@ fig, ax = plt.subplots(figsize=(8, 5))
 
 # Color the points based on model
 colors = {
-    'NeuralPLexer' : "#dc8c03",
+    'NeuralPLexer' : "#5B616B",
     'ESMFold': "#478347",
     'RF-AA': '#a676d6', 
     'RF-AA\n(no templates)': '#7352bf', 
     'AF2': '#115185', 
     'AF2\n(no templates)': '#008fd7',
-    'AF3': '#008fd7',
+    'AF3': '#061f4a',
 } 
 
 data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
@@ -80,7 +80,7 @@ ax.set_xticklabels(list(colors.keys()), rotation=0, ha="center", fontsize=12, fo
 ax.tick_params(axis="y",direction="in")
 
 plt.tight_layout()
-plt.savefig("DockQ_scores_swarm_new.png", dpi=300)
+plt.savefig("DockQ_scores_swarm_new.png", dpi=600)
 
 # Display the plot
 #plt.show()
