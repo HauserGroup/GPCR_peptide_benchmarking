@@ -8,6 +8,10 @@ import logging
 from sklearn.metrics import roc_curve, auc
 from parse_predictions import get_models, get_ground_truth_df, get_ground_truth_values
 
+# add "."
+import sys
+sys.path.append(".")
+from colors import COLOR
 
 def create_roc(invalid_identifiers, plot_p, log_p):
     """
@@ -55,15 +59,22 @@ def create_roc(invalid_identifiers, plot_p, log_p):
         # calculate ROC curve
         fpr, tpr, _ = roc_curve(y_true, y_pred)
         roc_auc = auc(fpr, tpr)
-        label = f"{model_name}\nAUC = {roc_auc:.2f}"
+        label = f"{model_name}, AUC = {roc_auc:.2f}"
         missing_values = len(ground_truth) - len(y_pred)
         if missing_values > 0:
-            label += f"\n({missing_values} missing values)"
+            label += f" ({missing_values} missing)"
+        color = COLOR.get(model_name, "black")
 
-        ax.plot(
-            fpr,
-            tpr,
+        sns.lineplot(
+            x=fpr,
+            y=tpr,
             label=label,
+            color=color,
+            ax=ax,
+            marker="o",
+            markersize=4,
+            markers=True,
+            errorbar=None,
         )
 
     # make plot informative
@@ -77,6 +88,16 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     plt.title(
         f"Classifier performance\n n={len(ground_truth)}, ({number_positives} +, {number_negatives} -)"
     )
+
+    # sort legend on AUC
+    handles, labels = ax.get_legend_handles_labels()
+    get_auc = lambda x: float(x.split("AUC = ")[1].split(" ")[0])
+    labels, handles = zip(*sorted(zip(labels, handles), 
+                                  key=lambda x: get_auc(x[0]),
+                                  reverse=True))
+    ax.legend(handles, labels, loc="lower right")
+
+
     # adjust legend font dict
     for text in ax.get_legend().get_texts():
         text.set_fontsize("small")

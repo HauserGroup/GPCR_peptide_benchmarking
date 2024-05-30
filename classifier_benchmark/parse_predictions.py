@@ -3,6 +3,31 @@ import numpy as np
 import pathlib
 
 
+def directory_to_model_name(directory_name : str) -> str:
+    """
+    # match color dictionary in colors.py
+    {'Receptor': '#0b3d91', 'Ligand': '#f9aa43', 'Agonist': '#f9aa43', 'Dissimilar decoy': '#99231b', 
+    'Similar decoy': '#c62d1f', 'NeuralPLexer': '#5b616b', 'ESMFold': '#478347', 'RF-AA': '#A676D6',
+      'RF-AA (no templates)': '#7352BF', 'AF2': '#115185', 'AF2 (no templates)': '#008FD7', 
+      'AF3': '#061f4a', 'Peptriever': '#aeb0b5', 'D-SCRIPT2': '#aeb0b5', 
+      'Class A (Rhodopsin)': '#115185', 'Class B1 (Secretin)': '#478347', 
+      'Class F (Frizzled)': '#A676D6', 'Other GPCRs': '#aeb0b5'}
+    """
+    dir_to_name = {
+        "AF2_template_iptm+ptm" : "AF2",
+        "AF2_template_LIS" : "AF2-LIS",
+        "AF3" : "AF3",
+        "DSCRIPT2_TTV1" : "D-SCRIPT2",
+        "Neuralplexer_sm_lig_plddt" : "NeuralPLexer",
+        "RFAA_no_template_pae_prot" : "RF-AA (no templates)",
+        "RFAA_template_pae_prot" : "RF-AA",
+    }
+    if directory_name in dir_to_name:
+        return dir_to_name[directory_name]
+    else:
+        return directory_name
+
+
 def get_models(model_dir, identifier_column="identifier"):
     """Get the models in the model directory.
 
@@ -26,6 +51,7 @@ def get_models(model_dir, identifier_column="identifier"):
                 identifier_column
             ].is_unique, "Identifier column is not unique."
             # append list and df
+            model_name = directory_to_model_name(model_name)
             models.append((model_name, prediction_csv))
 
     return models

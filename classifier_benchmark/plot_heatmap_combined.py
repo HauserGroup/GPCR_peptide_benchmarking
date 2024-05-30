@@ -15,6 +15,12 @@ import sys
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import numpy as np
+import itertools
+
+# colors.py is in working directory
+sys.path.append(".")
+from colors import CMAP_GOOD_BAD
 
 from sklearn.metrics import (
     confusion_matrix,
@@ -158,7 +164,7 @@ def plot_heatmap(metric_df, out_p, title):
     plt.savefig(out_p, dpi=300)
 
 
-def plot_heatmap_for_all():
+def get_metrics_for_all():
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/heatmap.png"
     log_p = script_dir / "plots/heatmap.log"
@@ -178,11 +184,10 @@ def plot_heatmap_for_all():
 
     # get metrics
     metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
-    # plot heatmap
-    plot_heatmap(metric_df, plot_p, title="Classifier Performance on all decoys (1:11)")
+    return metric_df
 
 
-def plot_heatmap_for_similar():
+def get_metrics_for_similar():
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/heatmap_dissimilar.png"
     log_p = script_dir / "plots/heatmap_dissimilar.log"
@@ -213,13 +218,10 @@ def plot_heatmap_for_similar():
 
     # get metrics
     metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
-    # plot heatmap
-    plot_heatmap(
-        metric_df, plot_p, title="Classifier performance on similar decoys (1:5)"
-    )
+    return metric_df
 
 
-def plot_heatmap_for_pa_and_most_dissimilar():
+def get_metrics_for_1on1():
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/heatmap_most_dissimilar.png"
     log_p = script_dir / "plots/heatmap_most_dissimilar.log"
@@ -253,13 +255,179 @@ def plot_heatmap_for_pa_and_most_dissimilar():
 
     # get metrics
     metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
-    # plot heatmap
-    plot_heatmap(
-        metric_df, plot_p, title="Classifier performance on most dissimilar (1:1)"
+    return metric_df
+
+
+def show_nans_as_x(df):
+    for i, j in itertools.product(range(df.shape[0]), range(df.shape[1])):
+        value = df.iat[i, j]
+        if pd.isna(value):
+            plt.text(
+                j + 0.5,
+                i + 0.5,
+                "x",
+                ha="center",
+                va="center",
+                color="black",
+                fontsize=12,
+            )
+
+
+def plot_combined():
+    """Create a heatmap.
+    - summarizes the 3 evaluation modes
+
+    """
+    # print(plt.style.available)
+    # ['Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid', 'bmh', 'classic', 'dark_background', 'fast', 'fivethirtyeight', 'ggplot', 'grayscale', 'seaborn-v0_8', 'seaborn-v0_8-bright', 'seaborn-v0_8-colorblind', 'seaborn-v0_8-dark', 'seaborn-v0_8-dark-palette', 'seaborn-v0_8-darkgrid', 'seaborn-v0_8-deep', 'seaborn-v0_8-muted', 'seaborn-v0_8-notebook', 'seaborn-v0_8-paper', 'seaborn-v0_8-pastel', 'seaborn-v0_8-poster', 'seaborn-v0_8-talk', 'seaborn-v0_8-ticks', 'seaborn-v0_8-white', 'seaborn-v0_8-whitegrid', 'tableau-colorblind10']
+    plt.style.use("seaborn-v0_8-whitegrid")
+
+    metric_1on1 = get_metrics_for_1on1()
+    metric_1on1 = metric_1on1.sort_values(by="F1", ascending=False)
+    models = metric_1on1.index
+    rows = models
+    cols = ["Accuracy", "Precision", "Recall", "F1"]
+    metric_1on1 = metric_1on1.loc[rows, cols]
+    metric_1on1 = metric_1on1.apply(pd.to_numeric, errors="coerce")
+
+    metric_similar = get_metrics_for_similar()
+    for col in cols:
+        metric_similar.loc["AF3", col] = np.nan
+    metric_similar = metric_similar.apply(pd.to_numeric, errors="coerce")
+    metric_similar = metric_similar.loc[rows, cols]
+
+    metric_all = get_metrics_for_all()
+    for col in cols:
+        metric_all.loc["AF3", col] = np.nan
+    metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
+    metric_all = metric_all.loc[rows, cols]
+
+    script_dir = pathlib.Path(__file__).parent
+    plot_p = script_dir / "plots/combined_heatmap.png"
+
+    # create a figure with 3 subplots
+    fig, axs = plt.subplots(1, 4, figsize=(15, 5))
+    cmap = CMAP_GOOD_BAD
+    vmin = 0
+    vmax = 1.0
+    fmt = ".2f"
+    annot = True
+    cell_width = 5
+    cell_height = 5
+    linewidths = 0.5
+    square = True
+
+    # plot 1on1 first in slot 1
+    metric_1on1 = metric_1on1.astype(float)
+    plt.sca(axs[0])
+    sns.heatmap(
+        metric_1on1,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        cbar=False,
+        fmt=fmt,
+        annot=annot,
+        linewidths=linewidths,
+        square=square,
     )
+    plt.xlabel("")
+    plt.ylabel("")
+    plt.title("1on1")
+
+    # plot 5on1 in slot 2
+    metric_similar = metric_similar.astype(float)
+    plt.sca(axs[1])
+    sns.heatmap(
+        metric_similar,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        # hide cbar
+        cbar=False,
+        fmt=fmt,
+        annot=annot,
+        linewidths=linewidths,
+        square=square,
+    )
+    # disable the row labels (already in slot 1)
+    plt.yticks([])
+    plt.xlabel("")
+    plt.ylabel("")
+    show_nans_as_x(metric_similar)
+    plt.title("5on1")
+
+    # plot all in slot 3
+    metric_all = metric_all.astype(float)
+    plt.sca(axs[2])
+    sns.heatmap(
+        metric_all,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        # hide cbar
+        fmt=fmt,
+        annot=annot,
+        mask=metric_all.isna(),
+        linewidths=linewidths,
+        cbar=False,
+        square=square,
+    )
+
+    # disable the row labels (already in slot 1)
+    plt.yticks([])
+    plt.xlabel("")
+    plt.ylabel("")
+    show_nans_as_x(metric_all)
+    plt.title("10on1")
+
+    # place xtick labels on the top for all
+    for ax in axs:
+        ax.xaxis.set_ticks_position("top")
+        # remove ticks
+        ax.tick_params(axis="both", which="both", length=0)
+        # tighten the layout
+        ax.set_aspect("equal")  # auto instead of equal
+
+    # in the 4th plot, place the cbar (no heatmap)
+    plt.sca(axs[3])
+    plt.axis("off")
+    sns.heatmap(
+        [[]],
+        vmin=vmin,
+        vmax=vmax,
+        cbar=True,
+        fmt=fmt,
+        annot=annot,
+        linewidths=linewidths,
+        square=square,
+        cmap=cmap,
+        cbar_kws={
+            "shrink": 0.5,
+            "location": "left",
+            # center
+            "anchor": (0.5, 0.5),
+            # left pad
+            "pad": 0.1,
+        },
+    )
+    plt.tight_layout()
+
+    # increase font size of heatmap labels
+    for ax in axs:
+        for item in (
+            [ax.title, ax.xaxis.label, ax.yaxis.label]
+            + ax.get_xticklabels()
+            + ax.get_yticklabels()
+        ):
+            item.set_fontsize(11)
+
+        # increase font size of annotations
+        for text in ax.texts:
+            text.set_fontsize(14)
+
+    plt.savefig(plot_p, dpi=300)
 
 
 if __name__ == "__main__":
-    plot_heatmap_for_all()
-    plot_heatmap_for_similar()
-    plot_heatmap_for_pa_and_most_dissimilar()
+    plot_combined()
