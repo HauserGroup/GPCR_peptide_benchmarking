@@ -1,12 +1,16 @@
 import os
 import sys
-import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from sklearn.metrics import roc_curve, auc
-from sklearn.metrics import precision_recall_curve
 import matplotlib.font_manager as fm
+import matplotlib.colors as mcolors
+from matplotlib.colors import LinearSegmentedColormap
+
+# Get the top-level directory
+top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.append(top_level_dir)
+from colors import * 
 
 def get_closest_training_structures(input_path):
     # List files in the input directory
@@ -19,20 +23,15 @@ def get_closest_training_structures(input_path):
         if file.endswith(".m8"):
             # Define the full path to the file
             full_path = os.path.join(input_path, file)
-            # Print the full path
-            print(full_path)
 
         # Read first line of the file
         with open(full_path, "r") as f:
             line = f.readline()
-            print(line)
             # Split the line by whitespace
             parts = line.split("\t")
             # Extract the e-value
             e_value = float(parts[10])
             identity = float(parts[2])
-            # Print the e-value
-            print(f"Closest training structure for {file} is {parts[1]} with e-value of {e_value}." ) 
 
             # Extract the PDB code from the filename
             pdb_code = file.split(".")[0]
@@ -41,9 +40,9 @@ def get_closest_training_structures(input_path):
             results_per_pdb[pdb_code] = [e_value, identity]
 
     # Make dictionary into dataframe with columns pdb, e_value, and identity
-    df = pd.DataFrame.from_dict(results_per_pdb, orient='index', columns=['e_value', 'identity'])
+    df = pd.DataFrame.from_dict(results_per_pdb, orient='index', columns=['e_value', 'Identity'])
     df.reset_index(inplace=True)
-    df.columns = ['pdb', 'e_value', 'identity']
+    df.columns = ['pdb', 'e_value', 'Identity']
 
     return df
 
@@ -82,72 +81,104 @@ def calculate_average_plddt(pdb_file_path):
         print(f"An error occurred: {e}")
         return None
 
-# Input paths to the search results
-rfaa_input_path = "/projects/ilfgrid/people/pqh443/rfaa_training_db/search_results"
-af_input_path="/projects/ilfgrid/people/pqh443/alphafold_training_db/search_results"
 
-# Get the closest training structures
-af_training_struct = get_closest_training_structures(af_input_path)
-rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
+def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="./plots"):
+    data = pd.read_csv(dockq_path)
+    data = data[data['model'] == model]
+    data = data.merge(training_struct_df, left_on='pdb', right_on='pdb', how='left')
 
-# Path to the DockQ results file
-dockq_path = "/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/DockQ_results_new.csv"
-data = pd.read_csv(dockq_path)
+    # Get the top-level directory
+    repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-# Get only AF2, AF3 and RFAA models
-#for model in ['AF2', 'AF2_no_templates' 'AF3', 'RFAA', 'RFAA_no_templates']:
-model = "AF2"
+    # Get average pLDDT scores for predictions
+    for pdb in data['pdb']:
+        model_extension = ""
+        if "RFAA" in model:
+            model_name = "RFAA_chain"
+            if "no_templates" in model:
+                model_name += "_no_templates"
+                model_extension = "_no_templates"
+        else:
+            model_name = model
+        pdb_file_path = f"{repo_dir}/structure_benchmark/{model_name}/{pdb}{model_extension}.pdb"
+        average_plddt = calculate_average_plddt(pdb_file_path)
+        if "RFAA" in model:
+            average_plddt = average_plddt * 100
+        data.loc[data['pdb'] == pdb, 'average_plddt'] = average_plddt
 
-data = data[data['model'] == model]
+    # Make a scatter plot of DockQ vs e-value
+    fig, ax = plt.subplots(figsize=(8, 5))
+    x = "Identity"
+    y = "DockQ"
 
-if "AF" in model:
-    data = data.merge(af_training_struct, left_on='pdb', right_on='pdb', how='left')
-elif "RFAA" in model:
-    data = data.merge(rfaa_training_struct, left_on='pdb', right_on='pdb', how='left')
-else:
-    print("Model not recognized.")
+    # Plot path 
+    if not os.path.exists(plot_path):
+        os.makedirs(plot_path)
+    output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.png")
 
-for pdb in data['pdb']:
-    if model == "RFAA":
-        model_name = "RFAA_chain"
-    else:
-        model_name = model
-    pdb_file_path = f"/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/{model_name}/{pdb}.pdb"
-    average_plddt = calculate_average_plddt(pdb_file_path)
-    data.loc[data['pdb'] == pdb, 'average_plddt'] = average_plddt
+    # Specify the path to the Aptos font file
+    font_path = f'{repo_dir}/Aptos.ttf'  
+    font_prop = fm.FontProperties(fname=font_path)
 
-# Make a scatter plot of DockQ vs e-value
-fig, ax = plt.subplots(figsize=(8, 5))
-x = "identity"
-y = "DockQ"
+    # Create new figure
+    fig, ax = plt.subplots()
 
-# Plot path 
-plot_path = "./plots"
-if not os.path.exists(plot_path):
-    os.makedirs(plot_path)
-output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.png")
+    # Set the normalization range for the colormap from 0 to 100
+    norm = mcolors.Normalize(vmin=0, vmax=100)
 
-# Specify the path to the Aptos font file
-font_path = '/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/Aptos.ttf'  
-font_prop = fm.FontProperties(fname=font_path)
-sns.scatterplot(x=x, y=y, data=data, ax=ax)
+    # Make the scatterplot
+    sc = ax.scatter(x=data[x], y=data[y], c=data['average_plddt'], cmap=get_good_bad_cmap(), norm=norm, s=15)
 
-# Color the points based on model plddt
-sns.scatterplot(x=x, y=y, data=data, ax=ax, hue='average_plddt')
+    # Add colorbar
+    cbar = plt.colorbar(sc, ax=ax, orientation='vertical')
+    cbar.set_label('Average pLDDT', fontproperties=font_prop, fontsize=14)
+
+    # Optionally, set custom ticks and labels for the colorbar
+    cbar.set_ticks([0, 20, 40, 60, 80, 100])  # Customize the ticks if needed
+    cbar.set_ticklabels([0, 20, 40, 60, 80, 100])  # Customize the tick labels if needed
+
+    # Update fonts and labels
+    plt.xlabel(x, fontproperties=font_prop, fontsize=14)
+    plt.ylabel(y, fontproperties=font_prop, fontsize=14)
+
+    # Modify the title
+    model_title = model.split("_")[0]
+    if "no_templates" in model:
+        model_title += " (no templates)"
+    plt.title(f"{model_title}", fontproperties=font_prop, fontsize=16)
+
+    # Set the font properties for the ticks
+    for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+        label.set_fontproperties(font_prop)
+        label.set_fontsize(12)
+
+    # Modift ticks and set axis limits
+    plt.tick_params(axis="y", direction="in")
+    plt.tick_params(axis="x", direction="in")
+    plt.ylim(-0.025, 1.025)
+    plt.xlim(-0.025, 1.025)
+
+    # Save the figure
+    plt.savefig(output_path, dpi=600)
 
 
+if __name__ == "__main__":
+    # Input paths to the search results
+    rfaa_input_path = "/projects/ilfgrid/people/pqh443/rfaa_training_db/search_results"
+    af_input_path="/projects/ilfgrid/people/pqh443/alphafold_training_db/search_results"
 
-# Update fonts
-plt.xlabel(x, fontproperties=font_prop)
-plt.ylabel(y, fontproperties=font_prop)
-plt.title(f"{model} {x} vs {y}", fontproperties=font_prop)
-for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-    label.set_fontproperties(font_prop)
-    label.set_fontsize(12)
-plt.tick_params(axis="y",direction="in")
-plt.tick_params(axis="x",direction="in")
-plt.ylim(0, 1)
-plt.savefig(output_path, dpi=600)
+    # Get the closest training structures
+    af_training_struct = get_closest_training_structures(af_input_path)
+    rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
 
+    # Path to the DockQ results file
+    dockq_path = "./DockQ_results.csv"
 
-       
+    # Get only AF2, AF3 and RFAA models
+    input_models = ['AF2', 'AF2_no_templates', 'AF3', 'RFAA', 'RFAA_no_templates']
+    for model in input_models:
+        if "AF" in model:
+            training_struct_df = af_training_struct
+        else:
+            training_struct_df = rfaa_training_struct
+        identity_vs_dockq_plot(model, dockq_path, training_struct_df)
