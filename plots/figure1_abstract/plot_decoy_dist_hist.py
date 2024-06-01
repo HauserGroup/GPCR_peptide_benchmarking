@@ -8,6 +8,11 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import pathlib
+import sys
+
+# add "."
+sys.path.append(".")
+from colors import COLOR
 
 
 def hex_to_rgb(value):
@@ -47,8 +52,8 @@ def main(
     # the hue of PA is 220, 139, 3
     # color_dict["Principal Agonist"] = (220 / 255, 139 / 255, 3 / 255)
     # we have to choose a decoy color. They are bad binders so red.
-    color_dict["Dissimilar"] = rgb_to_sns(hex_to_rgb("#99231b"))
-    color_dict["Similar"] = rgb_to_sns(hex_to_rgb("#c62d1f"))
+    color_dict["Dissimilar"] = COLOR["Dissimilar decoy"]
+    color_dict["Similar"] = COLOR["Similar decoy"]
 
     # create the plot, values are 'Target Similarity to Original Target' and hue is 'Decoy Type'
     sns.set(style="whitegrid")
