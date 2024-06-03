@@ -102,7 +102,7 @@ def create_show_py():
             )
 
     gpcr_type = "cartoon"
-    transparency = 0.0
+    transparency = 0.5
 
     with open(out_p, "w") as f:
         f.write("reinitialize\n")
@@ -126,6 +126,14 @@ def create_show_py():
                 f"align {name} and chain B and resi 50-350, {principal_agonist} and chain B and resi 50-350\n"
             )
 
+        # f.write(f"hide {gpcr_type}, chain B and resi 1-50\n")
+        f.write(f"hide {gpcr_type}, chain B and resi 440-700\n")
+
+        # write ray settings
+        ray_script = script_dir.parent.parent.parent / "ray.pm"
+        f.write(f"@{ray_script.resolve()}\n")
+        set_view(f)
+
         # set background white
         f.write("bg_color white\n")
         f.write("hide cartoon, chain B\n")
@@ -136,13 +144,6 @@ def create_show_py():
         for name, model in zip(short_names, models):
             if name != principal_agonist:
                 f.write(f"hide {gpcr_type}, {name} and chain B\n")
-
-        # f.write(f"hide {gpcr_type}, chain B and resi 1-50\n")
-        f.write(f"hide {gpcr_type}, chain B and resi 440-700\n")
-
-        # write ray settings
-        write_ray_settings(f)
-        set_view(f)
 
         # ray
         f.write("ray 800, 800\n")

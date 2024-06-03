@@ -69,18 +69,22 @@ def run_main():
 
     # PLOT OLD
     colors = []
+    opacity = []
     for gpcr_key, gpcr_sim in sim_df.items():
         # get color for similar
         if gpcr_key in similar[original_target_col].values:
             color = get_gpcr_color(gpcr, gpcr_key, decoy_df, COLOR)
             colors.append(color)
+            opacity.append(1)
         # get color for dissimilar
         elif gpcr_key in dissimilar[original_target_col].values:
             color = get_gpcr_color(gpcr, gpcr_key, decoy_df, COLOR)
             colors.append(color)
+            opacity.append(1.0)
         # color of others
         else:
             colors.append("lightgrey")
+            opacity.append(0.5)
 
     # plot
     plt.figure(figsize=(4, 4))
@@ -90,13 +94,51 @@ def run_main():
     one_before = sim_df.index.get_loc(cutoff_index_key) - 2
     index_of_cutoff = one_before
 
+    # plt.bar(
+    #     sim_df.index,
+    #     sim_df,
+    #     color=colors,
+    #     # barsize
+    #     width=3,
+    #     # decorate bars more
+    #     edgecolor="black",
+    #     linewidth=0.5,
+    #     # use opacity for color, in list
+    # )
+    width = 2
+    # plot the others with opacity
     plt.bar(
         sim_df.index,
         sim_df,
-        color=colors,
-        # barsize
-        width=3,
+        color="lightgrey",
+        width=width,
+        edgecolor="black",
+        linewidth=0.5,
+        alpha=0.5,
     )
+    # plot similar bars individually
+    for i, (gpcr_key, gpcr_sim) in enumerate(sim_df.items()):
+        if gpcr_key in similar[original_target_col].values:
+            plt.bar(
+                gpcr_key,
+                gpcr_sim,
+                color=colors[i],
+                width=width,
+                edgecolor="black",
+                linewidth=0.5,
+                alpha=1,
+            )
+        elif gpcr_key in dissimilar[original_target_col].values:
+            plt.bar(
+                gpcr_key,
+                gpcr_sim,
+                color=colors[i],
+                width=width,
+                edgecolor="black",
+                linewidth=0.5,
+                alpha=1,
+            )
+
     # plot vertical line
     plt.axvline(x=index_of_cutoff, color="black", linestyle="--", linewidth=1)
 
