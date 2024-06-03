@@ -33,7 +33,7 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     number_negatives = len(ground_truth[ground_truth["Acts as agonist"] == 0])
 
     # empty fig
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
 
     # iterate over models
     for model_name, prediction_df in models:

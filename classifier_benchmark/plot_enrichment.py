@@ -17,6 +17,10 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
+# add "."
+sys.path.append(".")
+from colors import COLOR
+
 
 def run_main():
     """ """
@@ -79,11 +83,13 @@ def run_main():
     # plot
     sns.set_context("talk")
     sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=(10, 5))
+    fig, ax = plt.subplots(figsize=(7, 5))
+    colors = [COLOR.get(m, "black") for m in plot_df["model"].unique()]
     sns.lineplot(
         x="keep_top_n",
         y="pa_retained",
         hue="model",
+        palette=colors,
         data=plot_df,
         ax=ax,
         # add markers
@@ -91,15 +97,32 @@ def run_main():
         markersize=5,
         linewidth=2,
     )
+    # plot dashed line at random performance
+    random_performance_yvals = 1/11 * plot_df["keep_top_n"]
+    ax.plot(
+        plot_df["keep_top_n"],
+        random_performance_yvals,
+        linestyle="--",
+        color="black",
+        label="Random",
+        # opacity
+        alpha=0.5,
+    )
 
     # save
     plt.xlim(0, 12)
     plt.ylim(0, 1.05)
+    # grid with opacity
+    plt.grid()
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
+    plt.grid(axis="x", linestyle="--", alpha=0.5)
+    # reduce legend font size
     # zoom
     plt.title("True agonist retention, (11:1, pos:neg)")
     plt.ylabel("Percent agonists retained")
     plt.xlabel("Number of samples chosen")
-    plt.legend(title="Model")
+    plt.legend(title="Model", loc="lower right",
+               fontsize=12, title_fontsize=12)
     plt.xticks(range(1, 12))
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
     plt.tight_layout()

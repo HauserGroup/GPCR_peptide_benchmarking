@@ -303,7 +303,7 @@ def plot_combined():
     metric_all = metric_all.loc[rows, cols]
 
     script_dir = pathlib.Path(__file__).parent
-    plot_p = script_dir / "plots/combined_heatmap.png"
+    plot_p = script_dir / "plots/combined_heatmap.svg"
 
     # create a figure with 3 subplots
     fig, axs = plt.subplots(1, 4, figsize=(15, 5))
