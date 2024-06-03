@@ -58,7 +58,7 @@ def run_main():
         labels.append(rank)
         print(f"{identifier} {iptm} {rank}")
 
-    plt.figure(figsize=(3, 4))
+    plt.figure(figsize=(1.7, 4))
     plt.yticks(
         np.arange(0, 1.1, step=0.1),
         # fontsize
@@ -82,12 +82,30 @@ def run_main():
         s=50,
         edgecolor="black",
         linewidth=0.5,
+        legend=False,
     )
-    plt.ylim(0, 1)
+    # add text next to points
+    ybonus = {
+        "Dissimilar4": 0.02,
+        "Dissimilar3": 0.005,
+        "Dissimilar1": 0.03,
+        "Dissimilar0": 0.015,
+    }
+    for i, txt in enumerate(labels):
+        yval = yvals[i]
+        if txt in ybonus:
+            yval -= ybonus[txt]
+        # rename "Principal Agonist" to "Agonist"
+        if txt == "Principal Agonist":
+            txt = "Agonist"
+        plt.text(xvals[i] + 0.01, yval, txt, fontsize=8)
+    plt.xlim(-0.03, 0.1)
     plt.xlabel("")
-    plt.xlim(-0.1, 0.1)
+    plt.ylabel("")
+    plt.title("Iptm+ptm")
+    plt.ylim(0, 1)
     # place legend outside of plot
-    plt.legend(loc="lower left", bbox_to_anchor=(1.0, 0.0), title="Ranking", fontsize=8)
+    # plt.legend(loc="lower left", bbox_to_anchor=(1.0, 0.0), title="Ranking", fontsize=8)
     # make sure the legend handles follow the colors
 
     plt.tight_layout()
