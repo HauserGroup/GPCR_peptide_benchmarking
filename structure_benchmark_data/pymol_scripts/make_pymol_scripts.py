@@ -91,6 +91,14 @@ def visualize_pdb(config_path, repo_dir, model, pdb, color):
     script += f"set cartoon_transparency, 0.25, {pdb}_experimental and chain A\n"
     script += f"set cartoon_transparency, 0.25, {pdb}_prediction and chain A\n"
 
+    # Separate ligand into its own object
+    script += f"create {pdb}_exp_ligand, {pdb}_experimental and chain B\n"
+    script += f"create {pdb}_pred_ligand, {pdb}_prediction and chain B\n"
+
+    # Set loop width
+    script += f"set cartoon_loop_radius, 0.7, {pdb}_exp_ligand\n"
+    script += f"set cartoon_loop_radius, 0.7, {pdb}_pred_ligand\n"
+
     # Hide hydrogens
     script += "hide (hydro)\n"
 
@@ -167,26 +175,72 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"color grey60, {pdb}_experimental_2 and chain A\n"
     script += f"color grey60, {pdb}_experimental and chain A\n"
 
+    # Align the structures
+    script += f"alignto {pdb}_experimental\n"
+
     # Finetune the visualization
     script += f"set cartoon_transparency, 0.25, chain A\n"
     script += "hide (hydro)\n"
     script += "hide everything, not polymer\n"
+    script += "hide everything, chain B\n"
     script += "set cartoon_transparency, 0, chain B\n"
     script += "set cartoon_transparency, 0, chain B\n"
     script += "set cartoon_loop_radius, 0.4\n"
 
-    # Align the structures
-    script += f"alignto {pdb}_experimental\n"
-    script += "center\n"
+    # Separate ligand into its own object
+    script += f"create {pdb}_exp_ligand, {pdb}_experimental and chain B\n"
+    script += f"create {pdb}_exp_2_ligand, {pdb}_experimental_2 and chain B\n"
+    script += f"create {pdb}_rfaa_ligand, {pdb}_rfaa and chain B\n"
+    script += f"create {pdb}_rfaa_nt_ligand, {pdb}_rfaa_no_templates and chain B\n"
+    script += f"create {pdb}_af2_ligand, {pdb}_af2 and chain B\n"
+    script += f"create {pdb}_af2_nt_ligand, {pdb}_af2_no_templates and chain B\n"
+    script += f"create {pdb}_af3_ligand, {pdb}_af3 and chain B\n"
+
+    script += f"show cartoon, {pdb}_exp_ligand\n"
+    script += f"show cartoon, {pdb}_exp_2_ligand\n"
+    script += f"show cartoon, {pdb}_rfaa_ligand\n"
+    script += f"show cartoon, {pdb}_rfaa_nt_ligand\n"
+    script += f"show cartoon, {pdb}_af3_ligand\n"
+    script += f"show cartoon, {pdb}_af2_nt_ligand\n"
+    script += f"show cartoon, {pdb}_af2_ligand\n"
+
+    # Set loop width
+    loop_radius = 0.7
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_exp_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_exp_2_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af2_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af2_nt_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_rfaa_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_rfaa_nt_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af3_ligand\n"
+
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_exp_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_exp_2_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af2_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af2_nt_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_rfaa_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_rfaa_nt_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af3_ligand\n"
 
     # Set grid slots for specific structures
     script += f"set grid_slot, 1, {pdb}_experimental\n"
+    script += f"set grid_slot, 1, {pdb}_experimental_2\n"
+    script += f"set grid_slot, 1, {pdb}_exp_2_ligand\n"
+    script += f"set grid_slot, 1, {pdb}_exp_ligand\n"
+
     script += f"set grid_slot, 2, {pdb}_af2\n"
     script += f"set grid_slot, 2, {pdb}_af2_no_templates\n"
     script += f"set grid_slot, 2, {pdb}_af3\n"
+    script += f"set grid_slot, 2, {pdb}_af2_ligand\n"
+    script += f"set grid_slot, 2, {pdb}_af2_nt_ligand\n"
+    script += f"set grid_slot, 2, {pdb}_af3_ligand\n"
+
     script += f"set grid_slot, 3, {pdb}_rfaa\n"
     script += f"set grid_slot, 3, {pdb}_rfaa_no_templates\n"
-    script += f"set grid_slot, 1, {pdb}_experimental_2\n"
+    script += f"set grid_slot, 3, {pdb}_rfaa_ligand\n"
+    script += f"set grid_slot, 3, {pdb}_rfaa_nt_ligand\n"
+    script += f"center {pdb}_experimental\n"
+    script += f"zoom\n"
 
     # Save script
     output_dir = f"{repo_dir}/structure_benchmark_data/pymol_scripts/{pdb}"
@@ -291,3 +345,43 @@ fig.tight_layout(pad=0)
 # Save the legend as a PNG file
 plt.savefig(f'{script_dir}/legend.png', dpi=600)
 
+
+# Filter DockQ data to only include the models we want to plot
+print(data.head())
+
+columns = ["model", "pdb","DockQ", "irms", "Lrms", "fnat", "fnonnat"]
+models_to_check = ["AF2", "AF2_no_templates","AF3", "RFAA", "RFAA_no_templates"]
+data = data[data["model"].isin(models_to_check)][columns]
+# Rename RFAA_no_templates to RF-AA (without templates)
+data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA (no templates)")
+data["model"] = data["model"].replace("RFAA", "RF-AA")
+data["model"] = data["model"].replace("AF2_no_templates", "AF2 (no templates)")
+
+# Get only the best and worst models
+data = data[data["pdb"].isin([best_pdb, med_pdb, worst_pdb])]
+
+data = data.round(2)
+data.columns = ["Model", "PDB", "DockQ", "iRMS", "lRMS", "Fnat", "Fnonnat"]
+
+model_order = ["AF2", "AF2 (no templates)","AF3", "RF-AA", "RF-AA (no templates)"]
+
+# Convert the PDB and Model columns to categorical types with the specified order
+data['PDB'] = pd.Categorical(data['PDB'], categories=[worst_pdb, med_pdb, best_pdb], ordered=True)
+data['Model'] = pd.Categorical(data['Model'], categories=model_order, ordered=True)
+
+# Sort the DataFrame based on the ordered categorical columns
+data = data.sort_values(by=['PDB', 'Model'])
+
+save_path = f"{script_dir}/DockQ_worst_to_best.csv"
+data.to_csv(save_path, index=False)
+
+latex_table = data.to_latex(
+    index=False,  # To not include the DataFrame index as a column in the table
+    label="tab:model_comparison",  # A label used for referencing the table within the LaTeX document
+    position="htbp",  # The preferred positions where the table should be placed in the document ('here', 'top', 'bottom', 'page')
+    column_format="|l|c|c|c|c|c|c|",  # The format of the columns: left-aligned with vertical lines between them
+    escape=False,  # Disable escaping LaTeX special characters in the DataFrame
+    float_format="{:0.2f}".format  # Formats floats to two decimal places
+)
+
+print(latex_table)

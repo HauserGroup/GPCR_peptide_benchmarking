@@ -47,5 +47,9 @@ color 7P00_prediction_color, 7P00_prediction and chain B
 color grey70, 7P00_experimental
 set cartoon_transparency, 0.25, 7P00_experimental and chain A
 set cartoon_transparency, 0.25, 7P00_prediction and chain A
+create 7P00_exp_ligand, 7P00_experimental and chain B
+create 7P00_pred_ligand, 7P00_prediction and chain B
+set cartoon_loop_radius, 0.7, 7P00_exp_ligand
+set cartoon_loop_radius, 0.7, 7P00_pred_ligand
 hide (hydro)
 hide everything, not polymer

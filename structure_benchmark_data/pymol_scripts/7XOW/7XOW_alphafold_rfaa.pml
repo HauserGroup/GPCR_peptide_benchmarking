@@ -67,18 +67,55 @@ color 7XOW_experimental_color, 7XOW_experimental_2 and chain B
 color 7XOW_experimental_color, 7XOW_experimental and chain B
 color grey60, 7XOW_experimental_2 and chain A
 color grey60, 7XOW_experimental and chain A
+alignto 7XOW_experimental
 set cartoon_transparency, 0.25, chain A
 hide (hydro)
 hide everything, not polymer
+hide everything, chain B
 set cartoon_transparency, 0, chain B
 set cartoon_transparency, 0, chain B
 set cartoon_loop_radius, 0.4
-alignto 7XOW_experimental
-center
+create 7XOW_exp_ligand, 7XOW_experimental and chain B
+create 7XOW_exp_2_ligand, 7XOW_experimental_2 and chain B
+create 7XOW_rfaa_ligand, 7XOW_rfaa and chain B
+create 7XOW_rfaa_nt_ligand, 7XOW_rfaa_no_templates and chain B
+create 7XOW_af2_ligand, 7XOW_af2 and chain B
+create 7XOW_af2_nt_ligand, 7XOW_af2_no_templates and chain B
+create 7XOW_af3_ligand, 7XOW_af3 and chain B
+show cartoon, 7XOW_exp_ligand
+show cartoon, 7XOW_exp_2_ligand
+show cartoon, 7XOW_rfaa_ligand
+show cartoon, 7XOW_rfaa_nt_ligand
+show cartoon, 7XOW_af3_ligand
+show cartoon, 7XOW_af2_nt_ligand
+show cartoon, 7XOW_af2_ligand
+set cartoon_oval_width, 0.7, 7XOW_exp_ligand
+set cartoon_oval_width, 0.7, 7XOW_exp_2_ligand
+set cartoon_oval_width, 0.7, 7XOW_af2_ligand
+set cartoon_oval_width, 0.7, 7XOW_af2_nt_ligand
+set cartoon_oval_width, 0.7, 7XOW_rfaa_ligand
+set cartoon_oval_width, 0.7, 7XOW_rfaa_nt_ligand
+set cartoon_oval_width, 0.7, 7XOW_af3_ligand
+set cartoon_loop_radius, 0.7, 7XOW_exp_ligand
+set cartoon_loop_radius, 0.7, 7XOW_exp_2_ligand
+set cartoon_loop_radius, 0.7, 7XOW_af2_ligand
+set cartoon_loop_radius, 0.7, 7XOW_af2_nt_ligand
+set cartoon_loop_radius, 0.7, 7XOW_rfaa_ligand
+set cartoon_loop_radius, 0.7, 7XOW_rfaa_nt_ligand
+set cartoon_loop_radius, 0.7, 7XOW_af3_ligand
 set grid_slot, 1, 7XOW_experimental
+set grid_slot, 1, 7XOW_experimental_2
+set grid_slot, 1, 7XOW_exp_2_ligand
+set grid_slot, 1, 7XOW_exp_ligand
 set grid_slot, 2, 7XOW_af2
 set grid_slot, 2, 7XOW_af2_no_templates
 set grid_slot, 2, 7XOW_af3
+set grid_slot, 2, 7XOW_af2_ligand
+set grid_slot, 2, 7XOW_af2_nt_ligand
+set grid_slot, 2, 7XOW_af3_ligand
 set grid_slot, 3, 7XOW_rfaa
 set grid_slot, 3, 7XOW_rfaa_no_templates
-set grid_slot, 1, 7XOW_experimental_2
+set grid_slot, 3, 7XOW_rfaa_ligand
+set grid_slot, 3, 7XOW_rfaa_nt_ligand
+center 7XOW_experimental
+zoom

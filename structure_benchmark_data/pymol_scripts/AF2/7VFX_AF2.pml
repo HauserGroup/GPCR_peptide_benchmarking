@@ -47,5 +47,9 @@ color 7VFX_prediction_color, 7VFX_prediction and chain B
 color grey70, 7VFX_experimental
 set cartoon_transparency, 0.25, 7VFX_experimental and chain A
 set cartoon_transparency, 0.25, 7VFX_prediction and chain A
+create 7VFX_exp_ligand, 7VFX_experimental and chain B
+create 7VFX_pred_ligand, 7VFX_prediction and chain B
+set cartoon_loop_radius, 0.7, 7VFX_exp_ligand
+set cartoon_loop_radius, 0.7, 7VFX_pred_ligand
 hide (hydro)
 hide everything, not polymer

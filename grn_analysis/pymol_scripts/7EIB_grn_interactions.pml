@@ -1,4 +1,5 @@
 reinit
+reinit
 bg_color white
 set ray_trace_mode, 1
 set ray_trace_gain, 0.1
@@ -37,19 +38,22 @@ set ray_trace_mode, 1
 set ray_shadows, 0
 
 
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF2/7XOW.pdb, 7XOW_prediction
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7XOW_AB.pdb, 7XOW_experimental
-alignto 7XOW_experimental
-center
-set_color 7XOW_prediction_color, [0.067, 0.318, 0.522]
-color white, chain A
-color 7XOW_prediction_color, 7XOW_prediction and chain B
-color grey70, 7XOW_experimental
-set cartoon_transparency, 0.25, 7XOW_experimental and chain A
-set cartoon_transparency, 0.25, 7XOW_prediction and chain A
-create 7XOW_exp_ligand, 7XOW_experimental and chain B
-create 7XOW_pred_ligand, 7XOW_prediction and chain B
-set cartoon_loop_radius, 0.7, 7XOW_exp_ligand
-set cartoon_loop_radius, 0.7, 7XOW_pred_ligand
-hide (hydro)
-hide everything, not polymer
+set_color receptor_color, [11.000, 61.000, 145.000]
+set_color ligand_color, [249.000, 170.000, 67.000]
+load '/Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7EIB_AB.pdb'
+select 7EIB_AB_selection, 7EIB_AB
+select 7EIB_AB_ligand, 7EIB_AB_selection and chain B
+select 7EIB_AB_receptor, 7EIB_AB_selection and chain A
+sel binding_site_7EIB, 7EIB_AB_selection and chain A and resi 33+86+93+114+117+118+121+176+189+190+191+202+266+273+276+287+291+295+298+299+302
+color white, 7EIB_AB_selection and chain A
+color ligand_color, 7EIB_AB_ligand 
+color receptor_color, binding_site_7EIB 
+show cartoon, 7EIB_AB_selection
+deselect 
+create 7EIB_ligand, 7EIB_AB_selection and chain B
+hide cartoon, 7EIB_AB_ligand
+show cartoon, 7EIB_ligand
+set cartoon_oval_width, 0.5, 7EIB_ligand
+set cartoon_loop_radius, 0.5, 7EIB_ligand
+center 7EIB_AB_selection
+zoom
