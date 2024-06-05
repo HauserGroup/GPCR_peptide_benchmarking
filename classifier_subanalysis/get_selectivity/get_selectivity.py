@@ -5,10 +5,20 @@ Number of gpcrs for a peptide. Hypothesis: peptides that interact with more gpcr
 """
 
 import pathlib
-import pandas
+import pandas as pd
 import logging
 import seaborn as sns
+import numpy as np
+import sys
 import matplotlib.pyplot as plt
+
+sys.path.append(".")
+from colors import COLOR
+
+# add parent directory to path
+sys.path.append(str(pathlib.Path(__file__).parent.parent))
+import correlation
+from correlation import get_spearman_correlation
 
 
 def plot_targets_per_ligand(agonist_df, plot_dir, plot_base):
@@ -35,8 +45,54 @@ def plot_ligands_per_target(agonist_df, plot_dir, plot_base):
     plt.close()
 
 
-def plot_ranking_with_gpcr_selectivity(agonist_df, ranking_df, plot_p):
-    ""
+def plot_ranking_with_gpcr_selectivity(ligands_per_target, ranking_df, plot_p):
+    """ """
+    # for ranking df, match on GPCR and fill in the number of targets per ligand
+    ranking_df["number of peptides"] = ranking_df["GPCR"].map(
+        lambda x: ligands_per_target.get(x, np.nan)
+    )
+    models = ranking_df["Model"].unique()
+    palette = {m: COLOR[m] for m in models}
+
+    # subplots per model
+    fig, ax = plt.subplots(
+        1,
+        len(models),
+        figsize=(5 * len(models), 5),
+        # share y
+        sharey=True,
+    )
+    for i, model in enumerate(models):
+        # plot linear correlation
+        model_df = ranking_df[ranking_df["Model"] == model]
+        # set i as active axis
+        plt.sca(ax[i])
+        # correlation plot
+        sns.regplot(
+            data=model_df,
+            x="number of peptides",
+            y="AgonistRank",
+            color=palette[model],
+            # use spearman correlation
+            scatter_kws={"alpha": 0.5},
+        )
+        # add spearman correlation
+        rho, p_val = get_spearman_correlation(
+            model_df["number of peptides"], model_df["AgonistRank"]
+        )
+        plt.text(
+            0.05,
+            0.95,
+            f"Spearman: {rho:.2f} (p={p_val:.2e})",
+            transform=ax[i].transAxes,
+            verticalalignment="top",
+        )
+        plt.xlabel("Number of peptides")
+        plt.title(model)
+        plt.tight_layout()
+
+    plt.savefig(plot_p)
+    plt.close()
 
 
 def run_main():
@@ -44,12 +100,12 @@ def run_main():
     script_dir = pathlib.Path(__file__).parent
     classifier_data = script_dir.parent.parent / "classifier_benchmark_data"
     agonist_p = classifier_data / "output/2_hormone_interactions.csv"
-    agonist_df = pandas.read_csv(agonist_p)
+    agonist_df = pd.read_csv(agonist_p)
     plot_dir = script_dir
     plot_base = "selectivity"
     # ranking performance
     ranking_p = script_dir.parent / "agonist_rankings.csv"
-    ranking_df = pandas.read_csv(ranking_p)
+    ranking_df = pd.read_csv(ranking_p)
     # Model, GPCR, AgonistRank, class
 
     # targets per ligand
@@ -59,9 +115,12 @@ def run_main():
     plot_ligands_per_target(agonist_df, plot_dir, plot_base)
 
     # plot gpcr selectivity and agonist rank
-    plot_ranking_with_gpcr_selectivity(
-        agonist_df, ranking_df, plot_dir / f"{plot_base}_rank_vs_selectivity.png"
-    )
+    print(agonist_df.columns)
+    targets_per_ligand = agonist_df.groupby("Ligand ID")["Target GPCRdb ID"].nunique()
+    ligands_per_target = agonist_df.groupby("Target GPCRdb ID")["Ligand ID"].nunique()
+    print(ligands_per_target)
+    plot_p = plot_dir / f"{plot_base}_ranking_vs_gpcr_selectivity.png"
+    plot_ranking_with_gpcr_selectivity(ligands_per_target, ranking_df, plot_p)
 
 
 if __name__ == "__main__":
