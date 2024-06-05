@@ -26,7 +26,7 @@ def main():
         # add rank to similar decoys, from 0 to 4
         similar_rows = target_rows[target_rows["Decoy Type"] == "Similar"]
         similar_rows.sort_values(
-            by=["Target Similarity to Original Target"], inplace=True, ascending=False
+            by=["Target Similarity to Original Target"], inplace=True, ascending=True
         )
         # set rank
         for rank, row in enumerate(similar_rows.iterrows()):

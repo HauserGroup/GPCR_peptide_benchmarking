@@ -58,6 +58,8 @@ COLOR = {
     "Peptriever": "#aeb0b5",
     "D-SCRIPT2": "#aeb0b5",
     "AF2-LIS": "#02bfe7",
+    # models (subanalysis)
+    "AF2 LIS": "#02bfe7",
     # classes
     "Class A (Rhodopsin)": "#115185",
     "Class B1 (Secretin)": "#478347",

@@ -5,12 +5,7 @@ import pandas
 import numpy as np
 
 
-def run_main():
-    script_dir = pathlib.Path(__file__).parent
-    df_p = script_dir / "result_df.csv"
-    df_new_p = script_dir / "result_df_withid.csv"
-    out_p = script_dir / "predictions.csv"
-
+def filter_df(df_p, out_p):
     df = pandas.read_csv(df_p)
     # sort on "ipTM"
     df = df.sort_values("ipTM", ascending=False)
@@ -24,9 +19,6 @@ def run_main():
         dir_p = pathlib.Path(str(row["saved folder"]))
         df.at[i, "identifier"] = dir_p.name
 
-    # save df
-    df.to_csv(df_new_p, index=False)
-
     # save only the identifier and LIS columns
     df = df[["identifier", "LIS"]]
     # rename LIS to InteractionProbability
@@ -34,5 +26,30 @@ def run_main():
     df.to_csv(out_p, index=False)
 
 
+def combine_df(df_paths: list):
+    dfs = [pandas.read_csv(p) for p in df_paths]
+    # merge the dataframes on "identifier"
+    df = pandas.concat(dfs)
+    # sort on "identifier"
+    df = df.sort_values("identifier")
+    # drop samples that have the same identifier AND the same InteractionProbability
+    df = df.drop_duplicates(subset=["identifier"])
+    # save the dataframe
+    script_dir = pathlib.Path(__file__).parent
+    df.to_csv(script_dir / "predictions.csv", index=False)
+
+
 if __name__ == "__main__":
-    run_main()
+    script_dir = pathlib.Path(__file__).parent
+    filter_df(script_dir / "p1.csv", script_dir / "p1_new.csv")
+    filter_df(script_dir / "p2.csv", script_dir / "p2_new.csv")
+    filter_df(script_dir / "p3.csv", script_dir / "p3_new.csv")
+
+    # combine the three dataframes
+    combine_df(
+        [
+            script_dir / "p1_new.csv",
+            script_dir / "p2_new.csv",
+            script_dir / "p3_new.csv",
+        ]
+    )

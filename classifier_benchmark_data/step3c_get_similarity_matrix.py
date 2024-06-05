@@ -1,13 +1,14 @@
-""" Get similarity matrix for all GPCRs in the interactions dataset.
-    These similarity values are later used to select the decoys.
+"""Get similarity matrix for all GPCRs in the interactions dataset.
+These similarity values are later used to select the decoys.
 """
+
 # standard library
 import requests
 import json
 import pathlib
-import random 
+import random
 import os
-import time 
+import time
 from collections import Counter
 import argparse
 
@@ -21,12 +22,12 @@ from scipy.cluster import hierarchy
 
 
 def get_generic_residue_numbers_from_string(input_str):
-    """ input_str: string with all the generic residue numbers separated by a newline
+    """input_str: string with all the generic residue numbers separated by a newline
 
     example:
-    1x28 [GPCRdb(A)] (Residue) 
-    1x29 [GPCRdb(A)] (Residue) 
-    1x27 [GPCRdb(A)] (Residue) 
+    1x28 [GPCRdb(A)] (Residue)
+    1x29 [GPCRdb(A)] (Residue)
+    1x27 [GPCRdb(A)] (Residue)
     ...
 
     returns:
@@ -43,8 +44,7 @@ def get_generic_residue_numbers_from_string(input_str):
 
 
 def get_class_A_ligand_binding_pocket_generic_residue_numbers():
-    """ https://gpcrdb.org/similaritysearch/segmentselection -> ligand binding pocket -> Class A
-    """
+    """https://gpcrdb.org/similaritysearch/segmentselection -> ligand binding pocket -> Class A"""
     out_str = """
     1x28 [GPCRdb(A)] (Residue) 
     1x29 [GPCRdb(A)] (Residue) 
@@ -412,7 +412,7 @@ def get_class_F_ligand_binding_pocket_generic_residue_numbers():
 
 
 def get_GPCR_similarity_data(query_protein, comparison_proteins, segments):
-    """ Get similarity between two GPCRs using a 7TM alignments (only the 
+    """Get similarity between two GPCRs using a 7TM alignments (only the
     transmembrane / conserved regions, not the loops)
     /services/alignment/protein/{proteins}/{segments}/
 
@@ -421,15 +421,15 @@ def get_GPCR_similarity_data(query_protein, comparison_proteins, segments):
     segments: list of str, segments to compare (e.g. 'TM1', 'TM2', 'TM3', 'TM4', 'TM5', 'TM6', 'TM7')
               full list of segments: https://gpcrdb.org/similaritymatrix/segmentselection -> sequence segments
 
-    returns: dict (keys are the protein identifier, 
+    returns: dict (keys are the protein identifier,
                    values are nested dicts.
                      keys of nested dict are 'similarity', 'identity', 'AA')
     """
     # proteins
     all_proteins = [query_protein] + comparison_proteins
     # proteins shouldn't be command separated, they should also start and end with comma
-    proteins = ','.join(all_proteins)
-    segments = ','.join(segments)
+    proteins = ",".join(all_proteins)
+    segments = ",".join(segments)
 
     base = "https://gpcrdb.org/services/alignment/similarity/"
     request_url = f"{base}{proteins}/{segments}/"
@@ -442,13 +442,16 @@ def get_GPCR_similarity_data(query_protein, comparison_proteins, segments):
     else:
         print(f"ERROR: {response.status_code}\n")
         return None
- 
+
 
 def get_GPCR_similarity_values_TM(query_protein, compared_proteins, mode):
-    """ Get the GPCR similarity values by aligning the transmembrane regions (TM1-TM7)
-    """
+    """Get the GPCR similarity values by aligning the transmembrane regions (TM1-TM7)"""
     segments = ["TM1", "TM2", "TM3", "TM4", "TM5", "TM6", "TM7"]
-    data = get_GPCR_similarity_data(query_protein=query_protein, comparison_proteins=compared_proteins, segments=segments)
+    data = get_GPCR_similarity_data(
+        query_protein=query_protein,
+        comparison_proteins=compared_proteins,
+        segments=segments,
+    )
     out_dict = dict()
 
     for compared_protein in compared_proteins:
@@ -459,15 +462,19 @@ def get_GPCR_similarity_values_TM(query_protein, compared_proteins, mode):
     return out_dict
 
 
-def get_GPCR_similarity_values_generic_residue_map(query_protein, compared_proteins, mode):
-    """ Get the GPCR similarity values by aligning on the generic residue numbers of the
-        binding pockets (shared between class A and class B1 receptors)
+def get_GPCR_similarity_values_generic_residue_map(
+    query_protein, compared_proteins, mode
+):
+    """Get the GPCR similarity values by aligning on the generic residue numbers of the
+    binding pockets (shared between class A and class B1 receptors)
     """
-    # 7x34, 7x38, 3x32, 3x33, 45x52 or 45x51 
+    # 7x34, 7x38, 3x32, 3x33, 45x52 or 45x51
     segments = ["7x34", "7x38", "3x32", "3x33", "45x52", "45x51"]
-    data = get_GPCR_similarity_data(query_protein=query_protein, 
-                                    comparison_proteins=compared_proteins, 
-                                    segments=segments)
+    data = get_GPCR_similarity_data(
+        query_protein=query_protein,
+        comparison_proteins=compared_proteins,
+        segments=segments,
+    )
     out_dict = dict()
     for compared_protein in compared_proteins:
         # get similarity value
@@ -488,19 +495,24 @@ def get_residue_data_for_GPCR(gpcrdb_id):
     else:
         print(f"ERROR: {response.status_code}\n")
         return None
-    
+
 
 def get_generic_residues_for_GPCR(gpcrdb_id):
-    """ Get the generic residue numbers for a GPCR
-    """
+    """Get the generic residue numbers for a GPCR"""
     data = get_residue_data_for_GPCR(gpcrdb_id)
-    generic_residues = [residue["display_generic_number"] for residue in data if residue["display_generic_number"] is not None]
+    generic_residues = [
+        residue["display_generic_number"]
+        for residue in data
+        if residue["display_generic_number"] is not None
+    ]
     return generic_residues
 
 
-def get_GPCR_similarity_values_binding_pocket(query_protein, compared_proteins, list_of_GPCRdb_ids, mode):
-    """ Get the GPCR similarity values by aligning on the generic residue numbers of the
-        binding pockets (shared between class A and class B1 receptors)
+def get_GPCR_similarity_values_binding_pocket(
+    query_protein, compared_proteins, list_of_GPCRdb_ids, mode, verbose=False
+):
+    """Get the GPCR similarity values by aligning on the generic residue numbers of the
+    binding pockets (shared between class A and class B1 receptors)
     """
     # get generic residue numbers for the binding pocket (first for A)
     segments_A = get_class_A_ligand_binding_pocket_generic_residue_numbers()
@@ -511,26 +523,30 @@ def get_GPCR_similarity_values_binding_pocket(query_protein, compared_proteins, 
     segments_F = set(segments_F)
     # add all sets together
     segments = segments_A.intersection(segments_B).intersection(segments_F)
-    data = get_GPCR_similarity_data(query_protein=query_protein, 
-                                    comparison_proteins=compared_proteins, 
-                                    segments=segments)
+    data = get_GPCR_similarity_data(
+        query_protein=query_protein,
+        comparison_proteins=compared_proteins,
+        segments=segments,
+    )
+    if verbose:
+        print(f"Segments: {segments}")
+        print(f"Data: {data}")
     if data is None:
         print("No data for this query protein, returning empty dict", query_protein)
         return dict()
-        
+
     out_dict = dict()
     for compared_protein in compared_proteins:
         # get similarity value
         similarity = data[compared_protein][mode]
-      
+
         out_dict[compared_protein] = float(similarity)
 
     return out_dict
 
 
 def save_similarity_matrix_seaborn(sim_df, save_path, title):
-    """
-    """
+    """ """
     # the first column are the GPCRdb IDs (not numeric), adjust
     sim_df = sim_df.set_index(sim_df.columns[0])
 
@@ -543,16 +559,25 @@ def save_similarity_matrix_seaborn(sim_df, save_path, title):
     # do hierarchical clustering
     correlations = sim_df.corr()
     correlations_array = np.asarray(sim_df.corr())
-    row_linkage = hierarchy.linkage(distance.pdist(correlations_array), method='average')
-    col_linkage = hierarchy.linkage(distance.pdist(correlations_array.T), method='average')
-    clusters = sns.clustermap(correlations, row_linkage=row_linkage, col_linkage=col_linkage, method="average")
+    row_linkage = hierarchy.linkage(
+        distance.pdist(correlations_array), method="average"
+    )
+    col_linkage = hierarchy.linkage(
+        distance.pdist(correlations_array.T), method="average"
+    )
+    clusters = sns.clustermap(
+        correlations, row_linkage=row_linkage, col_linkage=col_linkage, method="average"
+    )
     plt.close()
     # apply this clustering to the similarity matrix
-    sim_df = sim_df.iloc[clusters.dendrogram_row.reordered_ind, 
-                         clusters.dendrogram_col.reordered_ind]
-    
+    sim_df = sim_df.iloc[
+        clusters.dendrogram_row.reordered_ind, clusters.dendrogram_col.reordered_ind
+    ]
+
     # assert the similarity columns and rows are the same
-    assert list(sim_df.columns) == list(sim_df.index), "Columns and rows are not symmetrical"
+    assert list(sim_df.columns) == list(
+        sim_df.index
+    ), "Columns and rows are not symmetrical"
 
     # Generate a mask for the upper triangle
     mask = np.triu(np.ones_like(sim_df, dtype=bool))
@@ -567,20 +592,29 @@ def save_similarity_matrix_seaborn(sim_df, save_path, title):
     size = len(sim_df) / 20
     if size < 1:
         size = 1
-    ax.set_title(title, fontsize=size+25)
+    ax.set_title(title, fontsize=size + 25)
 
     cmap = sns.diverging_palette(230, 20, as_cmap=True, center="light")
-    
+
     # set font xlabels
     for item in ax.get_xticklabels() + ax.get_yticklabels():
         item.set_fontsize(size)
 
     # set padding of labels to 0
-    ax.tick_params(axis='both', which='major', pad=0)
-    
+    ax.tick_params(axis="both", which="major", pad=0)
+
     # draw the heatmap with the mask and correct aspect ratio, also make sure the labels are readable
-    sns.heatmap(sim_df, mask=mask, cmap=cmap, vmax=100, center=50,                
-                square=True, linewidths=.5, cbar_kws={"shrink": .5}, annot=False)
+    sns.heatmap(
+        sim_df,
+        mask=mask,
+        cmap=cmap,
+        vmax=100,
+        center=50,
+        square=True,
+        linewidths=0.5,
+        cbar_kws={"shrink": 0.5},
+        annot=False,
+    )
 
     # add a black outline to the heatmap values that are 100% similar
     # update the colorbar
@@ -589,10 +623,9 @@ def save_similarity_matrix_seaborn(sim_df, save_path, title):
     cbar.set_ticks([0, 25, 50, 75, 100])
     cbar.set_ticklabels([0, 25, 50, 75, 100])
     cbar.ax.tick_params(labelsize=cbar_size)
-    cbar.ax.set_ylabel("Similarity metric (%)",
-                       rotation=270, 
-                       fontsize=cbar_size,
-                       labelpad=20)
+    cbar.ax.set_ylabel(
+        "Similarity metric (%)", rotation=270, fontsize=cbar_size, labelpad=20
+    )
     # give the colorbar a minimum value of 0 TO 100
     #  cbar.mappable.set_clim(vmin=0, vmax=100)
     # set colorbar minimum to min and max
@@ -600,16 +633,30 @@ def save_similarity_matrix_seaborn(sim_df, save_path, title):
 
     # add GPCR count to the top right corner
     test_to_add = f"Unique GPCRs:\n n={len(sim_df)}"
-    ax.text(0.99, 0.99, test_to_add, horizontalalignment='right', verticalalignment='top', 
-            transform=ax.transAxes, fontsize=size+10)
+    ax.text(
+        0.99,
+        0.99,
+        test_to_add,
+        horizontalalignment="right",
+        verticalalignment="top",
+        transform=ax.transAxes,
+        fontsize=size + 10,
+    )
 
     # move the colorbar position
     pos = ax.get_position()
     cbar.ax.set_position([pos.x1 - 0.075, pos.y1 - 0.35, 0.25, pos.height / 2])
 
     # subtitle
-    ax.text(0.5, 0.975, "Average linkage hierarchical clustering", horizontalalignment='center', verticalalignment='top', 
-            transform=ax.transAxes, fontsize=size+15)
+    ax.text(
+        0.5,
+        0.975,
+        "Average linkage hierarchical clustering",
+        horizontalalignment="center",
+        verticalalignment="top",
+        transform=ax.transAxes,
+        fontsize=size + 15,
+    )
 
     # get most similar GPCR values (ignoring self similarity)
     most_sim_df = sim_df.copy()
@@ -624,27 +671,32 @@ def save_similarity_matrix_seaborn(sim_df, save_path, title):
         most_sim = most_sim_df[gpcr_id]
         # get color from cmap
         color = cmap(sim_df.loc[gpcr_id, most_sim] / 100)
-        item.set_bbox(dict(facecolor=color, alpha=0.5, boxstyle='square,pad=0.1'))
+        item.set_bbox(dict(facecolor=color, alpha=0.5, boxstyle="square,pad=0.1"))
 
     # add a title to the ylabels
-    ax.set_ylabel("GPCRdb ID, colored based on most similar GPCR", fontsize=size+3)
-    ax.set_xlabel("GPCRdb ID, colored based on most similar GPCR", fontsize=size+3)
+    ax.set_ylabel("GPCRdb ID, colored based on most similar GPCR", fontsize=size + 3)
+    ax.set_xlabel("GPCRdb ID, colored based on most similar GPCR", fontsize=size + 3)
 
     # save the figure
-    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.savefig(save_path, dpi=300, bbox_inches="tight")
 
 
-def create_similarity_matrix(interactions_df_path, output_path, get_similarity_function, mode):
+def create_similarity_matrix(
+    interactions_df_path, output_path, get_similarity_function, mode
+):
     """
     get_similarity_function: use get_GPCR_similarity_values_TM or get_GPCR_similarity_values_binding_pocket
                              TM = all transmembrane regions,
                             binding pocket = only the generic residue numbers of the binding pocket present for both class A and class B1
     """
-    assert mode in ['similarity', 'identity'], "Mode should be either 'similarity' or 'identity"
+    assert mode in [
+        "similarity",
+        "identity",
+    ], "Mode should be either 'similarity' or 'identity"
     # read the interactions between GPCRs and ligands
     df_inter = pd.read_csv(interactions_df_path)
     all_gpcrs = list(df_inter["Target GPCRdb ID"].unique())
-    count = 0 
+    count = 0
 
     # create empty df matrix of all GPCRs vs all GPCRs
     out_df = pd.DataFrame(index=all_gpcrs, columns=all_gpcrs)
@@ -653,31 +705,36 @@ def create_similarity_matrix(interactions_df_path, output_path, get_similarity_f
     print(f"Getting pairwise similarity matrix for {len(all_gpcrs)} GPCRs")
 
     for target_index, target in enumerate(all_gpcrs):
-        print(f"{target_index+1}/{len(all_gpcrs)} : {target}")#, end="\r")
+        print(f"{target_index+1}/{len(all_gpcrs)} : {target}")  # , end="\r")
         query_protein = target
         compared_proteins = all_gpcrs
 
         # get dict with format {compared_protein: similarity}
         if get_similarity_function == get_GPCR_similarity_values_TM:
-            similarity_dict = get_similarity_function(query_protein, compared_proteins, mode)
+            similarity_dict = get_similarity_function(
+                query_protein, compared_proteins, mode
+            )
         elif get_similarity_function == get_GPCR_similarity_values_binding_pocket:
-            similarity_dict = get_similarity_function(query_protein, compared_proteins, all_gpcrs, mode)
+            similarity_dict = get_similarity_function(
+                query_protein, compared_proteins, all_gpcrs, mode
+            )
         elif get_similarity_function == get_GPCR_similarity_values_generic_residue_map:
-            similarity_dict = get_similarity_function(query_protein, compared_proteins, mode)
+            similarity_dict = get_similarity_function(
+                query_protein, compared_proteins, mode
+            )
         else:
             raise ValueError(f"Unknown similarity function: {get_similarity_function}")
 
         # add to larger output df
         for compared_protein, similarity in similarity_dict.items():
             out_df.loc[target, compared_protein] = similarity
-    
+
     # save df
     out_df.to_csv(output_path)
 
 
 def report_similarity_matrix(df):
-    """
-    """
+    """ """
     # report on GPCRs with different target IDs but 100% similarity
     df = df.set_index(df.columns[0])
     # set self similarity to None
@@ -690,15 +747,18 @@ def report_similarity_matrix(df):
         for compared_gpcr in list(df.columns):
             if df[gpcr][compared_gpcr] == 100:
                 similar_gpcrs.add(tuple(sorted([gpcr, compared_gpcr])))
-    
+
     # report
-    print(f"Found {len(similar_gpcrs)} GPCR pairs with different target IDs but 100% similarity")
+    print(
+        f"Found {len(similar_gpcrs)} GPCR pairs with different target IDs but 100% similarity"
+    )
     for gpcr, compared_gpcr in similar_gpcrs:
         print(f"\t{gpcr} {compared_gpcr}", df[gpcr][compared_gpcr])
 
 
-def plot_similarity_distribution(inter_df, sim_df, save_path,
-                                 rec_col="Target GPCRdb ID", lig_col="Ligand ID"):
+def plot_similarity_distribution(
+    inter_df, sim_df, save_path, rec_col="Target GPCRdb ID", lig_col="Ligand ID"
+):
     """
     inter_df: pd.DataFrame, interactions between GPCRs and ligands
     sim_df: pd.DataFrame, similarity matrix
@@ -710,24 +770,32 @@ def plot_similarity_distribution(inter_df, sim_df, save_path,
     edge_list = inter_df[[rec_col, lig_col]].values.tolist()
 
     # count the number of edges per receptor
-    edges_to_receptor = {lig:rec for rec, lig in edge_list}
+    edges_to_receptor = {lig: rec for rec, lig in edge_list}
     edges_to_receptor = Counter(edges_to_receptor.values())
 
     # count the number of edges per ligand
-    edges_to_ligand = {rec:lig for rec, lig in edge_list}
+    edges_to_ligand = {rec: lig for rec, lig in edge_list}
     edges_to_ligand = Counter(edges_to_ligand.values())
 
     # count the number of ligands that target 2+ receptors
-    ligands_with_multiple_receptors = [lig for lig, count in edges_to_ligand.items() if count > 1]
-    print(f"Found {len(ligands_with_multiple_receptors)} ligands that target 2+ receptors")
+    ligands_with_multiple_receptors = [
+        lig for lig, count in edges_to_ligand.items() if count > 1
+    ]
+    print(
+        f"Found {len(ligands_with_multiple_receptors)} ligands that target 2+ receptors"
+    )
 
     # get the similarity values for the ligands that target 2+ receptors
     positive_similarities = []
     negative_similarities = []
     for lig in ligands_with_multiple_receptors:
         receptors_targeted = [rec for rec, ligand in edge_list if ligand == lig]
-        receptors_not_targeted = [rec for rec in receptors if rec not in receptors_targeted]
-        print(f"{lig}\t{len(receptors_targeted)} receptors targeted: {receptors_targeted}")
+        receptors_not_targeted = [
+            rec for rec in receptors if rec not in receptors_targeted
+        ]
+        print(
+            f"{lig}\t{len(receptors_targeted)} receptors targeted: {receptors_targeted}"
+        )
 
         # get similarities for negative binding: shape = (receptors targeted, receptors not targeted)
         sim_df_neg = sim_df.loc[receptors_targeted, receptors_not_targeted]
@@ -735,23 +803,43 @@ def plot_similarity_distribution(inter_df, sim_df, save_path,
         # get similarities for positive binding: shape = (receptors targeted, receptors targeted)
         sim_df_pos = sim_df.loc[receptors_targeted, receptors_targeted]
         # only keep the upper triangle (diagonal included)
-        sim_df_pos = sim_df_pos.where(np.triu(np.ones(sim_df_pos.shape)).astype(np.bool_))
+        sim_df_pos = sim_df_pos.where(
+            np.triu(np.ones(sim_df_pos.shape)).astype(np.bool_)
+        )
         # remove diagonal (self similarity)
         for rec in receptors_targeted:
             sim_df_pos[rec][rec] = None
 
         # extend the list of similarities (filtering out NaN)
-        positive_similarities.extend([sim for sim in sim_df_pos.values.flatten() if not np.isnan(sim)])
-        negative_similarities.extend([sim for sim in sim_df_neg.values.flatten() if not np.isnan(sim)])
-    
+        positive_similarities.extend(
+            [sim for sim in sim_df_pos.values.flatten() if not np.isnan(sim)]
+        )
+        negative_similarities.extend(
+            [sim for sim in sim_df_neg.values.flatten() if not np.isnan(sim)]
+        )
+
     # plot the distribution of similarities
     sns.set_theme(style="white")
     fig, ax = plt.subplots(figsize=(10, 10), dpi=300)
 
-    sns.histplot(positive_similarities, alpha=0.6, bins=20, binrange=(0, 100),
-                 label="Positive binding", stat="probability", color="blue")
-    sns.histplot(negative_similarities, alpha=0.6, bins=20, binrange=(0, 100),
-                 label="Negative binding", stat="probability", color="red")
+    sns.histplot(
+        positive_similarities,
+        alpha=0.6,
+        bins=20,
+        binrange=(0, 100),
+        label="Positive binding",
+        stat="probability",
+        color="blue",
+    )
+    sns.histplot(
+        negative_similarities,
+        alpha=0.6,
+        bins=20,
+        binrange=(0, 100),
+        label="Negative binding",
+        stat="probability",
+        color="red",
+    )
     plt.tight_layout()
     ax.set_xlim(0, 100)
     ax.set_xticks(np.arange(0, 100, 5))
@@ -760,18 +848,34 @@ def plot_similarity_distribution(inter_df, sim_df, save_path,
     # set ticks for each bin
     ax.set_xlabel("Similarity (%)")
     ax.set_ylabel("Probability")
-    ax.set_title("GPCR similarity between receptors targeted by the same ligand (positive binding)\nand receptors not targeted by that same ligand (negative binding)")
-    
+    ax.set_title(
+        "GPCR similarity between receptors targeted by the same ligand (positive binding)\nand receptors not targeted by that same ligand (negative binding)"
+    )
+
     # add value percentages to the top of the bars
     for p in ax.patches:
         height = p.get_height()
         if height > 0:
-            ax.annotate(f'{height*100:.2f}%', (p.get_x()+p.get_width()/2., height), ha='center', va='center', xytext=(0, 10), textcoords='offset points', fontsize=6)
+            ax.annotate(
+                f"{height*100:.2f}%",
+                (p.get_x() + p.get_width() / 2.0, height),
+                ha="center",
+                va="center",
+                xytext=(0, 10),
+                textcoords="offset points",
+                fontsize=6,
+            )
 
     # add counts for neg and pos
-    ax.text(0.05, 0.90, f"Positive binding: n={len(positive_similarities)}\nNegative binding: n={len(negative_similarities)}",
-            horizontalalignment='left', verticalalignment='top', 
-            transform=ax.transAxes, fontsize=10)
+    ax.text(
+        0.05,
+        0.90,
+        f"Positive binding: n={len(positive_similarities)}\nNegative binding: n={len(negative_similarities)}",
+        horizontalalignment="left",
+        verticalalignment="top",
+        transform=ax.transAxes,
+        fontsize=10,
+    )
     plt.legend()
     plt.savefig(save_path)
 
@@ -795,7 +899,7 @@ def temp_receptors_with_less_than_25(sim_out, save_path):
     y = list(receptor_to_low_similarity.values())
 
     sort_y = sorted(y)
-    sort_x = [x for _,x in sorted(zip(y,x))]
+    sort_x = [x for _, x in sorted(zip(y, x))]
 
     sns.barplot(x=sort_x, y=sort_y, ax=ax)
     # rotate labels 90 degrees
@@ -803,61 +907,97 @@ def temp_receptors_with_less_than_25(sim_out, save_path):
     # lower font size
     plt.xticks(fontsize=6)
     # add y ticks every 5 receptors
-    plt.yticks(np.arange(0, max(y)+5+1, 5))
+    plt.yticks(np.arange(0, max(y) + 5 + 1, 5))
     # add lines for y ticks
-    for y_tick in np.arange(0, max(y)+5+1, 5):
-        plt.axhline(y=y_tick, color='black', linestyle='-', alpha=0.1)
-    
+    for y_tick in np.arange(0, max(y) + 5 + 1, 5):
+        plt.axhline(y=y_tick, color="black", linestyle="-", alpha=0.1)
+
     plt.tight_layout()
     plt.savefig(save_path)
 
 
-def create_similarity_matrix_and_plots(interactions_df_path, 
-                                       similarity_matrix_path,
-                                       mode,
-                                       get_similarity_function):
+def create_similarity_matrix_and_plots(
+    interactions_df_path, similarity_matrix_path, mode, get_similarity_function
+):
     if similarity_matrix_path.exists():
         print(f"Similarity matrix already exists at {similarity_matrix_path}, skipping")
     else:
-        create_similarity_matrix(interactions_df_path=interactions_df_path,
-                                 output_path=similarity_matrix_path,
-                                 get_similarity_function=get_similarity_function,
-                                 mode=mode)
-    
+        create_similarity_matrix(
+            interactions_df_path=interactions_df_path,
+            output_path=similarity_matrix_path,
+            get_similarity_function=get_similarity_function,
+            mode=mode,
+        )
+
     sim_matrix_df = pd.read_csv(similarity_matrix_path)
     report_similarity_matrix(sim_matrix_df)
 
-    save_similarity_matrix_seaborn(sim_matrix_df,
-                                   similarity_matrix_path.parent / f"{similarity_matrix_path.stem}_{mode}_heatmap.png",
-                                   title=f"GPCR binding pocket {mode} matrix")
-    
-    plot_similarity_distribution(pd.read_csv(interactions_df_path),
-                                 pd.read_csv(similarity_matrix_path, index_col=0),
-                                 similarity_matrix_path.parent / f"{similarity_matrix_path.name.split('.')[0]}_{mode}_distribution.png")
+    save_similarity_matrix_seaborn(
+        sim_matrix_df,
+        similarity_matrix_path.parent
+        / f"{similarity_matrix_path.stem}_{mode}_heatmap.png",
+        title=f"GPCR binding pocket {mode} matrix",
+    )
+
+    plot_similarity_distribution(
+        pd.read_csv(interactions_df_path),
+        pd.read_csv(similarity_matrix_path, index_col=0),
+        similarity_matrix_path.parent
+        / f"{similarity_matrix_path.name.split('.')[0]}_{mode}_distribution.png",
+    )
 
 
 if __name__ == "__main__":
     # args
     PARSER = argparse.ArgumentParser()
-    PARSER.add_argument("--metric", type=str, choices=["similarity", "identity"], required=True,
-                        help="similarity or identity")
-    PARSER.add_argument("--mode", type=str, choices=["TM", "binding_pocket"], required=True,
-                        help="TM or binding_pocket")
-    PARSER.add_argument("--interactions_path", type=pathlib.Path, required=True,
-                        help="Path to the interactions df")
-    PARSER.add_argument("--out_matrix_path", type=pathlib.Path, required=True,
-                        help="Path to the similarity matrix (.csv)")
+    PARSER.add_argument(
+        "--metric",
+        type=str,
+        choices=["similarity", "identity"],
+        required=True,
+        help="similarity or identity",
+    )
+    PARSER.add_argument(
+        "--mode",
+        type=str,
+        choices=["TM", "binding_pocket"],
+        required=True,
+        help="TM or binding_pocket",
+    )
+    PARSER.add_argument(
+        "--interactions_path",
+        type=pathlib.Path,
+        required=True,
+        help="Path to the interactions df",
+    )
+    PARSER.add_argument(
+        "--out_matrix_path",
+        type=pathlib.Path,
+        required=True,
+        help="Path to the similarity matrix (.csv)",
+    )
     ARGS = PARSER.parse_args()
 
-    # create
+    # check which residues
+    # get_GPCR_similarity_values_binding_pocket(
+    #     query_protein="glr_human",
+    #     compared_proteins=["oprm_human"],
+    #     list_of_GPCRdb_ids=[],
+    #     mode="similarity",
+    #     verbose=True,
+    # )
+
+    # # create
     if ARGS.mode == "TM":
         FUNC = get_GPCR_similarity_values_TM
     elif ARGS.mode == "binding_pocket":
         FUNC = get_GPCR_similarity_values_binding_pocket
     else:
         raise ValueError(f"Unknown mode: {ARGS.mode}")
-    
-    create_similarity_matrix_and_plots(interactions_df_path=ARGS.interactions_path,
-                                        similarity_matrix_path=ARGS.out_matrix_path,
-                                        mode=ARGS.metric,
-                                        get_similarity_function=FUNC)
+
+    create_similarity_matrix_and_plots(
+        interactions_df_path=ARGS.interactions_path,
+        similarity_matrix_path=ARGS.out_matrix_path,
+        mode=ARGS.metric,
+        get_similarity_function=FUNC,
+    )
