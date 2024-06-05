@@ -157,7 +157,7 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     sc = ax.scatter(x=data[x], y=data[y], c=data['average_plddt'], cmap=get_good_bad_cmap(), norm=norm, s=15)
     ax.plot(x_line, y_line, color = COLOR["Receptor"])
     ax.fill_between(x_line, y_line + ci, y_line - ci, color = COLOR["Receptor"], label = '95% confidence interval', alpha = 0.1)
-    ax.text(0.0025, 0.90, '$r^2$ = ' + str(np.round(r2,3)) + '\nMSE = ' + str(np.round(MSE,3)), font_properties=font_prop, fontsize=12)
+    ax.text(0.0025, 0.85, 'y = ' + str(np.round(intercept, 2)) + ' + ' + str(np.round(slope,2)) + 'x\n' + 'r$^2$ = ' + str(np.round(r2,3)) + '\nMSE = ' + str(np.round(MSE,3)), font_properties=font_prop, fontsize=12)
 
     # Add colorbar
     cbar = plt.colorbar(sc, ax=ax, orientation='vertical')
@@ -194,6 +194,7 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
 
     # Save the figure
     plt.savefig(output_path, dpi=600)
+
 
 
 if __name__ == "__main__":
