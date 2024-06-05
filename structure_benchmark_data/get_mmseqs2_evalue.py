@@ -6,6 +6,10 @@ import seaborn as sns
 import matplotlib.font_manager as fm
 import matplotlib.colors as mcolors
 from matplotlib.colors import LinearSegmentedColormap
+from scipy import stats
+import numpy as np
+from sklearn.metrics import r2_score 
+
 
 # Get the top-level directory
 top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -82,13 +86,16 @@ def calculate_average_plddt(pdb_file_path):
         return None
 
 
-def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="./plots"):
+def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     data = pd.read_csv(dockq_path)
     data = data[data['model'] == model]
     data = data.merge(training_struct_df, left_on='pdb', right_on='pdb', how='left')
 
     # Get the top-level directory
     repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+
+    if plot_path == "":
+        plot_path = f"{repo_dir}/structure_benchmark_data/plots"
 
     # Get average pLDDT scores for predictions
     for pdb in data['pdb']:
@@ -120,6 +127,26 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="./p
     font_path = f'{repo_dir}/Aptos.ttf'  
     font_prop = fm.FontProperties(fname=font_path)
 
+    # Calculate the linear regression line and 95% confidence interval
+    slope, intercept = np.polyfit(data[x], data[y], 1)
+    y_model = np.polyval([slope, intercept], data[x])
+    x_mean = np.mean(data[x])
+    y_mean = np.mean(data[y])
+    n = data[x].size
+    m = 2
+    dof = n - m
+    t = stats.t.ppf(0.975, dof)
+    residual = data[y] - y_model
+    std_error = (np.sum(residual**2) / dof)**.5   # Standard deviation of the error
+    numerator = np.sum((data[x] - x_mean)*(data[y] - y_mean))
+    denominator = ( np.sum((data[x] - x_mean)**2) * np.sum((data[y] - y_mean)**2) )**.5
+    correlation_coef = numerator / denominator
+    r2 = correlation_coef**2
+    MSE = 1/n * np.sum( (data[y] - y_model)**2 )
+    x_line = np.linspace(np.min(data[x]), np.max(data[x]), 100)
+    y_line = np.polyval([slope, intercept], x_line)
+    ci = t * std_error * (1/n + (x_line - x_mean)**2 / np.sum((data[x] - x_mean)**2))**.5
+
     # Create new figure
     fig, ax = plt.subplots()
 
@@ -128,6 +155,9 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="./p
 
     # Make the scatterplot
     sc = ax.scatter(x=data[x], y=data[y], c=data['average_plddt'], cmap=get_good_bad_cmap(), norm=norm, s=15)
+    ax.plot(x_line, y_line, color = COLOR["Receptor"])
+    ax.fill_between(x_line, y_line + ci, y_line - ci, color = COLOR["Receptor"], label = '95% confidence interval', alpha = 0.1)
+    ax.text(0.0025, 0.90, '$r^2$ = ' + str(np.round(r2,3)) + '\nMSE = ' + str(np.round(MSE,3)), font_properties=font_prop, fontsize=12)
 
     # Add colorbar
     cbar = plt.colorbar(sc, ax=ax, orientation='vertical')
@@ -136,6 +166,10 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="./p
     # Optionally, set custom ticks and labels for the colorbar
     cbar.set_ticks([0, 20, 40, 60, 80, 100])  # Customize the ticks if needed
     cbar.set_ticklabels([0, 20, 40, 60, 80, 100])  # Customize the tick labels if needed
+
+    # Update fonts and labels
+    plt.xlabel(x, fontproperties=font_prop, fontsize=14)
+    plt.ylabel(y, fontproperties=font_prop, fontsize=14)
 
     # Update fonts and labels
     plt.xlabel(x, fontproperties=font_prop, fontsize=14)
@@ -163,16 +197,20 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="./p
 
 
 if __name__ == "__main__":
+
+    # Get the file directory
+    file_dir = os.path.dirname(__file__)
+
     # Input paths to the search results
-    rfaa_input_path = "/projects/ilfgrid/people/pqh443/rfaa_training_db/search_results"
-    af_input_path="/projects/ilfgrid/people/pqh443/alphafold_training_db/search_results"
+    rfaa_input_path = f"{file_dir}/mmseqs2_results/RFAA/search_results"
+    af_input_path=f"{file_dir}/mmseqs2_results/AF/search_results"
 
     # Get the closest training structures
     af_training_struct = get_closest_training_structures(af_input_path)
     rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
 
     # Path to the DockQ results file
-    dockq_path = "./DockQ_results.csv"
+    dockq_path = f"{file_dir}/DockQ_results.csv"
 
     # Get only AF2, AF3 and RFAA models
     input_models = ['AF2', 'AF2_no_templates', 'AF3', 'RFAA', 'RFAA_no_templates']
