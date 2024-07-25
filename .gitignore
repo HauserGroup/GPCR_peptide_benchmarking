@@ -1,3 +1,6 @@
+# In order to add all symlinks to gitignore, cd to main and call:
+# find * -type l >> .gitignore
+
 # custom
 /conda_env/
 *.DS_Store
@@ -174,3 +177,9 @@ classifier_subanalysis/models/AF2 (no templates)
 classifier_subanalysis/models/AF2 LIS (no templates)
 classifier_subanalysis/models/AF2
 classifier_subanalysis/models/AF2 LIS
+classifier_benchmark/models/AF2/models
+classifier_subanalysis/models/AF2 (no templates)
+classifier_subanalysis/models/AF2 LIS (no templates)
+classifier_subanalysis/models/RF-AA (no templates)
+classifier_subanalysis/models_temp/AF2
+classifier_subanalysis/models_temp/AF2 LIS
