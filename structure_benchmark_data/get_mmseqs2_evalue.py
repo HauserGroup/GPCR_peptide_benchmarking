@@ -8,13 +8,14 @@ import matplotlib.colors as mcolors
 from matplotlib.colors import LinearSegmentedColormap
 from scipy import stats
 import numpy as np
-from sklearn.metrics import r2_score 
+from sklearn.metrics import r2_score
 
 
 # Get the top-level directory
-top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(top_level_dir)
-from colors import * 
+from colors import *
+
 
 def get_closest_training_structures(input_path):
     # List files in the input directory
@@ -44,11 +45,14 @@ def get_closest_training_structures(input_path):
             results_per_pdb[pdb_code] = [e_value, identity]
 
     # Make dictionary into dataframe with columns pdb, e_value, and identity
-    df = pd.DataFrame.from_dict(results_per_pdb, orient='index', columns=['e_value', 'Identity'])
+    df = pd.DataFrame.from_dict(
+        results_per_pdb, orient="index", columns=["e_value", "Identity"]
+    )
     df.reset_index(inplace=True)
-    df.columns = ['pdb', 'e_value', 'Identity']
+    df.columns = ["pdb", "e_value", "Identity"]
 
     return df
+
 
 def calculate_average_plddt(pdb_file_path):
     """
@@ -63,7 +67,7 @@ def calculate_average_plddt(pdb_file_path):
 
     try:
         # Open the PDB file and extract plddt scores (adjust as needed)
-        with open(pdb_file_path, 'r') as pdb_file:
+        with open(pdb_file_path, "r") as pdb_file:
             plddt_scores = []
             for line in pdb_file:
                 if line.startswith("ATOM") and line[12:16].strip() == "CA":
@@ -88,17 +92,17 @@ def calculate_average_plddt(pdb_file_path):
 
 def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     data = pd.read_csv(dockq_path)
-    data = data[data['model'] == model]
-    data = data.merge(training_struct_df, left_on='pdb', right_on='pdb', how='left')
+    data = data[data["model"] == model]
+    data = data.merge(training_struct_df, left_on="pdb", right_on="pdb", how="left")
 
     # Get the top-level directory
-    repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
     if plot_path == "":
         plot_path = f"{repo_dir}/structure_benchmark_data/plots"
 
     # Get average pLDDT scores for predictions
-    for pdb in data['pdb']:
+    for pdb in data["pdb"]:
         model_extension = ""
         if "RFAA" in model:
             model_name = "RFAA_chain"
@@ -107,24 +111,26 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
                 model_extension = "_no_templates"
         else:
             model_name = model
-        pdb_file_path = f"{repo_dir}/structure_benchmark/{model_name}/{pdb}{model_extension}.pdb"
+        pdb_file_path = (
+            f"{repo_dir}/structure_benchmark/{model_name}/{pdb}{model_extension}.pdb"
+        )
         average_plddt = calculate_average_plddt(pdb_file_path)
         if "RFAA" in model:
             average_plddt = average_plddt * 100
-        data.loc[data['pdb'] == pdb, 'average_plddt'] = average_plddt
+        data.loc[data["pdb"] == pdb, "average_plddt"] = average_plddt
 
     # Make a scatter plot of DockQ vs e-value
     fig, ax = plt.subplots(figsize=(8, 5))
     x = "Identity"
     y = "DockQ"
 
-    # Plot path 
+    # Plot path
     if not os.path.exists(plot_path):
         os.makedirs(plot_path)
     output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.png")
 
     # Specify the path to the Aptos font file
-    font_path = f'{repo_dir}/Aptos.ttf'  
+    font_path = f"{repo_dir}/Aptos.ttf"
     font_prop = fm.FontProperties(fname=font_path)
 
     # Calculate the linear regression line and 95% confidence interval
@@ -137,15 +143,21 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     dof = n - m
     t = stats.t.ppf(0.975, dof)
     residual = data[y] - y_model
-    std_error = (np.sum(residual**2) / dof)**.5   # Standard deviation of the error
-    numerator = np.sum((data[x] - x_mean)*(data[y] - y_mean))
-    denominator = ( np.sum((data[x] - x_mean)**2) * np.sum((data[y] - y_mean)**2) )**.5
+    std_error = (np.sum(residual**2) / dof) ** 0.5  # Standard deviation of the error
+    numerator = np.sum((data[x] - x_mean) * (data[y] - y_mean))
+    denominator = (
+        np.sum((data[x] - x_mean) ** 2) * np.sum((data[y] - y_mean) ** 2)
+    ) ** 0.5
     correlation_coef = numerator / denominator
     r2 = correlation_coef**2
-    MSE = 1/n * np.sum( (data[y] - y_model)**2 )
+    MSE = 1 / n * np.sum((data[y] - y_model) ** 2)
     x_line = np.linspace(np.min(data[x]), np.max(data[x]), 100)
     y_line = np.polyval([slope, intercept], x_line)
-    ci = t * std_error * (1/n + (x_line - x_mean)**2 / np.sum((data[x] - x_mean)**2))**.5
+    ci = (
+        t
+        * std_error
+        * (1 / n + (x_line - x_mean) ** 2 / np.sum((data[x] - x_mean) ** 2)) ** 0.5
+    )
 
     # Create new figure
     fig, ax = plt.subplots()
@@ -154,14 +166,42 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     norm = mcolors.Normalize(vmin=0, vmax=100)
 
     # Make the scatterplot
-    sc = ax.scatter(x=data[x], y=data[y], c=data['average_plddt'], cmap=get_good_bad_cmap(), norm=norm, s=15)
-    ax.plot(x_line, y_line, color = COLOR["Receptor"])
-    ax.fill_between(x_line, y_line + ci, y_line - ci, color = COLOR["Receptor"], label = '95% confidence interval', alpha = 0.1)
-    ax.text(0.0025, 0.85, 'y = ' + str(np.round(intercept, 2)) + ' + ' + str(np.round(slope,2)) + 'x\n' + 'r$^2$ = ' + str(np.round(r2,3)) + '\nMSE = ' + str(np.round(MSE,3)), font_properties=font_prop, fontsize=12)
+    sc = ax.scatter(
+        x=data[x],
+        y=data[y],
+        c=data["average_plddt"],
+        cmap=get_good_bad_cmap(),
+        norm=norm,
+        s=15,
+    )
+    ax.plot(x_line, y_line, color=COLOR["Receptor"])
+    ax.fill_between(
+        x_line,
+        y_line + ci,
+        y_line - ci,
+        color=COLOR["Receptor"],
+        label="95% confidence interval",
+        alpha=0.1,
+    )
+    ax.text(
+        0.0025,
+        0.85,
+        "y = "
+        + str(np.round(intercept, 2))
+        + " + "
+        + str(np.round(slope, 2))
+        + "x\n"
+        + "r$^2$ = "
+        + str(np.round(r2, 3))
+        + "\nMSE = "
+        + str(np.round(MSE, 3)),
+        font_properties=font_prop,
+        fontsize=12,
+    )
 
     # Add colorbar
-    cbar = plt.colorbar(sc, ax=ax, orientation='vertical')
-    cbar.set_label('Average pLDDT', fontproperties=font_prop, fontsize=14)
+    cbar = plt.colorbar(sc, ax=ax, orientation="vertical")
+    cbar.set_label("Average pLDDT", fontproperties=font_prop, fontsize=14)
 
     # Optionally, set custom ticks and labels for the colorbar
     cbar.set_ticks([0, 20, 40, 60, 80, 100])  # Customize the ticks if needed
@@ -182,7 +222,7 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     plt.title(f"{model_title}", fontproperties=font_prop, fontsize=16)
 
     # Set the font properties for the ticks
-    for label in (ax.get_xticklabels() + ax.get_yticklabels()):
+    for label in ax.get_xticklabels() + ax.get_yticklabels():
         label.set_fontproperties(font_prop)
         label.set_fontsize(12)
 
@@ -196,25 +236,29 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     plt.savefig(output_path, dpi=600)
 
 
-
 if __name__ == "__main__":
-
     # Get the file directory
     file_dir = os.path.dirname(__file__)
 
     # Input paths to the search results
     rfaa_input_path = f"{file_dir}/mmseqs2_results/RFAA/search_results"
-    af_input_path=f"{file_dir}/mmseqs2_results/AF/search_results"
+    af_input_path = f"{file_dir}/mmseqs2_results/AF/search_results"
 
     # Get the closest training structures
     af_training_struct = get_closest_training_structures(af_input_path)
+    af_training_struct.to_csv(
+        f"{file_dir}/mmseq2_af_training_structures.csv", index=False
+    )
     rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
+    rfaa_training_struct.to_csv(
+        f"{file_dir}/mmseq2_rfaa_training_structures.csv", index=False
+    )
 
     # Path to the DockQ results file
     dockq_path = f"{file_dir}/DockQ_results.csv"
 
     # Get only AF2, AF3 and RFAA models
-    input_models = ['AF2', 'AF2_no_templates', 'AF3', 'RFAA', 'RFAA_no_templates']
+    input_models = ["AF2", "AF2_no_templates", "AF3", "RFAA", "RFAA_no_templates"]
     for model in input_models:
         if "AF" in model:
             training_struct_df = af_training_struct
