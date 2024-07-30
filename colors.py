@@ -57,14 +57,22 @@ COLOR = {
     # models (no structure)
     "Peptriever": "#aeb0b5",
     "D-SCRIPT2": "#aeb0b5",
-    "AF2-LIS": "#02bfe7",
     # models (subanalysis)
-    "AF2 LIS": "#02bfe7",
+    "AF2 LIS (no templates)": "#9E005D",
+    "AF2 LIS": "#9E005D",
     # classes
     "Class A (Rhodopsin)": "#115185",
     "Class B1 (Secretin)": "#478347",
     "Class F (Frizzled)": "#A676D6",
     "Other GPCRs": "#aeb0b5",
+    # pocket subtype
+    "AF2 LIS (no templates)+pocket": "#aeb0b5",
+    "RF-AA (no templates)+pocket": "#aeb0b5",
+    "AF2+pocket": "#aeb0b5",
+    "AF2 (no templates)+pocket": "#aeb0b5",
+    # general
+    False: "#0b3d91",
+    True: "#f9aa43",
 }
 
 

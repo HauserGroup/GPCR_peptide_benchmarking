@@ -8,37 +8,37 @@ set_color Dissimilar3, (170, 75, 68)
 color grey80, glr_1162 and chain B
 color Dissimilar3, glr_1162 and chain C
 load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___758.pdb, glr_758
-set_color Dissimilar0, (223, 199, 198)
-color grey80, glr_758 and chain B
-color Dissimilar0, glr_758 and chain C
-load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___2257.pdb, glr_2257
-set_color Similar3, (56, 96, 163)
-color grey80, glr_2257 and chain B
-color Similar3, glr_2257 and chain C
-load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___1140.pdb, glr_1140
-set_color Similar2, (103, 133, 183)
-color grey80, glr_1140 and chain B
-color Similar2, glr_1140 and chain C
-load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___754.pdb, glr_754
 set_color Dissimilar4, (153, 35, 27)
-color grey80, glr_754 and chain B
-color Dissimilar4, glr_754 and chain C
-load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___3542.pdb, glr_3542
-set_color Similar1, (148, 168, 202)
-color grey80, glr_3542 and chain B
-color Similar1, glr_3542 and chain C
-load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___1152.pdb, glr_1152
+color grey80, glr_758 and chain B
+color Dissimilar4, glr_758 and chain C
+load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___2257.pdb, glr_2257
 set_color Similar0, (195, 205, 221)
+color grey80, glr_2257 and chain B
+color Similar0, glr_2257 and chain C
+load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___1140.pdb, glr_1140
+set_color Similar4, (11, 61, 145)
+color grey80, glr_1140 and chain B
+color Similar4, glr_1140 and chain C
+load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___754.pdb, glr_754
+set_color Dissimilar0, (223, 199, 198)
+color grey80, glr_754 and chain B
+color Dissimilar0, glr_754 and chain C
+load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___3542.pdb, glr_3542
+set_color Similar3, (56, 96, 163)
+color grey80, glr_3542 and chain B
+color Similar3, glr_3542 and chain C
+load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___1152.pdb, glr_1152
+set_color Similar2, (103, 133, 183)
 color grey80, glr_1152 and chain B
-color Similar0, glr_1152 and chain C
+color Similar2, glr_1152 and chain C
 load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___1136.pdb, glr_1136
 set_color Principal Agonist, (249, 170, 67)
 color grey80, glr_1136 and chain B
 color Principal Agonist, glr_1136 and chain C
 load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___3643.pdb, glr_3643
-set_color Similar4, (11, 61, 145)
+set_color Similar1, (148, 168, 202)
 color grey80, glr_3643 and chain B
-color Similar4, glr_3643 and chain C
+color Similar1, glr_3643 and chain C
 load /Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/plots/figure2_classifier/show_10_decoys/models/glr_human___6067.pdb, glr_6067
 set_color Dissimilar2, (188, 117, 112)
 color grey80, glr_6067 and chain B

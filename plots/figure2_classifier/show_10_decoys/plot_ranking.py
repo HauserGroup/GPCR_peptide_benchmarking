@@ -86,10 +86,15 @@ def run_main():
     )
     # add text next to points
     ybonus = {
-        "Dissimilar4": 0.02,
-        "Dissimilar3": 0.005,
-        "Dissimilar1": 0.03,
-        "Dissimilar0": 0.015,
+        "Dissimilar4": 0.015,
+        "Dissimilar3": 0.0,
+        "Dissimilar1": 0.020,
+        "Dissimilar2": 0.020,
+        "Dissimilar0": 0.0,
+        "Similar0": 0.0,
+        "Similar1": 0.0,
+        "Similar2": 0.01,
+        "Similar3": 0.0,
     }
     for i, txt in enumerate(labels):
         yval = yvals[i]
@@ -109,7 +114,7 @@ def run_main():
     # make sure the legend handles follow the colors
 
     plt.tight_layout()
-    plt.savefig(script_dir / "ranking.png", dpi=300)
+    plt.savefig(script_dir / "ranking.svg", dpi=300)
 
 
 if __name__ == "__main__":

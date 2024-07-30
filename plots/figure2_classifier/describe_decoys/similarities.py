@@ -151,7 +151,7 @@ def run_main():
     plt.xlabel("GPCR")
     plt.title(f"Similarity", fontsize=20)
     plt.tight_layout()
-    plt.savefig(script_dir / f"{gpcr}_similarity_distribution.png")
+    plt.savefig(script_dir / f"{gpcr}_similarity_distribution.svg")
 
 
 if __name__ == "__main__":
