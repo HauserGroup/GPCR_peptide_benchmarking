@@ -1,0 +1,23 @@
+>> Running the following command:
+/var/spool/slurm//job169413/slurm_script /projects/ilfgrid/data/Interspecies_GPCR_pipeline/1_datasets/6_interactions_with_decoys_pair_p2.txt /projects/ilfgrid/people/kcd635/git/Interspecies_GPCR_pipeline/configs/AF_model_ClassifierBenchmark_no_templates.config /projects/ilfgrid/people/kcd635/git/Interspecies_GPCR_pipeline/configs/AF_prep_Dec2023.config
+
+>> Start time:  Mon May 20 17:09:18 CEST 2024
+   Machine:     ilfgridgpun01fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/kcd635/git/Interspecies_GPCR_pipeline
+   GPU:         0
+
+>> AF2 inputs:
+   Fasta:      /maps/projects/ilfgrid/data/Interspecies_GPCR_pipeline/2_fasta/pairs/lgr4_human___856.fasta
+   Dataset:    /maps/projects/ilfgrid/data/Interspecies_GPCR_pipeline/1_datasets/6_interactions_with_decoys_pair_p2.txt
+   AF2 config: /maps/projects/ilfgrid/people/kcd635/git/Interspecies_GPCR_pipeline/configs/AF_model_ClassifierBenchmark_no_templates.config
+   MSA config: /maps/projects/ilfgrid/people/kcd635/git/Interspecies_GPCR_pipeline/configs/AF_prep_Dec2023.config
+
+>> Prediction is skipped for /projects/ilfgrid/data/Interspecies_GPCR_pipeline/2_fasta/pairs/lgr4_human___856.fasta because /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___856/features.pkl does not exist.
+
+>> Prediction failed, or /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___856/ranked_0.pdb doesn't exist.
+
+
+>> Job finished at: Mon May 20 17:09:18 CEST 2024
+
+>> Runtime: 0 s
+/var/spool/slurm//job169413/slurm_script: line 117: [: : integer expression expected

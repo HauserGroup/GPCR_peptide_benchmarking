@@ -1,0 +1,997 @@
+Loaded miniconda shell environment for bash
+usage: filter_templates.py [-h] -p PATH -i IDS -o OUTPUT
+filter_templates.py: error: argument -i/--ids: expected one argument
+usage: filter_templates.py [-h] -p PATH -i IDS -o OUTPUT
+filter_templates.py: error: argument -i/--ids: expected one argument
+I0420 06:57:54.244774 140519053121344 templates.py:857] Using precomputed obsolete pdbs /projects/ilfgrid/data/alphafold-genetic-databases/pdb_mmcif/obsolete.dat.
+I0420 06:57:54.661000 140519053121344 xla_bridge.py:353] Unable to initialize backend 'tpu_driver': NOT_FOUND: Unable to find driver in registry given worker: 
+I0420 06:57:55.255882 140519053121344 xla_bridge.py:353] Unable to initialize backend 'rocm': NOT_FOUND: Could not find registered platform with name: "rocm". Available platform names are: CUDA Interpreter Host
+I0420 06:57:55.256486 140519053121344 xla_bridge.py:353] Unable to initialize backend 'tpu': module 'jaxlib.xla_extension' has no attribute 'get_tpu_client'
+I0420 06:57:55.256608 140519053121344 xla_bridge.py:353] Unable to initialize backend 'plugin': xla_extension has no attributes named get_plugin_device_client. Compile TensorFlow with //tensorflow/compiler/xla/python:enable_plugin_device set to true (defaults to false) to enable this.
+I0420 06:58:00.196693 140519053121344 run_alphafold.py:395] Have 5 models: ['model_1_multimer_v3_pred_0', 'model_2_multimer_v3_pred_0', 'model_3_multimer_v3_pred_0', 'model_4_multimer_v3_pred_0', 'model_5_multimer_v3_pred_0']
+I0420 06:58:00.196842 140519053121344 run_alphafold.py:412] Using random seed 1573675668879065710 for the data pipeline
+I0420 06:58:00.197019 140519053121344 run_alphafold.py:161] Predicting lgr4_human___2019
+I0420 06:58:00.201145 140519053121344 pipeline_multimer.py:210] Running monomer pipeline on chain A: lgr4_human
+W0420 06:58:00.201600 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/A/uniref90_hits.sto
+W0420 06:58:21.842103 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/A/mgnify_hits.sto
+I0420 06:58:31.753285 140519053121344 hmmbuild.py:121] Launching subprocess ['/projects/ilfgrid/apps/alphafold-2.3.1/AF_2.3.1_conda_env/bin/hmmbuild', '--hand', '--amino', '/tmp/tmp60yeldvu/output.hmm', '/tmp/tmp60yeldvu/query.msa']
+I0420 06:58:32.162868 140519053121344 utils.py:36] Started hmmbuild query
+I0420 06:58:34.062443 140519053121344 hmmbuild.py:128] hmmbuild stdout:
+# hmmbuild :: profile HMM construction from multiple sequence alignments
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# input alignment file:             /tmp/tmp60yeldvu/query.msa
+# output HMM file:                  /tmp/tmp60yeldvu/output.hmm
+# input alignment is asserted as:   protein
+# model architecture construction:  hand-specified by RF annotation
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# idx name                  nseq  alen  mlen eff_nseq re/pos description
+#---- -------------------- ----- ----- ----- -------- ------ -----------
+1     query                 6467  3539   951    10.97  0.590 
+
+# CPU time: 1.78u 0.10s 00:00:01.88 Elapsed: 00:00:01.89
+
+
+stderr:
+
+
+I0420 06:58:34.062662 140519053121344 utils.py:40] Finished hmmbuild query in 1.899 seconds
+I0420 06:58:34.072616 140519053121344 hmmsearch.py:103] Launching sub-process ['/projects/ilfgrid/apps/alphafold-2.3.1/AF_2.3.1_conda_env/bin/hmmsearch', '--noali', '--cpu', '8', '--F1', '0.1', '--F2', '0.1', '--F3', '0.1', '--incE', '100', '-E', '100', '--domE', '100', '--incdomE', '100', '-A', '/tmp/tmptw_1vi3f/output.sto', '/tmp/tmptw_1vi3f/query.hmm', '/projects/ilfgrid/data/alphafold-genetic-databases/pdb_seqres/pdb_seqres.txt']
+I0420 06:58:34.477131 140519053121344 utils.py:36] Started hmmsearch (pdb_seqres.txt) query
+I0420 06:58:49.789021 140519053121344 utils.py:40] Finished hmmsearch (pdb_seqres.txt) query in 15.311 seconds
+W0420 06:58:56.357936 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/A/bfd_uniref_hits.a3m
+I0420 06:58:56.864005 140519053121344 templates.py:940] Searching for template for: MPGPLGLLCFLALGLLGSAGPSGAAPPLCAAPCSCDGDRRVDCSGKGLTAVPEGLSAFTQALDISMNNITQLPEDAFKNFPFLEELQLAGNDLSFIHPKALSGLKELKVLTLQNNQLKTVPSEAIRGLSALQSLRLDANHITSVPEDSFEGLVQLRHLWLDDNSLTEVPVHPLSNLPTLQALTLALNKISSIPDFAFTNLSSLVVLHLHNNKIRSLSQHCFDGLDNLETLDLNYNNLGEFPQAIKALPSLKELGFHSNSISVIPDGAFDGNPLLRTIHLYDNPLSFVGNSAFHNLSDLHSLVIRGASMVQQFPNLTGTVHLESLTLTGTKISSIPNNLCQEQKMLRTLDLSYNNIRDLPSFNGCHALEEISLQRNQIYQIKEGTFQGLISLRILDLSRNLIHEIHSRAFATLGPITNLDVSFNELTSFPTEGLNGLNQLKLVGNFKLKEALAAKDFVNLRSLSVPYAYQCCAFWGCDSYANLNTEDNSLQDHSVAQEKGTADAANVTSTLENEEHSQIIIHCTPSTGAFKPCEYLLGSWMIRLTVWFIFLVALFFNLLVILTTFASCTSLPSSKLFIGLISVSNLFMGIYTGILTFLDAVSWGRFAEFGIWWETGSGCKVAGFLAVFSSESAIFLLMLATVERSLSAKDIMKNGKSNHLKQFRVAALLAFLGATVAGCFPLFHRGEYSASPLCLPFPTGETPSLGFTVTLVLLNSLAFLLMAVIYTKLYCNLEKEDLSENSQSSMIKHVAWLIFTNCIFFCPVAFFSFAPLITAISISPEIMKSVTLIFFPLPACLNPVLYVFFNPKFKEDWKLLKRRVTKKSGSVSVSISSQGGCLEQDFYYDCGMYSHLQGNLTVCDCCESFLLTKPVSCKHLIKSHSCPALAVASCQRPEGYWSDCGTQSAHSDYADEEDSFVSDSSDQVQACGRACFYQSRGFPLVRYAYNLPRVKD
+I0420 06:59:38.275833 140519053121344 templates.py:718] hit 7wm4_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.276912 140519053121344 templates.py:718] hit 7wm4_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.277631 140519053121344 templates.py:718] hit 7wm4_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.278342 140519053121344 templates.py:718] hit 7wm4_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.637833 140519053121344 templates.py:718] hit 7da7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.638665 140519053121344 templates.py:718] hit 7da7_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.994716 140519053121344 templates.py:718] hit 7das_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:38.995739 140519053121344 templates.py:718] hit 7das_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:39.379338 140519053121344 templates.py:718] hit 7wve_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:39.380186 140519053121344 templates.py:718] hit 7wve_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:40.320063 140519053121344 templates.py:718] hit 7c77_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 06:59:51.617941 140519053121344 templates.py:718] hit 6zjz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:51.618877 140519053121344 templates.py:718] hit 6zjz_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:52.266401 140519053121344 templates.py:718] hit 6ty5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:52.267210 140519053121344 templates.py:718] hit 6ty5_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:53.659019 140519053121344 templates.py:718] hit 7r52_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:53.659825 140519053121344 templates.py:718] hit 7r52_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:54.272007 140519053121344 templates.py:718] hit 7r53_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:54.272968 140519053121344 templates.py:718] hit 7r53_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:54.872997 140519053121344 templates.py:718] hit 7r54_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:54.873787 140519053121344 templates.py:718] hit 7r54_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:55.510464 140519053121344 templates.py:718] hit 8pfi_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:55.511290 140519053121344 templates.py:718] hit 8pfi_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:56.159889 140519053121344 templates.py:718] hit 3w3g_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:56.160691 140519053121344 templates.py:718] hit 3w3g_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:57.739423 140519053121344 templates.py:718] hit 3w3j_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:57.740254 140519053121344 templates.py:718] hit 3w3j_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:58.410222 140519053121344 templates.py:718] hit 3w3k_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:58.411027 140519053121344 templates.py:718] hit 3w3k_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:59.741846 140519053121344 templates.py:718] hit 3w3l_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:59.742663 140519053121344 templates.py:718] hit 3w3l_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:59.743381 140519053121344 templates.py:718] hit 3w3l_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 06:59:59.744087 140519053121344 templates.py:718] hit 3w3l_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:00.077851 140519053121344 templates.py:718] hit 3w3m_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:01.533385 140519053121344 templates.py:718] hit 3w3n_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:01.534199 140519053121344 templates.py:718] hit 3w3n_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:01.748747 140519053121344 templates.py:718] hit 3wn4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:02.164785 140519053121344 templates.py:718] hit 4qbz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:02.165592 140519053121344 templates.py:718] hit 4qbz_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:02.534500 140519053121344 templates.py:718] hit 4qc0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:02.535291 140519053121344 templates.py:718] hit 4qc0_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:03.390953 140519053121344 templates.py:718] hit 4r07_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:03.391883 140519053121344 templates.py:718] hit 4r07_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:03.392590 140519053121344 templates.py:718] hit 4r07_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:03.393295 140519053121344 templates.py:718] hit 4r07_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.056735 140519053121344 templates.py:718] hit 4r08_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.057534 140519053121344 templates.py:718] hit 4r08_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.058247 140519053121344 templates.py:718] hit 4r08_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.058950 140519053121344 templates.py:718] hit 4r08_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.863109 140519053121344 templates.py:718] hit 4r09_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.864011 140519053121344 templates.py:718] hit 4r09_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.864707 140519053121344 templates.py:718] hit 4r09_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:05.865407 140519053121344 templates.py:718] hit 4r09_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:06.086056 140519053121344 templates.py:718] hit 4r0a_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:07.295980 140519053121344 templates.py:718] hit 4r6a_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:07.296857 140519053121344 templates.py:718] hit 4r6a_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:07.496206 140519053121344 templates.py:718] hit 5awa_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:07.697966 140519053121344 templates.py:718] hit 5awb_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:08.454896 140519053121344 templates.py:718] hit 5awc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:08.455699 140519053121344 templates.py:718] hit 5awc_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:08.456421 140519053121344 templates.py:718] hit 5awc_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:08.457159 140519053121344 templates.py:718] hit 5awc_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:08.668416 140519053121344 templates.py:718] hit 5awd_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:10.229437 140519053121344 templates.py:718] hit 5az5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:10.230253 140519053121344 templates.py:718] hit 5az5_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:10.230950 140519053121344 templates.py:718] hit 5az5_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:10.231654 140519053121344 templates.py:718] hit 5az5_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:10.629440 140519053121344 templates.py:718] hit 5wyx_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:10.630234 140519053121344 templates.py:718] hit 5wyx_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:11.009613 140519053121344 templates.py:718] hit 5wyz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:11.010469 140519053121344 templates.py:718] hit 5wyz_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:11.435447 140519053121344 templates.py:718] hit 5z14_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:11.436358 140519053121344 templates.py:718] hit 5z14_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:11.819504 140519053121344 templates.py:718] hit 5z15_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:11.820331 140519053121344 templates.py:718] hit 5z15_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:13.144399 140519053121344 templates.py:718] hit 6kya_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:13.145204 140519053121344 templates.py:718] hit 6kya_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:13.753532 140519053121344 templates.py:718] hit 6v9u_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:13.754365 140519053121344 templates.py:718] hit 6v9u_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:14.539294 140519053121344 templates.py:718] hit 6wml_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:14.540125 140519053121344 templates.py:718] hit 6wml_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:14.540851 140519053121344 templates.py:718] hit 6wml_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:14.541574 140519053121344 templates.py:718] hit 6wml_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:15.015754 140519053121344 templates.py:718] hit 7crf_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:15.016575 140519053121344 templates.py:718] hit 7crf_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:16.508349 140519053121344 templates.py:718] hit 7rc9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:16.509159 140519053121344 templates.py:718] hit 7rc9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:17.172113 140519053121344 templates.py:718] hit 7ytx_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:17.172911 140519053121344 templates.py:718] hit 7ytx_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:17.374846 140519053121344 templates.py:718] hit 5hdh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:00:23.866060 140519053121344 templates.py:718] hit 7b1b_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:23.866884 140519053121344 templates.py:718] hit 7b1b_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:24.458877 140519053121344 templates.py:718] hit 7b1c_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:24.459718 140519053121344 templates.py:718] hit 7b1c_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:24.460413 140519053121344 templates.py:718] hit 7b1c_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:24.825178 140519053121344 templates.py:718] hit 7b1d_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:24.825964 140519053121344 templates.py:718] hit 7b1d_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:00:25.422545 140519053121344 templates.py:718] hit 4lxr_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:25.650544 140519053121344 templates.py:718] hit 4lxs_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:25.650919 140519053121344 templates.py:718] hit 5zln_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0473186119873817.
+I0420 07:00:26.856439 140519053121344 templates.py:718] hit 5zln_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0473186119873817.
+I0420 07:00:31.797923 140519053121344 templates.py:718] hit 5gr8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0683491062039958.
+I0420 07:00:31.798711 140519053121344 templates.py:718] hit 5gr8_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0683491062039958.
+I0420 07:00:32.308050 140519053121344 templates.py:718] hit 7drb_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:32.308938 140519053121344 templates.py:718] hit 7drb_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:32.668430 140519053121344 templates.py:718] hit 7drc_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:32.898307 140519053121344 templates.py:718] hit 7w3v_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:33.693702 140519053121344 templates.py:718] hit 7w3x_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:00:35.009068 140519053121344 templates.py:718] hit 4j0m_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:00:35.009930 140519053121344 templates.py:718] hit 4j0m_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:01:11.727328 140519053121344 templates.py:718] hit 5gqr_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:01:12.462783 140519053121344 templates.py:718] hit 5gr9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:01:12.741751 140519053121344 templates.py:718] hit 5jfi_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:01:13.822063 140519053121344 templates.py:718] hit 5jfi_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:01:13.822774 140519053121344 templates.py:718] hit 5jfk_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:01:14.278665 140519053121344 templates.py:718] hit 5jfk_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:01:14.279341 140519053121344 templates.py:718] hit 5gij_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:01:35.185207 140519053121344 templates.py:718] hit 4z63_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:01:35.400584 140519053121344 templates.py:718] hit 4z64_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:01:37.379062 140519053121344 templates.py:718] hit 4r6j_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:01:37.379624 140519053121344 templates.py:718] hit 4r6j_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:01:37.379900 140519053121344 templates.py:718] hit 4r6j_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:01:37.380177 140519053121344 templates.py:718] hit 4r6j_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:01:45.957010 140519053121344 templates.py:718] hit 3v44_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:02:35.104216 140519053121344 templates.py:718] hit 2xot_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:02:35.104779 140519053121344 templates.py:718] hit 2xot_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:02:35.583107 140519053121344 templates.py:718] hit 3ul9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:35.929232 140519053121344 templates.py:718] hit 3ula_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:35.929621 140519053121344 templates.py:718] hit 3ula_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:36.014816 140519053121344 templates.py:718] hit 3ul7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:37.339085 140519053121344 templates.py:718] hit 2z62_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:38.898778 140519053121344 templates.py:718] hit 2z65_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:38.899187 140519053121344 templates.py:718] hit 2z65_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:39.212014 140519053121344 templates.py:718] hit 3ul8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:02:41.323758 140519053121344 templates.py:718] hit 2z80_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:02:41.324226 140519053121344 templates.py:718] hit 2z80_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:02:56.706980 140519053121344 templates.py:718] hit 7brc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0683491062039958.
+I0420 07:02:56.921618 140519053121344 templates.py:718] hit 4cnc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:02:56.921966 140519053121344 templates.py:718] hit 4cnc_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:02:57.040552 140519053121344 templates.py:718] hit 4cnm_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:03:27.843613 140519053121344 templates.py:718] hit 4hq1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:03:27.843851 140519053121344 templates.py:718] hit 1xwd_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06414300736067298.
+I0420 07:03:28.068153 140519053121344 templates.py:718] hit 1xwd_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06414300736067298.
+I0420 07:09:11.342954 140519053121344 templates.py:718] hit 5hl3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:09:14.197377 140519053121344 templates.py:718] hit 6qxp_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.198073 140519053121344 templates.py:718] hit 6qxp_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.198551 140519053121344 templates.py:718] hit 6qxp_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.199032 140519053121344 templates.py:718] hit 6qxp_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.199503 140519053121344 templates.py:718] hit 6qxp_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.199974 140519053121344 templates.py:718] hit 6qxp_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.200450 140519053121344 templates.py:718] hit 6qxp_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:14.200919 140519053121344 templates.py:718] hit 6qxp_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:09:36.379159 140519053121344 templates.py:718] hit 4xa9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.379732 140519053121344 templates.py:718] hit 4xa9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.380021 140519053121344 templates.py:718] hit 4xa9_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.380303 140519053121344 templates.py:718] hit 4xa9_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.380571 140519053121344 templates.py:718] hit 4xa9_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.380835 140519053121344 templates.py:718] hit 4xa9_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.381111 140519053121344 templates.py:718] hit 4xa9_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:36.381376 140519053121344 templates.py:718] hit 4xa9_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:44.503194 140519053121344 templates.py:718] hit 7e33_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:09:47.985679 140519053121344 templates.py:718] hit 5kzs_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06414300736067298.
+I0420 07:12:49.438869 140519053121344 templates.py:718] hit 5xjm_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:13:03.450641 140519053121344 templates.py:718] hit 7ej0_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:13:03.728171 140519053121344 templates.py:718] hit 7ej8_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:13:04.015022 140519053121344 templates.py:718] hit 7eja_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:13:04.290449 140519053121344 templates.py:718] hit 7ejk_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:13:04.546238 140519053121344 templates.py:718] hit 7w6p_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:13:04.814591 140519053121344 templates.py:718] hit 7w7e_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:13:06.586695 140519053121344 templates.py:718] hit 7jlv_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:06.587309 140519053121344 templates.py:718] hit 7jlv_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:06.587814 140519053121344 templates.py:718] hit 7jlv_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:06.588318 140519053121344 templates.py:718] hit 7jlv_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:07.301834 140519053121344 templates.py:718] hit 7jlu_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:07.683701 140519053121344 templates.py:718] hit 7jlx_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:07.684300 140519053121344 templates.py:718] hit 7jlx_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:07.684813 140519053121344 templates.py:718] hit 7jlx_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:07.685329 140519053121344 templates.py:718] hit 7jlx_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:13:10.998098 140519053121344 templates.py:718] hit 6kuy_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:13:12.751576 140519053121344 templates.py:718] hit 7c6a_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:13:18.174760 140519053121344 templates.py:718] hit 6kux_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:13:20.471494 140519053121344 templates.py:718] hit 6me6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:20.471904 140519053121344 templates.py:718] hit 6me6_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:20.663958 140519053121344 templates.py:718] hit 6me9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:20.664328 140519053121344 templates.py:718] hit 6me9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:23.526931 140519053121344 templates.py:718] hit 6me8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:23.527665 140519053121344 templates.py:718] hit 6me8_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:26.314483 140519053121344 templates.py:718] hit 7x9c_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:13:27.253179 140519053121344 templates.py:718] hit 7qvm_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:13:28.046573 140519053121344 templates.py:718] hit 3bz5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.060988433228180865.
+I0420 07:13:44.988310 140519053121344 templates.py:718] hit 6me7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:13:44.988691 140519053121344 templates.py:718] hit 6me7_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:16:07.682635 140519053121344 templates.py:718] hit 4cp6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:16:11.328965 140519053121344 templates.py:718] hit 7ax1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:16:11.890183 140519053121344 templates.py:718] hit 7yu3_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:12.165236 140519053121344 templates.py:718] hit 7yu4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:12.236823 140519053121344 templates.py:718] hit 7yu5_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:14.431964 140519053121344 templates.py:718] hit 7yu6_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:14.697172 140519053121344 templates.py:718] hit 7yu7_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:14.966942 140519053121344 templates.py:718] hit 7yu8_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:17.691567 140519053121344 templates.py:718] hit 7exd_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:16:18.052523 140519053121344 templates.py:718] hit 7t6b_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:16:18.513870 140519053121344 templates.py:718] hit 6me2_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:18.701733 140519053121344 templates.py:718] hit 6me3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:18.886433 140519053121344 templates.py:718] hit 6me4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:19.156463 140519053121344 templates.py:718] hit 6me5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:19.338918 140519053121344 templates.py:718] hit 6ps8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:19.339047 140519053121344 templates.py:718] hit 7c4s_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:16:19.717605 140519053121344 templates.py:718] hit 7c4s_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:16:19.954884 140519053121344 templates.py:718] hit 7ym8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:16:20.342160 140519053121344 templates.py:718] hit 7ymh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:16:20.933298 140519053121344 templates.py:718] hit 7ew2_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:16:21.425315 140519053121344 templates.py:718] hit 7ew3_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:16:21.946579 140519053121344 templates.py:718] hit 7ew4_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:16:31.537346 140519053121344 templates.py:718] hit 7sus_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:16:32.529449 140519053121344 templates.py:718] hit 5u09_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:16:39.497778 140519053121344 templates.py:718] hit 7ran_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:16:40.813171 140519053121344 templates.py:718] hit 5zbh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:16:40.988103 140519053121344 templates.py:718] hit 5tgz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:16:40.988224 140519053121344 templates.py:718] hit 7voi_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:16:42.770941 140519053121344 templates.py:718] hit 6do1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:16:42.771336 140519053121344 templates.py:718] hit 6do1_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:16:42.929746 140519053121344 templates.py:718] hit 6os0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:16:43.127754 140519053121344 templates.py:718] hit 6os1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:16:43.324516 140519053121344 templates.py:718] hit 6os2_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:16:47.092035 140519053121344 templates.py:718] hit 7vod_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:47.185566 140519053121344 templates.py:718] hit 7voe_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:48.156723 140519053121344 templates.py:718] hit 6wha_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:16:49.026811 140519053121344 templates.py:718] hit 7td0_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:49.525856 140519053121344 templates.py:718] hit 7td1_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:50.550114 140519053121344 templates.py:718] hit 7td2_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:16:51.062648 140519053121344 templates.py:718] hit 7wc4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:51.154228 140519053121344 templates.py:718] hit 7wc5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:51.246348 140519053121344 templates.py:718] hit 7wc6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:51.353726 140519053121344 templates.py:718] hit 7wc7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:51.459313 140519053121344 templates.py:718] hit 7wc8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:51.691946 140519053121344 templates.py:718] hit 7wc9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:16:51.692042 140519053121344 templates.py:718] hit 3rez_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:51.692094 140519053121344 templates.py:718] hit 3rez_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:51.692140 140519053121344 templates.py:718] hit 3rez_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:51.692184 140519053121344 templates.py:718] hit 3rez_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:16:52.211364 140519053121344 templates.py:718] hit 4djh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:16:52.211750 140519053121344 templates.py:718] hit 4djh_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:16:53.683495 140519053121344 templates.py:718] hit 7x5h_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08937960042060988.
+I0420 07:17:05.275899 140519053121344 templates.py:718] hit 8j18_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:17:05.546648 140519053121344 templates.py:718] hit 8j19_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:17:06.577158 140519053121344 templates.py:718] hit 8j1a_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:17:17.142795 140519053121344 templates.py:718] hit 8g05_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07255520504731862.
+I0420 07:17:17.423339 140519053121344 templates.py:718] hit 7e32_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:17:20.196312 140519053121344 templates.py:718] hit 7rmg_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:17:20.511632 140519053121344 templates.py:718] hit 7rmh_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:17:20.806296 140519053121344 templates.py:718] hit 7rmi_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:17:21.349694 140519053121344 templates.py:718] hit 8u26_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:17:21.544387 140519053121344 templates.py:718] hit 7v3z_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:20:24.089176 140519053121344 templates.py:718] hit 5vbl_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:20:24.357785 140519053121344 templates.py:718] hit 6knm_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:20:24.532286 140519053121344 templates.py:718] hit 5xr8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:20:24.702996 140519053121344 templates.py:718] hit 5xra_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:20:27.182327 140519053121344 templates.py:718] hit 2ks9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:20:28.074368 140519053121344 templates.py:718] hit 2ksa_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:20:29.007853 140519053121344 templates.py:718] hit 2ksb_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:20:32.158028 140519053121344 templates.py:718] hit 6a93_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:20:32.158627 140519053121344 templates.py:718] hit 6a93_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:20:32.449366 140519053121344 templates.py:718] hit 6a94_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:20:32.449810 140519053121344 templates.py:718] hit 6a94_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:20:32.657995 140519053121344 templates.py:718] hit 6tpk_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:20:32.970554 140519053121344 templates.py:718] hit 7ddz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:20:34.044026 140519053121344 templates.py:718] hit 6wgt_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:20:34.044490 140519053121344 templates.py:718] hit 6wgt_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:20:34.044757 140519053121344 templates.py:718] hit 6wgt_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:20:34.316392 140519053121344 templates.py:718] hit 6wh4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:20:34.316869 140519053121344 templates.py:718] hit 6wh4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:20:34.317157 140519053121344 templates.py:718] hit 6wh4_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:20:34.614506 140519053121344 templates.py:718] hit 7srr_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:20:35.276877 140519053121344 templates.py:718] hit 8iru_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:20:55.117798 140519053121344 templates.py:718] hit 7fee_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:20:55.970482 140519053121344 templates.py:718] hit 6rz6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:20:56.126980 140519053121344 templates.py:718] hit 6rz7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:20:56.277613 140519053121344 templates.py:718] hit 6rz8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:20:56.432211 140519053121344 templates.py:718] hit 6rz9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:20:56.586632 140519053121344 templates.py:718] hit 4ib4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:20:56.739111 140519053121344 templates.py:718] hit 4nc3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:20:57.049711 140519053121344 templates.py:718] hit 5uen_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0946372239747634.
+I0420 07:20:57.050244 140519053121344 templates.py:718] hit 5uen_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0946372239747634.
+I0420 07:20:58.048574 140519053121344 templates.py:718] hit 5tud_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:20:58.049110 140519053121344 templates.py:718] hit 5tud_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:20:59.076950 140519053121344 templates.py:718] hit 7sr8_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:22:33.308376 140519053121344 templates.py:718] hit 6kqi_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:22:33.454699 140519053121344 templates.py:718] hit 6drz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:22:34.708947 140519053121344 templates.py:718] hit 6drx_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:22:34.850719 140519053121344 templates.py:718] hit 6ds0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:22:37.982787 140519053121344 templates.py:718] hit 7xtc_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:22:38.808936 140519053121344 templates.py:718] hit 6dry_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:22:41.517107 140519053121344 templates.py:718] hit 7dh5_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:22:41.772914 140519053121344 templates.py:718] hit 7xjh_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:22:42.032879 140519053121344 templates.py:718] hit 7xji_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:22:42.424820 140519053121344 templates.py:718] hit 6bqg_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:22:42.566210 140519053121344 templates.py:718] hit 6bqh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:22:44.108822 140519053121344 templates.py:718] hit 5tvn_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:22:55.962516 140519053121344 templates.py:718] hit 8jj8_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:22:56.069378 140519053121344 templates.py:718] hit 8jjl_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:22:56.167529 140519053121344 templates.py:718] hit 8jjo_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:22:56.316571 140519053121344 templates.py:718] hit 2r4s_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:22:57.759321 140519053121344 templates.py:718] hit 8dpf_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:22:58.018239 140519053121344 templates.py:718] hit 8dpg_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:23:01.149857 140519053121344 templates.py:718] hit 4ntj_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:23:01.150097 140519053121344 templates.py:718] hit 4ntj_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:23:01.150155 140519053121344 templates.py:718] hit 4pxz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:23:01.150202 140519053121344 templates.py:718] hit 4pxz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:23:01.150248 140519053121344 templates.py:718] hit 4py0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:23:01.150292 140519053121344 templates.py:718] hit 4py0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:23:01.150336 140519053121344 templates.py:718] hit 7pp1_AAA did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0694006309148265.
+I0420 07:23:01.150381 140519053121344 templates.py:718] hit 7pp1_AAA did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:23:05.718306 140519053121344 templates.py:718] hit 2r4r_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:23:05.833024 140519053121344 templates.py:718] hit 7um4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:23:06.184998 140519053121344 templates.py:718] hit 8jsp_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:23:06.362934 140519053121344 templates.py:718] hit 4dkl_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:23:06.794072 140519053121344 templates.py:718] hit 8tb7_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05993690851735016.
+I0420 07:23:08.414282 140519053121344 templates.py:718] hit 7um5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:23:08.673139 140519053121344 templates.py:718] hit 7um6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:23:08.945528 140519053121344 templates.py:718] hit 7um7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:23:11.796159 140519053121344 templates.py:718] hit 6e67_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:23:11.796627 140519053121344 templates.py:718] hit 6e67_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:23:12.270460 140519053121344 templates.py:718] hit 7e2x_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:23:12.498794 140519053121344 templates.py:718] hit 7e2y_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:23:13.691225 140519053121344 templates.py:718] hit 7e2z_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:23:13.983524 140519053121344 templates.py:718] hit 8w8b_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:23:14.234165 140519053121344 templates.py:718] hit 3kj6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:25:30.586783 140519053121344 templates.py:718] hit 4s0v_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:25:30.851073 140519053121344 templates.py:718] hit 8e9y_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:25:31.061275 140519053121344 templates.py:718] hit 5wqc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:25:31.261842 140519053121344 templates.py:718] hit 5ws3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:25:31.526290 140519053121344 templates.py:718] hit 8e9z_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:25:31.608073 140519053121344 templates.py:718] hit 8ea0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:25:38.647488 140519053121344 templates.py:718] hit 8dph_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:25:38.903170 140519053121344 templates.py:718] hit 8dpi_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:25:39.682689 140519053121344 templates.py:718] hit 4daj_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:25:39.683092 140519053121344 templates.py:718] hit 4daj_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:25:39.683379 140519053121344 templates.py:718] hit 4daj_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:25:39.683662 140519053121344 templates.py:718] hit 4daj_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:25:40.468811 140519053121344 templates.py:718] hit 3sn6_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:25:40.469062 140519053121344 templates.py:718] hit 4z34_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:25:40.630446 140519053121344 templates.py:718] hit 4z34_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:25:40.630614 140519053121344 templates.py:718] hit 4z35_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:25:42.471424 140519053121344 templates.py:718] hit 4z35_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:25:48.713769 140519053121344 templates.py:718] hit 6lfl_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:25:50.386799 140519053121344 templates.py:718] hit 4ej4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:25:51.715896 140519053121344 templates.py:718] hit 6kr8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:25:54.222765 140519053121344 templates.py:718] hit 4z36_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:25:54.374939 140519053121344 templates.py:718] hit 4z36_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:25:56.862286 140519053121344 templates.py:718] hit 7f83_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:25:56.862654 140519053121344 templates.py:718] hit 7f83_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:26:17.046352 140519053121344 templates.py:718] hit 6ol9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:26:18.407911 140519053121344 templates.py:718] hit 7k15_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:26:18.791974 140519053121344 templates.py:718] hit 6kuw_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.026288117770767613.
+I0420 07:26:18.792400 140519053121344 templates.py:718] hit 6kuw_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.026288117770767613.
+I0420 07:26:24.840923 140519053121344 templates.py:718] hit 7cky_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:25.214185 140519053121344 templates.py:718] hit 7ckz_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:25.595300 140519053121344 templates.py:718] hit 7crh_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:26.079655 140519053121344 templates.py:718] hit 3v2w_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:26:26.250964 140519053121344 templates.py:718] hit 3v2y_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:26:28.547669 140519053121344 templates.py:718] hit 7ckw_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:29.288584 140519053121344 templates.py:718] hit 7ckx_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:32.988679 140519053121344 templates.py:718] hit 7xow_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:26:33.277429 140519053121344 templates.py:718] hit 8ia7_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:26:33.471368 140519053121344 templates.py:718] hit 4u15_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:26:33.471749 140519053121344 templates.py:718] hit 4u15_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:26:33.828839 140519053121344 templates.py:718] hit 4u16_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:26:33.829256 140519053121344 templates.py:718] hit 4u16_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:26:34.336110 140519053121344 templates.py:718] hit 7f0t_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:34.712570 140519053121344 templates.py:718] hit 7f1o_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:34.998196 140519053121344 templates.py:718] hit 7f1z_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:35.335654 140519053121344 templates.py:718] hit 7f23_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:36.768476 140519053121344 templates.py:718] hit 7f24_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:37.136953 140519053121344 templates.py:718] hit 7x2c_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:37.448036 140519053121344 templates.py:718] hit 7x2d_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:37.771535 140519053121344 templates.py:718] hit 7x2f_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:37.771752 140519053121344 templates.py:718] hit 4h09_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:26:38.493781 140519053121344 templates.py:718] hit 4h09_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:26:38.494174 140519053121344 templates.py:718] hit 4h09_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:26:38.494451 140519053121344 templates.py:718] hit 4h09_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:26:38.494723 140519053121344 templates.py:718] hit 4h09_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:26:38.616530 140519053121344 templates.py:718] hit 5uig_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09884332281808622.
+I0420 07:26:39.500196 140519053121344 templates.py:718] hit 3rfe_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:26:39.500342 140519053121344 templates.py:718] hit 3rfe_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06519453207150368.
+I0420 07:26:39.773060 140519053121344 templates.py:718] hit 7jv5_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:40.040505 140519053121344 templates.py:718] hit 7jvp_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:40.303263 140519053121344 templates.py:718] hit 7jvq_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:40.565467 140519053121344 templates.py:718] hit 7ljc_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:40.971033 140519053121344 templates.py:718] hit 7ljd_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:43.058125 140519053121344 templates.py:718] hit 8irr_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09568874868559411.
+I0420 07:26:43.246927 140519053121344 templates.py:718] hit 5zkq_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.035751840168243953.
+I0420 07:26:43.247310 140519053121344 templates.py:718] hit 5zkq_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.035751840168243953.
+I0420 07:26:43.647100 140519053121344 templates.py:718] hit 6rz4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03470031545741325.
+I0420 07:26:43.964004 140519053121344 templates.py:718] hit 6rz5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03470031545741325.
+I0420 07:26:43.964393 140519053121344 templates.py:718] hit 6rz5_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03470031545741325.
+I0420 07:26:44.179063 140519053121344 templates.py:718] hit 7f8v_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:26:44.455254 140519053121344 templates.py:718] hit 7f8w_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:26:45.314090 140519053121344 templates.py:718] hit 7cmu_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:26:45.580199 140519053121344 templates.py:718] hit 7cmv_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:26:46.094221 140519053121344 templates.py:718] hit 8irt_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:28:30.929984 140519053121344 templates.py:718] hit 7w41_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:28:32.416316 140519053121344 templates.py:718] hit 2rh1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:32.534753 140519053121344 templates.py:718] hit 5d5a_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:32.646403 140519053121344 templates.py:718] hit 5d5b_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:32.765380 140519053121344 templates.py:718] hit 5d6l_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:32.880156 140519053121344 templates.py:718] hit 5x7d_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:33.064147 140519053121344 templates.py:718] hit 6oba_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:33.166913 140519053121344 templates.py:718] hit 3p0g_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:28:33.587321 140519053121344 templates.py:718] hit 6ni3_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.060988433228180865.
+I0420 07:28:50.279497 140519053121344 templates.py:718] hit 5zkp_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.035751840168243953.
+I0420 07:28:50.768290 140519053121344 templates.py:718] hit 7joz_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:28:56.337641 140519053121344 templates.py:718] hit 7jvr_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:28:56.878179 140519053121344 templates.py:718] hit 8irs_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:29:01.118622 140519053121344 templates.py:718] hit 4u14_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:29:01.277333 140519053121344 templates.py:718] hit 7zly_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:29:01.433668 140519053121344 templates.py:718] hit 5wiu_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:29:01.589048 140519053121344 templates.py:718] hit 5wiv_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:29:01.908696 140519053121344 templates.py:718] hit 7dfp_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:29:02.757749 140519053121344 templates.py:718] hit 7mbx_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:05.963965 140519053121344 templates.py:718] hit 5nj6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:29:06.216369 140519053121344 templates.py:718] hit 6iql_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:29:06.216749 140519053121344 templates.py:718] hit 6iql_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:29:06.751163 140519053121344 templates.py:718] hit 3pbl_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:29:06.751639 140519053121344 templates.py:718] hit 3pbl_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:29:08.956885 140519053121344 templates.py:718] hit 3d4s_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:09.651824 140519053121344 templates.py:718] hit 3ny8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:09.763227 140519053121344 templates.py:718] hit 3ny9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:09.883495 140519053121344 templates.py:718] hit 3nya_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:10.003332 140519053121344 templates.py:718] hit 5cxv_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:29:10.181523 140519053121344 templates.py:718] hit 6prz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:10.360749 140519053121344 templates.py:718] hit 6ps0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:10.534259 140519053121344 templates.py:718] hit 6ps1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:10.724842 140519053121344 templates.py:718] hit 6ps2_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:10.915392 140519053121344 templates.py:718] hit 6ps3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:11.099208 140519053121344 templates.py:718] hit 6ps4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:11.845046 140519053121344 templates.py:718] hit 6ps5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:12.033350 140519053121344 templates.py:718] hit 6ps6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:24.622318 140519053121344 templates.py:718] hit 6hll_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:24.832040 140519053121344 templates.py:718] hit 6hlo_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:25.049107 140519053121344 templates.py:718] hit 6hlp_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:25.191183 140519053121344 templates.py:718] hit 5ndd_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:29:25.359787 140519053121344 templates.py:718] hit 5ndz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09989484752891693.
+I0420 07:29:26.479367 140519053121344 templates.py:718] hit 6g79_S did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08937960042060988.
+I0420 07:29:26.642862 140519053121344 templates.py:718] hit 7t32_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09253417455310199.
+I0420 07:29:27.421372 140519053121344 templates.py:718] hit 5zhp_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:29:27.421861 140519053121344 templates.py:718] hit 5zhp_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:29:27.534391 140519053121344 templates.py:718] hit 5wf5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:29:27.673047 140519053121344 templates.py:718] hit 8jwy_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:29:27.874909 140519053121344 templates.py:718] hit 8jwz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:29:27.875200 140519053121344 templates.py:718] hit 3sb4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04416403785488959.
+I0420 07:29:27.875306 140519053121344 templates.py:718] hit 3sb4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04100946372239748.
+I0420 07:29:27.875414 140519053121344 templates.py:718] hit 3sb4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09779179810725552.
+I0420 07:29:27.875505 140519053121344 templates.py:718] hit 3sb4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04416403785488959.
+I0420 07:29:27.875591 140519053121344 templates.py:718] hit 3sb4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04100946372239748.
+I0420 07:29:27.875676 140519053121344 templates.py:718] hit 3sb4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09779179810725552.
+I0420 07:29:28.026628 140519053121344 templates.py:718] hit 3eml_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:29:29.034391 140519053121344 templates.py:718] hit 3qak_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:29:29.207272 140519053121344 templates.py:718] hit 3pds_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:29:31.902978 140519053121344 templates.py:718] hit 5x33_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:29:32.085408 140519053121344 templates.py:718] hit 6zfz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:29:32.267091 140519053121344 templates.py:718] hit 6zg4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:29:32.465600 140519053121344 templates.py:718] hit 6zg9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:29:32.651688 140519053121344 templates.py:718] hit 3oe6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:29:32.817167 140519053121344 templates.py:718] hit 6j20_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:33.429391 140519053121344 templates.py:718] hit 8irv_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0473186119873817.
+I0420 07:29:33.429603 140519053121344 templates.py:718] hit 8irv_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:29:34.123792 140519053121344 templates.py:718] hit 5v54_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:29:34.124188 140519053121344 templates.py:718] hit 5v54_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07781282860147214.
+I0420 07:29:36.132961 140519053121344 templates.py:718] hit 8kgk_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:29:36.427532 140519053121344 templates.py:718] hit 7dfl_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:29:36.787339 140519053121344 templates.py:718] hit 5wf6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08832807570977919.
+I0420 07:29:36.787526 140519053121344 templates.py:718] hit 8siy_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0935856992639327.
+I0420 07:29:37.224012 140519053121344 templates.py:718] hit 6wjc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:29:37.972723 140519053121344 templates.py:718] hit 4iaq_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:29:38.715238 140519053121344 templates.py:718] hit 3odu_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:38.715622 140519053121344 templates.py:718] hit 3odu_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:39.245126 140519053121344 templates.py:718] hit 3oe8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:39.245498 140519053121344 templates.py:718] hit 3oe8_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:39.245769 140519053121344 templates.py:718] hit 3oe8_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:39.434994 140519053121344 templates.py:718] hit 6w25_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.031545741324921134.
+I0420 07:29:39.596770 140519053121344 templates.py:718] hit 6j21_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:29:39.793792 140519053121344 templates.py:718] hit 6e59_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:29:39.793917 140519053121344 templates.py:718] hit 6e59_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.035751840168243953.
+I0420 07:29:43.412019 140519053121344 templates.py:718] hit 8axj_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08937960042060988.
+I0420 07:29:54.640698 140519053121344 templates.py:718] hit 6tpg_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:29:55.082105 140519053121344 templates.py:718] hit 6tpj_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:29:55.082584 140519053121344 templates.py:718] hit 6tpj_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:29:55.988428 140519053121344 templates.py:718] hit 6tpn_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:29:56.869146 140519053121344 templates.py:718] hit 7c61_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:29:57.019260 140519053121344 templates.py:718] hit 4iar_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:29:57.215992 140519053121344 templates.py:718] hit 4zj8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:29:57.414695 140519053121344 templates.py:718] hit 4zjc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:29:57.581977 140519053121344 templates.py:718] hit 3rze_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07991587802313355.
+I0420 07:29:57.754982 140519053121344 templates.py:718] hit 3oe0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:29:58.074216 140519053121344 templates.py:718] hit 3oe9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:29:58.074598 140519053121344 templates.py:718] hit 3oe9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:29:58.536879 140519053121344 templates.py:718] hit 8tb0_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:29:58.725087 140519053121344 templates.py:718] hit 4rws_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:29:59.057738 140519053121344 templates.py:718] hit 5zty_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:30:00.520822 140519053121344 templates.py:718] hit 7mby_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:00.795284 140519053121344 templates.py:718] hit 7ezh_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:01.012775 140519053121344 templates.py:718] hit 7ezk_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:01.287119 140519053121344 templates.py:718] hit 7ezm_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:01.537868 140519053121344 templates.py:718] hit 7xou_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:02.318244 140519053121344 templates.py:718] hit 7xov_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:02.586872 140519053121344 templates.py:718] hit 6tp3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:02.587345 140519053121344 templates.py:718] hit 6tp3_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:02.843215 140519053121344 templates.py:718] hit 6tp6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:02.843741 140519053121344 templates.py:718] hit 6tp6_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.085976 140519053121344 templates.py:718] hit 6tq4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.086365 140519053121344 templates.py:718] hit 6tq4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.322981 140519053121344 templates.py:718] hit 6tq6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.323407 140519053121344 templates.py:718] hit 6tq6_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.568370 140519053121344 templates.py:718] hit 6tq7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.568761 140519053121344 templates.py:718] hit 6tq7_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:30:03.568815 140519053121344 templates.py:718] hit 7ew1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:30:04.502954 140519053121344 templates.py:718] hit 7f1t_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09884332281808622.
+I0420 07:30:07.222186 140519053121344 templates.py:718] hit 8e9x_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08727655099894847.
+I0420 07:30:07.426855 140519053121344 templates.py:718] hit 6cm4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:30:07.549341 140519053121344 templates.py:718] hit 6luq_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:30:07.691279 140519053121344 templates.py:718] hit 4xnv_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0452155625657203.
+I0420 07:30:07.868100 140519053121344 templates.py:718] hit 4xnw_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0452155625657203.
+I0420 07:30:07.868589 140519053121344 templates.py:718] hit 4xnw_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0452155625657203.
+I0420 07:30:08.053411 140519053121344 templates.py:718] hit 7br3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.052576235541535225.
+I0420 07:30:08.425464 140519053121344 templates.py:718] hit 6kpc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07465825446898001.
+I0420 07:30:08.744178 140519053121344 templates.py:718] hit 5dsg_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:30:08.744682 140519053121344 templates.py:718] hit 5dsg_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:30:09.456819 140519053121344 templates.py:718] hit 6v9s_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:30:10.168907 140519053121344 templates.py:718] hit 6oik_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:10.526096 140519053121344 templates.py:718] hit 7t8x_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:10.874238 140519053121344 templates.py:718] hit 7t90_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:11.699591 140519053121344 templates.py:718] hit 7t94_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:12.061414 140519053121344 templates.py:718] hit 7t96_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:14.569747 140519053121344 templates.py:718] hit 6m9t_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:30:14.742884 140519053121344 templates.py:718] hit 6akx_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:14.743339 140519053121344 templates.py:718] hit 6akx_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:14.833093 140519053121344 templates.py:718] hit 6aky_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09674027339642481.
+I0420 07:30:15.011710 140519053121344 templates.py:718] hit 6d26_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:30:15.188884 140519053121344 templates.py:718] hit 6d27_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:30:16.014486 140519053121344 templates.py:718] hit 7m8w_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:30:16.776627 140519053121344 templates.py:718] hit 1koh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:30:16.776781 140519053121344 templates.py:718] hit 1koh_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:30:16.776831 140519053121344 templates.py:718] hit 1koh_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:30:16.776878 140519053121344 templates.py:718] hit 1koh_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:30:18.636984 140519053121344 templates.py:718] hit 7yfc_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:30:18.950672 140519053121344 templates.py:718] hit 7yfd_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08201892744479496.
+I0420 07:30:19.190551 140519053121344 templates.py:718] hit 8kh4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:30:19.368336 140519053121344 templates.py:718] hit 7f8x_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:30:19.950433 140519053121344 templates.py:718] hit 7f8u_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:30:20.138339 140519053121344 templates.py:718] hit 7f8y_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:30:20.749614 140519053121344 templates.py:718] hit 6kp6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:30:21.216213 140519053121344 templates.py:718] hit 5uiw_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0946372239747634.
+I0420 07:30:21.439485 140519053121344 templates.py:718] hit 3rw6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:21.439682 140519053121344 templates.py:718] hit 3rw6_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:21.439742 140519053121344 templates.py:718] hit 3rw7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:21.439792 140519053121344 templates.py:718] hit 3rw7_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:21.439844 140519053121344 templates.py:718] hit 3rw7_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:21.439889 140519053121344 templates.py:718] hit 3rw7_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.632772 140519053121344 templates.py:718] hit 1fo1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.632993 140519053121344 templates.py:718] hit 1fo1_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.633049 140519053121344 templates.py:718] hit 1ft8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.633097 140519053121344 templates.py:718] hit 1ft8_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.633142 140519053121344 templates.py:718] hit 1ft8_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.633187 140519053121344 templates.py:718] hit 1ft8_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.633229 140519053121344 templates.py:718] hit 1ft8_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:25.633273 140519053121344 templates.py:718] hit 1yrg_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:25.800490 140519053121344 templates.py:718] hit 1yrg_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:26.619673 140519053121344 templates.py:718] hit 1k5d_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:28.489992 140519053121344 templates.py:718] hit 1k5d_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:28.490648 140519053121344 templates.py:718] hit 1k5d_I did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:28.491184 140519053121344 templates.py:718] hit 1k5d_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:28.491700 140519053121344 templates.py:718] hit 1k5g_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:29.431809 140519053121344 templates.py:718] hit 1k5g_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:29.432184 140519053121344 templates.py:718] hit 1k5g_I did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:29.432442 140519053121344 templates.py:718] hit 1k5g_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:29.432696 140519053121344 templates.py:718] hit 2ca6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:29.628095 140519053121344 templates.py:718] hit 2ca6_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04206098843322818.
+I0420 07:30:31.021163 140519053121344 templates.py:718] hit 1koo_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:31.021306 140519053121344 templates.py:718] hit 1koo_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:31.021359 140519053121344 templates.py:718] hit 1koo_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:31.021405 140519053121344 templates.py:718] hit 1koo_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:30:31.150692 140519053121344 templates.py:718] hit 6li0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.031545741324921134.
+I0420 07:34:54.929759 140519053121344 templates.py:718] hit 6li2_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.031545741324921134.
+I0420 07:34:56.430783 140519053121344 templates.py:718] hit 4wyk_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:34:56.431036 140519053121344 templates.py:718] hit 4wyk_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:34:57.069093 140519053121344 templates.py:718] hit 7xtb_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.024185068349106203.
+I0420 07:34:57.069323 140519053121344 templates.py:718] hit 6e5u_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:34:57.069375 140519053121344 templates.py:718] hit 6e5u_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:34:57.069422 140519053121344 templates.py:718] hit 6e5u_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:34:57.069467 140519053121344 templates.py:718] hit 6e5u_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06624605678233439.
+I0420 07:34:57.069511 140519053121344 templates.py:718] hit 4glp_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:34:57.807508 140519053121344 templates.py:718] hit 6li1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:35:06.401165 140519053121344 templates.py:718] hit 5zk8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:35:07.537703 140519053121344 templates.py:718] hit 7f61_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08622502628811778.
+I0420 07:35:07.641629 140519053121344 templates.py:718] hit 4wp6_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06729758149316509.
+I0420 07:38:31.723598 140519053121344 templates.py:718] hit 8ibu_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07255520504731862.
+I0420 07:38:32.017280 140519053121344 templates.py:718] hit 8ibv_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07255520504731862.
+I0420 07:38:33.216779 140519053121344 templates.py:718] hit 3uon_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:38:33.964250 140519053121344 templates.py:718] hit 4xm4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:38:33.964387 140519053121344 templates.py:718] hit 4xm4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:38:33.964445 140519053121344 templates.py:718] hit 4xm4_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:38:33.964495 140519053121344 templates.py:718] hit 4xm4_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.050473186119873815.
+I0420 07:38:33.964545 140519053121344 templates.py:718] hit 7yxa_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:38:34.430208 140519053121344 templates.py:718] hit 7yxa_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:38:34.430413 140519053121344 templates.py:718] hit 7yxa_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.046267087276550996.
+I0420 07:38:34.430742 140519053121344 templates.py:718] hit 7yxa_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.027339642481598318.
+I0420 07:38:34.526716 140519053121344 templates.py:718] hit 5aj2_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:38:38.069307 140519053121344 templates.py:718] hit 6qzh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05993690851735016.
+I0420 07:38:39.508724 140519053121344 templates.py:718] hit 6gpx_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:38:39.509140 140519053121344 templates.py:718] hit 6gpx_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:38:39.660090 140519053121344 templates.py:718] hit 5yc8_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:38:39.811536 140519053121344 templates.py:718] hit 5zk3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:38:39.956997 140519053121344 templates.py:718] hit 5zkb_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:38:40.108325 140519053121344 templates.py:718] hit 5zkc_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08307045215562565.
+I0420 07:38:42.879341 140519053121344 templates.py:718] hit 3jbl_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.879738 140519053121344 templates.py:718] hit 3jbl_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.880019 140519053121344 templates.py:718] hit 3jbl_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.880290 140519053121344 templates.py:718] hit 3jbl_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.880556 140519053121344 templates.py:718] hit 3jbl_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.880828 140519053121344 templates.py:718] hit 3jbl_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.881098 140519053121344 templates.py:718] hit 3jbl_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.881363 140519053121344 templates.py:718] hit 3jbl_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.881627 140519053121344 templates.py:718] hit 3jbl_I did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.881892 140519053121344 templates.py:718] hit 3jbl_J did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:42.882163 140519053121344 templates.py:718] hit 3jbl_K did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.778222 140519053121344 templates.py:718] hit 4kxf_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.778637 140519053121344 templates.py:718] hit 4kxf_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.778918 140519053121344 templates.py:718] hit 4kxf_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.779199 140519053121344 templates.py:718] hit 4kxf_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.779472 140519053121344 templates.py:718] hit 4kxf_K did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.779742 140519053121344 templates.py:718] hit 4kxf_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.780019 140519053121344 templates.py:718] hit 4kxf_N did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:45.780290 140519053121344 templates.py:718] hit 4kxf_P did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:46.535705 140519053121344 templates.py:718] hit 6b5b_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:46.536096 140519053121344 templates.py:718] hit 6b5b_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05362776025236593.
+I0420 07:38:46.722594 140519053121344 templates.py:718] hit 3vw7_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.056782334384858045.
+I0420 07:38:46.978337 140519053121344 templates.py:718] hit 6gps_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:38:51.440350 140519053121344 templates.py:718] hit 5t1a_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:38:51.647650 140519053121344 templates.py:718] hit 6pwc_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.026288117770767613.
+I0420 07:38:51.961515 140519053121344 templates.py:718] hit 8jpb_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.025236593059936908.
+I0420 07:38:52.278903 140519053121344 templates.py:718] hit 8jpc_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.025236593059936908.
+I0420 07:38:52.404288 140519053121344 templates.py:718] hit 8jpf_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.025236593059936908.
+I0420 07:38:52.793960 140519053121344 templates.py:718] hit 4xee_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:38:53.175230 140519053121344 templates.py:718] hit 8jlz_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.024185068349106203.
+I0420 07:38:53.175461 140519053121344 templates.py:718] hit 4wwu_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175516 140519053121344 templates.py:718] hit 4wwu_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175563 140519053121344 templates.py:718] hit 4wwu_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175609 140519053121344 templates.py:718] hit 4wwu_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175653 140519053121344 templates.py:718] hit 4wwu_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175698 140519053121344 templates.py:718] hit 4wwu_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175743 140519053121344 templates.py:718] hit 4wwu_J did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.175787 140519053121344 templates.py:718] hit 4wwu_K did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:53.454775 140519053121344 templates.py:718] hit 8fn1_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:38:53.717439 140519053121344 templates.py:718] hit 8fn0_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:38:54.045211 140519053121344 templates.py:718] hit 8hbn_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:54.045341 140519053121344 templates.py:718] hit 8hfr_AN did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:54.045393 140519053121344 templates.py:718] hit 8hfr_CW did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:38:54.045444 140519053121344 templates.py:718] hit 8hfr_EX did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:39:08.754732 140519053121344 templates.py:718] hit 8fmz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.02103049421661409.
+I0420 07:39:08.937054 140519053121344 templates.py:718] hit 5t04_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.019978969505783387.
+I0420 07:39:16.904144 140519053121344 templates.py:718] hit 1fdf_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.019978969505783387.
+I0420 07:39:17.071875 140519053121344 templates.py:718] hit 6up7_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.022082018927444796.
+I0420 07:39:17.261693 140519053121344 templates.py:718] hit 4xes_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:39:17.903590 140519053121344 templates.py:718] hit 7wz4_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05783385909568875.
+I0420 07:39:17.903735 140519053121344 templates.py:718] hit 7wz4_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.060988433228180865.
+I0420 07:39:19.638032 140519053121344 templates.py:718] hit 5k7b_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:19.638169 140519053121344 templates.py:718] hit 5k7b_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:19.638219 140519053121344 templates.py:718] hit 5k7b_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:19.638263 140519053121344 templates.py:718] hit 5k7b_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:19.638308 140519053121344 templates.py:718] hit 1ou5_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:39:19.638351 140519053121344 templates.py:718] hit 1ou5_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.033648790746582544.
+I0420 07:39:19.638399 140519053121344 templates.py:718] hit 7ejx_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:39:19.638442 140519053121344 templates.py:718] hit 7ejx_R did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.058885383806519455.
+I0420 07:39:19.985236 140519053121344 templates.py:718] hit 8hj5_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04100946372239748.
+I0420 07:39:20.415291 140519053121344 templates.py:718] hit 5gli_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:39:20.537832 140519053121344 templates.py:718] hit 5x93_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:39:23.092365 140519053121344 templates.py:718] hit 4x4w_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03259726603575184.
+I0420 07:39:23.092579 140519053121344 templates.py:718] hit 4x4w_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03259726603575184.
+I0420 07:39:23.092634 140519053121344 templates.py:718] hit 5k9l_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:23.092682 140519053121344 templates.py:718] hit 5k9l_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:23.092726 140519053121344 templates.py:718] hit 5k9l_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:23.092770 140519053121344 templates.py:718] hit 5k9l_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0904311251314406.
+I0420 07:39:23.219645 140519053121344 templates.py:718] hit 6lry_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:39:23.219781 140519053121344 templates.py:718] hit 5yix_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05152471083070452.
+I0420 07:39:23.806646 140519053121344 templates.py:718] hit 5xpr_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:39:24.197661 140519053121344 templates.py:718] hit 6k1q_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:39:24.197800 140519053121344 templates.py:718] hit 2koe_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.026288117770767613.
+I0420 07:39:24.312027 140519053121344 templates.py:718] hit 4grv_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.019978969505783387.
+I0420 07:39:31.041954 140519053121344 templates.py:718] hit 7w78_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042107 140519053121344 templates.py:718] hit 7w79_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042158 140519053121344 templates.py:718] hit 7w7a_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042202 140519053121344 templates.py:718] hit 7w7a_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042245 140519053121344 templates.py:718] hit 7w7a_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042288 140519053121344 templates.py:718] hit 7w7a_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042330 140519053121344 templates.py:718] hit 7w7a_J did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042373 140519053121344 templates.py:718] hit 7w7a_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042415 140519053121344 templates.py:718] hit 7w7b_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042456 140519053121344 templates.py:718] hit 7w7b_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042496 140519053121344 templates.py:718] hit 7w7b_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042538 140519053121344 templates.py:718] hit 7w7b_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042579 140519053121344 templates.py:718] hit 7w7b_J did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042619 140519053121344 templates.py:718] hit 7w7b_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042661 140519053121344 templates.py:718] hit 7w7c_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042702 140519053121344 templates.py:718] hit 7w7d_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042742 140519053121344 templates.py:718] hit 7w7d_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042783 140519053121344 templates.py:718] hit 7w7d_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042824 140519053121344 templates.py:718] hit 7w7d_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042864 140519053121344 templates.py:718] hit 7w7d_J did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042904 140519053121344 templates.py:718] hit 7w7d_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:39:31.042946 140519053121344 templates.py:718] hit 7oop_S did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.042993 140519053121344 templates.py:718] hit 6ted_Q did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.043036 140519053121344 templates.py:718] hit 7opc_S did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.043089 140519053121344 templates.py:718] hit 7opd_S did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.043132 140519053121344 templates.py:718] hit 7unc_Q did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.043174 140519053121344 templates.py:718] hit 7und_Q did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.043215 140519053121344 templates.py:718] hit 4nuz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04311251314405889.
+I0420 07:39:31.043256 140519053121344 templates.py:718] hit 4nuy_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04311251314405889.
+I0420 07:39:31.043296 140519053121344 templates.py:718] hit 8a49_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04311251314405889.
+I0420 07:39:31.043337 140519053121344 templates.py:718] hit 8a49_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04311251314405889.
+I0420 07:39:31.043379 140519053121344 templates.py:718] hit 8a64_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04311251314405889.
+I0420 07:39:31.154270 140519053121344 templates.py:718] hit 5glh_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:39:31.355673 140519053121344 templates.py:718] hit 6igk_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:39:31.479660 140519053121344 templates.py:718] hit 6igl_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07570977917981073.
+I0420 07:39:31.479784 140519053121344 templates.py:718] hit 7ye1_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05152471083070452.
+I0420 07:39:31.479835 140519053121344 templates.py:718] hit 7ye2_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05152471083070452.
+I0420 07:39:31.479882 140519053121344 templates.py:718] hit 6en3_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04311251314405889.
+I0420 07:39:31.479926 140519053121344 templates.py:718] hit 8eki_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0010515247108307045.
+I0420 07:39:31.479969 140519053121344 templates.py:718] hit 8eki_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:39:31.480020 140519053121344 templates.py:718] hit 6a2j_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:31.480065 140519053121344 templates.py:718] hit 6ied_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07886435331230283.
+I0420 07:39:32.944343 140519053121344 templates.py:718] hit 8th8_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06309148264984227.
+I0420 07:39:32.944490 140519053121344 templates.py:718] hit 8tid_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06309148264984227.
+I0420 07:39:32.944543 140519053121344 templates.py:718] hit 6f6p_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09884332281808622.
+I0420 07:39:32.944588 140519053121344 templates.py:718] hit 6f6p_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09884332281808622.
+I0420 07:39:32.944633 140519053121344 templates.py:718] hit 6f6p_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09884332281808622.
+I0420 07:42:41.754760 140519053121344 templates.py:718] hit 6f6p_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.09779179810725552.
+I0420 07:42:41.755236 140519053121344 templates.py:718] hit 4a41_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:42:41.755309 140519053121344 templates.py:718] hit 4a44_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:42:41.755362 140519053121344 templates.py:718] hit 4a45_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:42:41.755407 140519053121344 templates.py:718] hit 4aax_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08412197686645637.
+I0420 07:42:41.755450 140519053121344 templates.py:718] hit 7uh4_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03259726603575184.
+I0420 07:42:41.755492 140519053121344 templates.py:718] hit 7uh4_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03259726603575184.
+I0420 07:42:41.755534 140519053121344 templates.py:718] hit 7uh4_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03259726603575184.
+I0420 07:42:41.755577 140519053121344 templates.py:718] hit 7uh4_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03259726603575184.
+I0420 07:42:41.755621 140519053121344 templates.py:718] hit 7e57_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:42:41.755663 140519053121344 templates.py:718] hit 7e57_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07045215562565721.
+I0420 07:42:41.755704 140519053121344 templates.py:718] hit 2j3v_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.755746 140519053121344 templates.py:718] hit 2j3z_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.755788 140519053121344 templates.py:718] hit 2j3z_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.755829 140519053121344 templates.py:718] hit 2j3z_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.755870 140519053121344 templates.py:718] hit 2j3z_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.755912 140519053121344 templates.py:718] hit 2j3z_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.755954 140519053121344 templates.py:718] hit 2j3z_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:41.756006 140519053121344 templates.py:718] hit 2lw9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03680336487907466.
+I0420 07:42:41.756050 140519053121344 templates.py:718] hit 2lw9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03680336487907466.
+I0420 07:42:41.756092 140519053121344 templates.py:718] hit 7sfz_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756133 140519053121344 templates.py:718] hit 7sfz_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756174 140519053121344 templates.py:718] hit 7sfz_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756222 140519053121344 templates.py:718] hit 7sfz_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756264 140519053121344 templates.py:718] hit 7sfz_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756305 140519053121344 templates.py:718] hit 7sfz_F did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756345 140519053121344 templates.py:718] hit 7sfz_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756386 140519053121344 templates.py:718] hit 7sfz_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08517350157728706.
+I0420 07:42:41.756428 140519053121344 templates.py:718] hit 1t3j_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.06203995793901157.
+I0420 07:42:41.756469 140519053121344 templates.py:718] hit 6cfz_E did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:42:43.591757 140519053121344 templates.py:718] hit 2o4c_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:42:43.591910 140519053121344 templates.py:718] hit 2o4c_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.029442691903259727.
+I0420 07:42:43.591967 140519053121344 templates.py:718] hit 1fxk_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:42:43.592021 140519053121344 templates.py:718] hit 2lot_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:42:43.592068 140519053121344 templates.py:718] hit 2lou_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:42:43.592114 140519053121344 templates.py:718] hit 2lov_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:42:43.592157 140519053121344 templates.py:718] hit 2low_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.023133543638275498.
+I0420 07:42:43.592200 140519053121344 templates.py:718] hit 8s9p_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.05573080967402734.
+I0420 07:42:43.592246 140519053121344 templates.py:718] hit 4oju_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:42:43.592289 140519053121344 templates.py:718] hit 4oju_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:42:43.592332 140519053121344 templates.py:718] hit 4oju_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:42:43.592374 140519053121344 templates.py:718] hit 4oju_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.03995793901156677.
+I0420 07:42:43.592415 140519053121344 templates.py:718] hit 1fxk_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07150368033648791.
+I0420 07:42:43.592457 140519053121344 templates.py:718] hit 7tm3_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.0452155625657203.
+I0420 07:42:43.592498 140519053121344 templates.py:718] hit 2j3x_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07676130389064142.
+I0420 07:42:43.736722 140519053121344 templates.py:718] hit 8gt9_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:42:43.736823 140519053121344 templates.py:718] hit 8gt9_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:42:43.736886 140519053121344 templates.py:718] hit 8gt9_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:42:43.736932 140519053121344 templates.py:718] hit 8gt9_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:42:43.736977 140519053121344 templates.py:718] hit 8gu7_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:42:43.737026 140519053121344 templates.py:718] hit 8gu7_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.07360672975814932.
+I0420 07:42:43.737074 140519053121344 templates.py:718] hit 1jsw_A did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04416403785488959.
+I0420 07:42:43.737118 140519053121344 templates.py:718] hit 1jsw_B did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04416403785488959.
+I0420 07:42:43.737160 140519053121344 templates.py:718] hit 1jsw_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04416403785488959.
+I0420 07:42:43.737202 140519053121344 templates.py:718] hit 1jsw_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.04416403785488959.
+I0420 07:42:43.737244 140519053121344 templates.py:718] hit 4orh_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737286 140519053121344 templates.py:718] hit 4orh_G did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737327 140519053121344 templates.py:718] hit 4orh_H did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737368 140519053121344 templates.py:718] hit 4orh_K did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737410 140519053121344 templates.py:718] hit 4orh_L did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737454 140519053121344 templates.py:718] hit 4whv_C did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737495 140519053121344 templates.py:718] hit 4whv_D did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737537 140519053121344 templates.py:718] hit 4whv_I did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:42:43.737578 140519053121344 templates.py:718] hit 4whv_J did not pass prefilter: Proportion of residues aligned to query too small. Align ratio: 0.08096740273396424.
+I0420 07:43:38.512532 140519053121344 pipeline.py:239] Uniref90 MSA size: 10000 sequences.
+I0420 07:43:38.512978 140519053121344 pipeline.py:240] BFD MSA size: 7075 sequences.
+I0420 07:43:38.513038 140519053121344 pipeline.py:241] MGnify MSA size: 501 sequences.
+I0420 07:43:38.513073 140519053121344 pipeline.py:242] Final (deduplicated) MSA size: 14031 sequences.
+I0420 07:43:38.513653 140519053121344 pipeline.py:244] Total number of templates (NB: this can include bad templates and is later filtered to top 4): 1.
+W0420 07:43:38.555240 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/A/uniprot_hits.sto
+I0420 07:47:43.423207 140519053121344 pipeline_multimer.py:210] Running monomer pipeline on chain B: 2019
+W0420 07:47:43.425019 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/B/uniref90_hits.sto
+W0420 07:47:43.426499 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/B/mgnify_hits.sto
+I0420 07:47:43.427503 140519053121344 hmmbuild.py:121] Launching subprocess ['/projects/ilfgrid/apps/alphafold-2.3.1/AF_2.3.1_conda_env/bin/hmmbuild', '--hand', '--amino', '/tmp/tmp1lrgfu35/output.hmm', '/tmp/tmp1lrgfu35/query.msa']
+I0420 07:47:44.646382 140519053121344 utils.py:36] Started hmmbuild query
+I0420 07:47:44.661438 140519053121344 hmmbuild.py:128] hmmbuild stdout:
+# hmmbuild :: profile HMM construction from multiple sequence alignments
+# HMMER 3.3.2 (Nov 2020); http://hmmer.org/
+# Copyright (C) 2020 Howard Hughes Medical Institute.
+# Freely distributed under the BSD open source license.
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# input alignment file:             /tmp/tmp1lrgfu35/query.msa
+# output HMM file:                  /tmp/tmp1lrgfu35/output.hmm
+# input alignment is asserted as:   protein
+# model architecture construction:  hand-specified by RF annotation
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+# idx name                  nseq  alen  mlen eff_nseq re/pos description
+#---- -------------------- ----- ----- ----- -------- ------ -----------
+1     query                    1    14    14     1.00  1.737 
+
+# CPU time: 0.01u 0.00s 00:00:00.01 Elapsed: 00:00:00.01
+
+
+stderr:
+
+
+I0420 07:47:44.661563 140519053121344 utils.py:40] Finished hmmbuild query in 0.015 seconds
+I0420 07:47:44.662573 140519053121344 hmmsearch.py:103] Launching sub-process ['/projects/ilfgrid/apps/alphafold-2.3.1/AF_2.3.1_conda_env/bin/hmmsearch', '--noali', '--cpu', '8', '--F1', '0.1', '--F2', '0.1', '--F3', '0.1', '--incE', '100', '-E', '100', '--domE', '100', '--incdomE', '100', '-A', '/tmp/tmp8dymc_fm/output.sto', '/tmp/tmp8dymc_fm/query.hmm', '/projects/ilfgrid/data/alphafold-genetic-databases/pdb_seqres/pdb_seqres.txt']
+I0420 07:47:46.105011 140519053121344 utils.py:36] Started hmmsearch (pdb_seqres.txt) query
+I0420 07:47:47.822944 140519053121344 utils.py:40] Finished hmmsearch (pdb_seqres.txt) query in 1.718 seconds
+W0420 07:47:47.829626 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/B/bfd_uniref_hits.a3m
+I0420 07:47:47.831036 140519053121344 templates.py:940] Searching for template for: AGCKNFFWKTFTSC
+I0420 07:47:47.831149 140519053121344 templates.py:718] hit 2mi1_A did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:47.831221 140519053121344 templates.py:718] hit 7t10_P did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:47.831265 140519053121344 templates.py:718] hit 7wic_L did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:47.831307 140519053121344 templates.py:718] hit 7wj5_S did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:47.831350 140519053121344 templates.py:718] hit 7xat_F did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:47.831389 140519053121344 templates.py:718] hit 7xmr_L did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:47.831429 140519053121344 templates.py:718] hit 7xms_L did not pass prefilter: Template is an exact subsequence of query with large coverage. Length ratio: 1.0.
+I0420 07:47:49.962496 140519053121344 templates.py:718] hit 4mjz_A did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.962668 140519053121344 templates.py:718] hit 4mjz_B did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.962714 140519053121344 templates.py:718] hit 2nll_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.962755 140519053121344 templates.py:718] hit 6zeg_A did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.962792 140519053121344 templates.py:718] hit 6zeg_B did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.962833 140519053121344 templates.py:718] hit 5zqv_A did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.962871 140519053121344 templates.py:718] hit 5zqv_B did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.962906 140519053121344 templates.py:718] hit 5zqv_C did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.962941 140519053121344 templates.py:718] hit 5zqv_D did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.962976 140519053121344 templates.py:718] hit 6zei_A did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963025 140519053121344 templates.py:718] hit 6zei_B did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963061 140519053121344 templates.py:718] hit 6dcx_A did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963096 140519053121344 templates.py:718] hit 6dcx_B did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963132 140519053121344 templates.py:718] hit 6zej_A did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963166 140519053121344 templates.py:718] hit 6zej_D did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963201 140519053121344 templates.py:718] hit 6zej_F did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963234 140519053121344 templates.py:718] hit 6zej_I did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963269 140519053121344 templates.py:718] hit 6zej_L did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963304 140519053121344 templates.py:718] hit 6zej_O did not pass prefilter: Template too short. Length: 8.
+I0420 07:47:49.963339 140519053121344 templates.py:718] hit 2env_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963373 140519053121344 templates.py:718] hit 6l6l_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963407 140519053121344 templates.py:718] hit 6l6l_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963441 140519053121344 templates.py:718] hit 6l6q_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963475 140519053121344 templates.py:718] hit 6l6q_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963509 140519053121344 templates.py:718] hit 1by4_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963544 140519053121344 templates.py:718] hit 1by4_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963577 140519053121344 templates.py:718] hit 1by4_C did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963611 140519053121344 templates.py:718] hit 1by4_D did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963645 140519053121344 templates.py:718] hit 1k2h_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963680 140519053121344 templates.py:718] hit 1k2h_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963714 140519053121344 templates.py:718] hit 1zfs_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963748 140519053121344 templates.py:718] hit 1zfs_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963782 140519053121344 templates.py:718] hit 2k2f_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963816 140519053121344 templates.py:718] hit 2k2f_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963857 140519053121344 templates.py:718] hit 2kbm_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963893 140519053121344 templates.py:718] hit 2kbm_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.963928 140519053121344 templates.py:718] hit 1r0n_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:49.963962 140519053121344 templates.py:718] hit 2lhl_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964006 140519053121344 templates.py:718] hit 2lhl_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964043 140519053121344 templates.py:718] hit 2m3w_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964078 140519053121344 templates.py:718] hit 2m3w_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964112 140519053121344 templates.py:718] hit 2llt_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964148 140519053121344 templates.py:718] hit 2llt_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964184 140519053121344 templates.py:718] hit 2llu_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964219 140519053121344 templates.py:718] hit 2llu_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964253 140519053121344 templates.py:718] hit 2lp2_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964287 140519053121344 templates.py:718] hit 2lp2_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964321 140519053121344 templates.py:718] hit 2lp3_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964355 140519053121344 templates.py:718] hit 2lp3_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964389 140519053121344 templates.py:718] hit 6vc1_A did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.964424 140519053121344 templates.py:718] hit 6vc1_B did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.964458 140519053121344 templates.py:718] hit 6vc1_C did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.964493 140519053121344 templates.py:718] hit 7y24_C did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.964529 140519053121344 templates.py:718] hit 7y26_C did not pass prefilter: Template too short. Length: 6.
+I0420 07:47:49.964564 140519053121344 templates.py:718] hit 2jpt_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964597 140519053121344 templates.py:718] hit 2jpt_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964632 140519053121344 templates.py:718] hit 2l0p_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964666 140519053121344 templates.py:718] hit 2l0p_B did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964699 140519053121344 templates.py:718] hit 5k89_A did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964733 140519053121344 templates.py:718] hit 5k89_C did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964767 140519053121344 templates.py:718] hit 5k89_H did not pass prefilter: Template too short. Length: 7.
+I0420 07:47:49.964801 140519053121344 templates.py:718] hit 1dsz_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146132 140519053121344 templates.py:718] hit 4umm_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146282 140519053121344 templates.py:718] hit 4cn2_C did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146326 140519053121344 templates.py:718] hit 4cn2_D did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146365 140519053121344 templates.py:718] hit 4cn3_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146400 140519053121344 templates.py:718] hit 4cn3_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146436 140519053121344 templates.py:718] hit 4cn3_C did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146490 140519053121344 templates.py:718] hit 4cn5_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146525 140519053121344 templates.py:718] hit 4cn5_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146560 140519053121344 templates.py:718] hit 4cn7_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146594 140519053121344 templates.py:718] hit 4cn7_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146628 140519053121344 templates.py:718] hit 4cn7_E did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146661 140519053121344 templates.py:718] hit 4cn7_F did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146694 140519053121344 templates.py:718] hit 6fbq_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146728 140519053121344 templates.py:718] hit 6fbq_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146761 140519053121344 templates.py:718] hit 6fbr_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146795 140519053121344 templates.py:718] hit 6fbr_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146828 140519053121344 templates.py:718] hit 6xwg_C did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146862 140519053121344 templates.py:718] hit 6xwh_C did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146896 140519053121344 templates.py:718] hit 6xwh_D did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146929 140519053121344 templates.py:718] hit 4cn3_D did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.146962 140519053121344 templates.py:718] hit 1r0o_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:47:52.147006 140519053121344 templates.py:718] hit 1rxr_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:18.587646 140519053121344 templates.py:718] hit 8hbm_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:18.587811 140519053121344 templates.py:718] hit 8hbm_E did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:18.587856 140519053121344 templates.py:718] hit 2nll_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.972772 140519053121344 templates.py:718] hit 3m9e_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973035 140519053121344 templates.py:718] hit 3m9e_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973081 140519053121344 templates.py:718] hit 3m9e_E did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973122 140519053121344 templates.py:718] hit 3m9e_F did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973159 140519053121344 templates.py:718] hit 2han_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973194 140519053121344 templates.py:718] hit 6lc1_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973229 140519053121344 templates.py:718] hit 6lc1_D did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973263 140519053121344 templates.py:718] hit 6lc1_G did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973299 140519053121344 templates.py:718] hit 6lc1_J did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973335 140519053121344 templates.py:718] hit 1cit_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973371 140519053121344 templates.py:718] hit 1ynw_B did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.973406 140519053121344 templates.py:718] hit 2gx1_A did not pass prefilter: Template too short. Length: 9.
+I0420 07:48:24.974122 140519053121344 pipeline.py:239] Uniref90 MSA size: 1 sequences.
+I0420 07:48:24.974178 140519053121344 pipeline.py:240] BFD MSA size: 108 sequences.
+I0420 07:48:24.974208 140519053121344 pipeline.py:241] MGnify MSA size: 1 sequences.
+I0420 07:48:24.974242 140519053121344 pipeline.py:242] Final (deduplicated) MSA size: 108 sequences.
+I0420 07:48:24.974279 140519053121344 pipeline.py:244] Total number of templates (NB: this can include bad templates and is later filtered to top 4): 1.
+W0420 07:48:24.975694 140519053121344 pipeline.py:100] Reading MSA from file /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2/lgr4_human___2019/msas/B/uniprot_hits.sto

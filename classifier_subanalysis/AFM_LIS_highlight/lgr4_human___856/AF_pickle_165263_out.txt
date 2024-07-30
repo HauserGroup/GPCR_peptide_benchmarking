@@ -1,0 +1,29 @@
+>> Job with SLURM array id 579 started at: Sat Apr 20 05:35:43 CEST 2024
+   On Machine:     ilfgridgpun01fl.unicph.domain
+   In directory:   /projects/ilfgrid/people/kcd635/git/Interspecies_GPCR_pipeline
+
+>> GPU is 
+
+
+>> ****** Checking input for lgr4_human___856 ******
+
+>> Sequences in /projects/ilfgrid/data/Interspecies_GPCR_pipeline/2_fasta/pairs/lgr4_human___856.fasta: 
+>> lgr4_human 856
+>> Letters for subfolders: 
+>> A B C D E F G H I J K L M N O P Q R S T
+>> Precomputed MSAs for lgr4_human: 
+>> -----> All required MSAs were found for lgr4_human.
+>> Precomputed MSAs for 856: 
+>> -----> All required MSAs were found for 856.
+
+>> ***** Creating pickle file for lgr4_human___856 *****
+>> Active python: /projects/ilfgrid/apps/alphafold-2.3.1/AF_2.3.1_conda_env/bin/python
+>> Launching AF2 with the following command: 
+>> /projects/ilfgrid/apps/alphafold-2.3.1/run_alphafold.sh -d /projects/ilfgrid/data/alphafold-genetic-databases -o /projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/6_interactions_with_decoys_pair_p2 -f "/projects/ilfgrid/data/Interspecies_GPCR_pipeline/2_fasta/pairs/lgr4_human___856.fasta" -t 1950-01-01 -g true -r false -e false -n 4 -m multimer -c full_dbs -p true -l 1 -b false 
+>>
+>>> No MSA depth cropping
+>>> No residue cropping
+
+>> Job finished at: Sat Apr 20 06:28:04 CEST 2024
+
+>> Runtime: 3141 s
