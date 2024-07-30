@@ -4,6 +4,7 @@
 # custom
 /conda_env/
 *.DS_Store
+/classifier_benchmark/plots/rankings/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -177,6 +178,12 @@ classifier_subanalysis/models/AF2 (no templates)
 classifier_subanalysis/models/AF2 LIS (no templates)
 classifier_subanalysis/models/AF2
 classifier_subanalysis/models/AF2 LIS
+classifier_benchmark/models/AF2/models
+classifier_subanalysis/models/AF2 (no templates)
+classifier_subanalysis/models/AF2 LIS (no templates)
+classifier_subanalysis/models/RF-AA (no templates)
+classifier_subanalysis/models_temp/AF2
+classifier_subanalysis/models_temp/AF2 LIS
 classifier_benchmark/models/AF2/models
 classifier_subanalysis/models/AF2 (no templates)
 classifier_subanalysis/models/AF2 LIS (no templates)
