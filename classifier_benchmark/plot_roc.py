@@ -10,8 +10,10 @@ from parse_predictions import get_models, get_ground_truth_df, get_ground_truth_
 
 # add "."
 import sys
+
 sys.path.append(".")
 from colors import COLOR
+
 
 def create_roc(invalid_identifiers, plot_p, log_p):
     """
@@ -33,7 +35,7 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     number_negatives = len(ground_truth[ground_truth["Acts as agonist"] == 0])
 
     # empty fig
-    fig, ax = plt.subplots(1, 1, figsize=(6, 6))
+    fig, ax = plt.subplots(1, 1, figsize=(5, 5))
 
     # iterate over models
     for model_name, prediction_df in models:
@@ -71,9 +73,9 @@ def create_roc(invalid_identifiers, plot_p, log_p):
             label=label,
             color=color,
             ax=ax,
-            marker="o",
-            markersize=4,
-            markers=True,
+            # marker="o",
+            # markersize=4,
+            # markers=True,
             errorbar=None,
         )
 
@@ -92,11 +94,10 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     # sort legend on AUC
     handles, labels = ax.get_legend_handles_labels()
     get_auc = lambda x: float(x.split("AUC = ")[1].split(" ")[0])
-    labels, handles = zip(*sorted(zip(labels, handles), 
-                                  key=lambda x: get_auc(x[0]),
-                                  reverse=True))
+    labels, handles = zip(
+        *sorted(zip(labels, handles), key=lambda x: get_auc(x[0]), reverse=True)
+    )
     ax.legend(handles, labels, loc="lower right")
-
 
     # adjust legend font dict
     for text in ax.get_legend().get_texts():
@@ -112,7 +113,7 @@ def main():
     # create roc for all
     create_roc(
         invalid_identifiers=[],
-        plot_p=script_dir / "plots/roc_all.png",
+        plot_p=script_dir / "plots/roc_all.svg",
         log_p=script_dir / "plots/roc_all.log",
     )
 

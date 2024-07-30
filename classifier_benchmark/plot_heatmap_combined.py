@@ -151,6 +151,7 @@ def plot_heatmap(metric_df, out_p, title):
         # square cells
         square=True,
     )
+    # make it to the xlabels have enough space
     # place xtick labels on the top
     ax.xaxis.set_ticks_position("top")
     # rotate ytick labels
@@ -159,14 +160,14 @@ def plot_heatmap(metric_df, out_p, title):
     # rotate xtick
     plt.xlabel("")
     plt.xticks(rotation=15, fontsize=8)
-    plt.yticks(rotation=0, fontsize=10)
+    plt.yticks(rotation=0, fontsize=8)
     ax.set_title(title)
     plt.savefig(out_p, dpi=300)
 
 
 def get_metrics_for_all():
     script_dir = pathlib.Path(__file__).parent
-    plot_p = script_dir / "plots/heatmap.png"
+    plot_p = script_dir / "plots/heatmap.svg"
     log_p = script_dir / "plots/heatmap.log"
     model_dir = script_dir / "models"
     pos_or_neg_col = "y_pred"
@@ -202,6 +203,40 @@ def get_metrics_for_similar():
 
     # filter ground truth, for decoy type in ["Dissimilar", "Principal Agonist"]
     filtered = ground_truth["Decoy Type"].isin(["Similar", "Principal Agonist"])
+    ground_truth = ground_truth[filtered]
+    valid_identifiers = ground_truth["identifier"].values
+
+    # filter models
+    models = [
+        (name, df[df["identifier"].isin(valid_identifiers)]) for name, df in models
+    ]
+
+    # apply first pick to predictions
+    models = [
+        (name, apply_first_pick_to_predictions(df, pos_or_neg_col))
+        for name, df in models
+    ]
+
+    # get metrics
+    metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
+    return metric_df
+
+
+def get_metrics_for_dissimilar():
+    script_dir = pathlib.Path(__file__).parent
+    plot_p = script_dir / "plots/heatmap_dissimilar.png"
+    log_p = script_dir / "plots/heatmap_dissimilar.log"
+    model_dir = script_dir / "models"
+    pos_or_neg_col = "y_pred"
+
+    # get data
+    ground_truth = get_ground_truth_df()
+    models = get_models(model_dir)
+    # drop "AF3" model
+    models = [model for model in models if model[0] != "AF3"]
+
+    # filter ground truth, for decoy type in ["Dissimilar", "Principal Agonist"]
+    filtered = ground_truth["Decoy Type"].isin(["Dissimilar", "Principal Agonist"])
     ground_truth = ground_truth[filtered]
     valid_identifiers = ground_truth["identifier"].values
 
@@ -296,6 +331,12 @@ def plot_combined():
     metric_similar = metric_similar.apply(pd.to_numeric, errors="coerce")
     metric_similar = metric_similar.loc[rows, cols]
 
+    metric_dissimilar = get_metrics_for_dissimilar()
+    for col in cols:
+        metric_dissimilar.loc["AF3", col] = np.nan
+    metric_dissimilar = metric_dissimilar.apply(pd.to_numeric, errors="coerce")
+    metric_dissimilar = metric_dissimilar.loc[rows, cols]
+
     metric_all = get_metrics_for_all()
     for col in cols:
         metric_all.loc["AF3", col] = np.nan
@@ -305,8 +346,8 @@ def plot_combined():
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/combined_heatmap.svg"
 
-    # create a figure with 3 subplots
-    fig, axs = plt.subplots(1, 4, figsize=(15, 5))
+    # create a figure with 5 subplots (4 modes, 1 cbar)
+    fig, axs = plt.subplots(1, 5, figsize=(15, 5))
     cmap = CMAP_GOOD_BAD
     vmin = 0
     vmax = 1.0
@@ -355,11 +396,33 @@ def plot_combined():
     plt.xlabel("")
     plt.ylabel("")
     show_nans_as_x(metric_similar)
-    plt.title("5on1")
+    plt.title("similar")
 
-    # plot all in slot 3
-    metric_all = metric_all.astype(float)
+    # plot 5 on 1 in slot 3
+    metric_dissimilar = metric_dissimilar.astype(float)
     plt.sca(axs[2])
+    sns.heatmap(
+        metric_dissimilar,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        # hide cbar
+        fmt=fmt,
+        annot=annot,
+        mask=metric_dissimilar.isna(),
+        linewidths=linewidths,
+        cbar=False,
+        square=square,
+    )
+    # disable the row labels (already in slot 1)
+    plt.yticks([])
+    plt.xlabel("")
+    plt.ylabel("")
+    plt.title("dissimilar")
+
+    # plot all in slot 4
+    metric_all = metric_all.astype(float)
+    plt.sca(axs[3])
     sns.heatmap(
         metric_all,
         cmap=cmap,
@@ -390,7 +453,7 @@ def plot_combined():
         ax.set_aspect("equal")  # auto instead of equal
 
     # in the 4th plot, place the cbar (no heatmap)
-    plt.sca(axs[3])
+    plt.sca(axs[4])
     plt.axis("off")
     sns.heatmap(
         [[]],
@@ -420,11 +483,11 @@ def plot_combined():
             + ax.get_xticklabels()
             + ax.get_yticklabels()
         ):
-            item.set_fontsize(11)
+            item.set_fontsize(9)
 
         # increase font size of annotations
         for text in ax.texts:
-            text.set_fontsize(14)
+            text.set_fontsize(11)
 
     plt.savefig(plot_p, dpi=300)
 

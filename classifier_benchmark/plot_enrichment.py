@@ -12,22 +12,33 @@ from parse_predictions import (
     get_gpcr_class,
     get_models,
 )
-from plot_heatmap_combined import apply_first_pick_to_predictions
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 
+
 # add "."
 sys.path.append(".")
 from colors import COLOR
+from plot_heatmap_combined import apply_first_pick_to_predictions
 
 
 def run_main():
     """ """
+    # set models to keep to [] to use all models
+    MODELS_TO_KEEP = [
+        "AF2 (no templates)",
+        "AF2 LIS (no templates)",
+        "RF-AA (no templates)",
+        "AF2 (no templates)+pocket",
+        "AF2 LIS (no templates)+pocket",
+        "RF-AA (no templates)+pocket",
+    ]
+    print("models to keep", MODELS_TO_KEEP)
     script_dir = pathlib.Path(__file__).parent
     models = get_models(script_dir / "models")
     unique_models = list([m[0] for m in models])
-    plot_p = script_dir / "plots/enrichment.png"
+    plot_p = script_dir / "plots/enrichment.svg"
     ground_truth = get_ground_truth_df()
 
     gpcrs = ground_truth["identifier"].apply(lambda x: x.split("___")[0]).unique()
@@ -38,6 +49,9 @@ def run_main():
 
     # remove AF3 from models
     models = [m for m in models if m[0] != "AF3"]
+    # remove models not in MODELS_TO_KEEP
+    if len(MODELS_TO_KEEP) > 0:
+        models = [m for m in models if m[0] in MODELS_TO_KEEP]
 
     for model_name, pred_df in models:
         pred_df["gpcr"] = pred_df["identifier"].apply(lambda x: x.split("___")[0])
@@ -83,7 +97,7 @@ def run_main():
     # plot
     sns.set_context("talk")
     sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots(figsize=(5, 5))
     colors = [COLOR.get(m, "black") for m in plot_df["model"].unique()]
     sns.lineplot(
         x="keep_top_n",
@@ -98,7 +112,7 @@ def run_main():
         linewidth=2,
     )
     # plot dashed line at random performance
-    random_performance_yvals = 1/11 * plot_df["keep_top_n"]
+    random_performance_yvals = 1 / 11 * plot_df["keep_top_n"]
     ax.plot(
         plot_df["keep_top_n"],
         random_performance_yvals,
@@ -118,14 +132,35 @@ def run_main():
     plt.grid(axis="x", linestyle="--", alpha=0.5)
     # reduce legend font size
     # zoom
-    plt.title("True agonist retention, (11:1, pos:neg)")
+    plt.title("True agonist retention")
     plt.ylabel("Percent agonists retained")
     plt.xlabel("Number of samples chosen")
-    plt.legend(title="Model", loc="lower right",
-               fontsize=12, title_fontsize=12)
+    plt.legend(title="Model", loc="lower right", fontsize=8, title_fontsize=8)
     plt.xticks(range(1, 12))
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
     plt.tight_layout()
+
+    # sort legend on number of samples chosen
+    handles, labels = ax.get_legend_handles_labels()
+    plot_df = plot_df[plot_df["keep_top_n"] == 1]
+    labels = plot_df.sort_values("pa_retained")["model"].unique()
+    # reverse
+    labels = labels[::-1]
+    colors = [COLOR.get(m, "black") for m in labels]
+    handles = [plt.Line2D([0], [0], color=c, lw=2) for c in colors]
+    ax = plt.gca()
+    ax.legend(
+        handles,
+        labels,
+        title="Model",
+        loc="lower right",
+        fontsize=8,
+        title_fontsize=8,
+    )
+    # fontsize of x and y labels
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+
     plt.savefig(plot_p, dpi=300)
     print(f"Saved plot to {plot_p}")
 

@@ -31,7 +31,13 @@ def plot_position_of_positives(plot_df, model_name, fig, ax, subplot_index):
     plot_df = plot_df[plot_df["y_true"] == 1]
 
     # set the plot to be active with the index
-    plt.sca(ax[subplot_index])
+    try:
+        plt.sca(ax[subplot_index])
+    except TypeError as E:
+        print(E)
+        print("ax is not iterable")
+        plt.sca(ax)
+
     plt.grid(axis="y")
     plt.yticks(np.arange(0, 101, 10))
 
@@ -62,30 +68,34 @@ def plot_position_of_positives(plot_df, model_name, fig, ax, subplot_index):
 
 def run_main():
     script_dir = pathlib.Path(__file__).parent
-    plot_p = script_dir / "plots/ranking_of_PA.png"
+    # plot_p = script_dir / "plots/ranking_of_PA.svg"
     log_p = script_dir / "plots/ranking_of_PA.log"
     logging.basicConfig(filename=log_p, level=logging.INFO, filemode="w")
 
     # get the ground truth
     ground_truth = get_ground_truth_df()
     models = get_models(script_dir / "models")
-    fig, ax = plt.subplots(
-        len(models),
-        1,
-        figsize=(
-            8,
-            6 * len(models),
-        ),
-    )
+    # fig, ax = plt.subplots(
+    #     len(models),
+    #     1,
+    #     figsize=(
+    #         8,
+    #         6 * len(models),
+    #     ),
+    # )
 
     # iterate over the predictions, show where each model places the principal agonist
     plot_index = -1
     for model_name, prediction_df in models:
         logging.info(f"Processing model {model_name}")
+
+        fig, ax = plt.subplots(1, 1, figsize=(8, 6))
+
         # group by GPCR
         prediction_df["gpcr"] = prediction_df["identifier"].apply(get_gpcr)
         # drop NaNs in case there is no InteractionProbability
         prediction_df = prediction_df.dropna(subset=["InteractionProbability"])
+
         # count how often each GPCR appears
         gpcr_counts = prediction_df["gpcr"].value_counts()
         prediction_df["gpcr_count"] = prediction_df["gpcr"].apply(gpcr_counts.get)
@@ -126,10 +136,17 @@ def run_main():
             }
         )
         # set active plot to the plot_index
-        plot_index += 1
-        plot_position_of_positives(plot_df, model_name, fig, ax, plot_index)
-
-    plt.savefig(plot_p, dpi=300)
+        plot_position_of_positives(
+            plot_df,
+            model_name,
+            fig,
+            ax,
+            subplot_index=0,
+        )
+        plot_p = script_dir / f"plots/position_of_PA_{model_name}.svg"
+        print(f"Saving plot to {plot_p}")
+        plt.savefig(plot_p, dpi=300)
+        plt.close()
 
 
 if __name__ == "__main__":

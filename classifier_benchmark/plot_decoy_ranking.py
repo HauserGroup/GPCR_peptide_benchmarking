@@ -91,14 +91,17 @@ def plot_decoy_rankings(
     decoy_rank_col="Decoy Rank",
     ymin=0.0,
     ymax=1.0,
+    add_names=False,
+    title="",
+    show_legend=True,
 ):
-    predictions_df = predictions_df.sort_values(by=[score_col], ascending=False)
     gpcrs = predictions_df[gpcr_col].unique()
     ground_truth = get_ground_truth_df()
     xvals = list()
     yvals = list()
     colors = list()
     labels = list()
+    peptide_names = list()
 
     for gpcr in gpcrs:
         gpcr_df = predictions_df[predictions_df[gpcr_col] == gpcr]
@@ -114,26 +117,68 @@ def plot_decoy_rankings(
             color = decoy_colors.get(rank_label)
             xvals.append(gpcr)
             yvals.append(iptm)
+            peptide_names.append(row["identifier"])
             colors.append(color)
             labels.append(rank_label)
 
     # plot scatter
-    plt.figure(figsize=(14, 5))
+    plt.figure(figsize=(1, 5))
     plt.grid(axis="x", linestyle="--", linewidth=1, alpha=0.3)
-    sns.scatterplot(x=xvals, y=yvals, hue=labels, color=colors, palette=decoy_colors)
-    plt.xlabel("GPCR")
-    plt.ylabel("Interaction Probability")
-    plt.ylim(ymin, ymax)
-    plt.xlabel("GPCR")
-    plt.xticks(
-        rotation=90,
-        # fontsize
-        fontsize=8,
+
+    sns.scatterplot(
+        x=xvals,
+        y=yvals,
+        hue=labels,
+        color=colors,
+        palette=decoy_colors,
+        # add labels to each point
+        # order of the legend
+        hue_order=decoy_colors.keys(),
+        s=100,
+        alpha=0.8,
     )
-    # place legend outside of plot
-    plt.legend(loc="upper left", bbox_to_anchor=(1, 1), title="Decoy Type")
+    if show_legend:
+        plt.legend(
+            title="Decoy Type",
+            title_fontsize=6,
+            fontsize=4,
+            loc="upper left",
+            bbox_to_anchor=(1.1, 1),
+            ncol=1,
+            # set size of legend
+            markerscale=0.5,
+        )
+    else:
+        # disable legend
+        plt.legend().remove()
+
+    # after scatter, add text at each y value
+    if add_names:
+        for iptm, name in zip(yvals, peptide_names):
+            name = name.rpartition("___")[2]
+            name = f"  {name}"
+            plt.text(
+                0.0,  # x starts at 0
+                iptm,
+                name,
+                fontsize=4,
+                ha="left",
+                va="bottom",
+                rotation=0,
+            )
+
+    # plt.xlabel("GPCR")
+    # plt.ylabel("Interaction Probability")
+    plt.ylim(ymin, ymax)
+    # plt.xlabel("GPCR")
+    plt.xticks(
+        rotation=0,
+        # fontsize
+        fontsize=12,
+    )
 
     # save
+    plt.title(title, fontsize=10)
     plt.savefig(output_path, bbox_inches="tight", dpi=300)
     plt.close()
 
@@ -213,7 +258,11 @@ def run_main():
         identifier_to_type[row["identifier"]] = row["Decoy Type"]
 
     for model_name, pred_df in models:
-        plot_p = script_dir / f"plots/{model_name}_decoy_ranking.png"
+        # if model_name not in ["AF2 (no templates)", "AF2 LIS (no templates)"]:
+        #     continue
+        print(f"Processing {model_name}")
+
+        plot_p = script_dir / f"plots/{model_name}_decoy_ranking.svg"
         pred_df["Decoy Rank"] = pred_df["identifier"].apply(
             lambda x: identifier_to_rank.get(x, None)
         )
@@ -222,12 +271,35 @@ def run_main():
         )
         pred_df["Target ID"] = pred_df["identifier"].apply(lambda x: x.split("_")[0])
 
+        ranking_dir = script_dir / "plots/rankings"
+        ranking_dir.mkdir(exist_ok=True)
+        # plot all targets
         plot_decoy_rankings(
             pred_df,
             "InteractionProbability",
-            plot_p,
+            ranking_dir / f"{model_name}_decoy_ranking.svg",
             get_color_mapping(),
         )
+
+        # plot individual targets
+        for unique_target in pred_df["Target ID"].unique():
+            # skip if exists
+            unique_target_plot_p = (
+                ranking_dir / f"{model_name}_{unique_target}_decoy_ranking.svg"
+            )
+            # if unique_target_plot_p.exists():
+            #     continue
+
+            print(f"Plotting {unique_target}")
+            plot_decoy_rankings(
+                pred_df[pred_df["Target ID"] == unique_target],
+                "InteractionProbability",
+                unique_target_plot_p,
+                get_color_mapping(),
+                add_names=False,
+                title="",
+                show_legend=True,
+            )
 
 
 if __name__ == "__main__":

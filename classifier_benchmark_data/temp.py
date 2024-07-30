@@ -8,8 +8,9 @@ import numpy as np
 
 def main():
     script_dir = pathlib.Path(__file__).resolve().parent
-    out_p = script_dir / "output/6_interactions_with_decoys.csv"
-    df = pd.read_csv(out_p)
+    in_p = script_dir / "output/6_interactions_with_decoys.csv"
+    out_p = script_dir / "output/6_interactions_with_decoys_fixed.csv"
+    df = pd.read_csv(in_p)
 
     # add identifier column
     df["Identifier"] = df["Target ID"] + "___" + df["Decoy ID"].astype(str)
@@ -35,7 +36,9 @@ def main():
         # add rank to dissimilar decoys, from 0 to 4
         dissimilar_rows = target_rows[target_rows["Decoy Type"] == "Dissimilar"]
         dissimilar_rows.sort_values(
-            by=["Target Similarity to Original Target"], inplace=True, ascending=True
+            by=["Target Similarity to Original Target"],
+            inplace=True,
+            ascending=False,
         )
         for rank, row in enumerate(dissimilar_rows.iterrows()):
             df.loc[row[0], "Decoy Rank"] = rank
