@@ -51,8 +51,6 @@ if __name__ == "__main__":
     for folder in [neuralplexer_chain, af2, af2_no_template, af3, RFAA, RFAA_no_templates, ESMFold]:
         files = list_files_in_directory_and_subdirectories(folder)
         files = [f for f in files if f.endswith('.pdb')]
-
-        # Filter the files to only include the PDBs
         missing_pdbs = get_missing_pdbs(pdb_list, files)
         if len(missing_pdbs) > 0:
             missing_pdb_dict[folder.split("/")[-1]] = missing_pdbs
@@ -60,3 +58,13 @@ if __name__ == "__main__":
     # Save to json  
     with open(f'{file_dir}/missing_pdbs_per_model.json', 'w') as f:
         json.dump(missing_pdb_dict, f, indent=4)
+
+yaml_paths = []
+for pdb_code in missing_pdb_dict["RFAA_chain_no_templates"]:
+    config_path = f"/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/RFAA_configs/chain_no_templates/{pdb_code}_no_templates.yaml"
+    yaml_paths.append(config_path)
+
+# Save the yaml paths to a file
+with open(f'{repo_dir}/structure_benchmark/RFAA_configs/missing_rfaa_chain_no_templates.txt', 'w') as f:
+    for path in yaml_paths:
+        f.write(f"{path}\n")
