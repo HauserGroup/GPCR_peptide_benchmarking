@@ -5,6 +5,8 @@
 /conda_env/
 *.DS_Store
 /classifier_benchmark/plots/rankings/*
+# ignore the models in subanalysis, as there are all links
+/classifier_subanalysis/models/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -196,3 +198,4 @@ classifier_subanalysis/models/RF-AA (no templates)
 classifier_subanalysis/models_temp/AF2
 classifier_subanalysis/models_temp/AF2 LIS
 classifier_benchmark/models/AF2/models
+.DS_Store
