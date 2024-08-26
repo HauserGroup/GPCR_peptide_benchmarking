@@ -60,6 +60,7 @@ COLOR = {
     # models (subanalysis)
     "AF2 LIS (no templates)": "#9E005D",
     "AF2 LIS": "#9E005D",
+    "AF2 APPRAISE": "#98ECF9",
     # classes
     "Class A (Rhodopsin)": "#115185",
     "Class B1 (Secretin)": "#478347",

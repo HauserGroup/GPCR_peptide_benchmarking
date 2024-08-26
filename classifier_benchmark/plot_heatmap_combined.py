@@ -253,13 +253,14 @@ def get_metrics_for_dissimilar():
 
     # get metrics
     metric_df = get_metrics(models, ground_truth, pos_or_neg_col)
+    # print metric sample stats
+    logging.info(metric_df.describe())
+
     return metric_df
 
 
 def get_metrics_for_1on1():
     script_dir = pathlib.Path(__file__).parent
-    plot_p = script_dir / "plots/heatmap_most_dissimilar.png"
-    log_p = script_dir / "plots/heatmap_most_dissimilar.log"
     model_dir = script_dir / "models"
     pos_or_neg_col = "y_pred"
 
@@ -267,16 +268,12 @@ def get_metrics_for_1on1():
     ground_truth = get_ground_truth_df()
     models = get_models(model_dir)
 
-    # filter ground truth, for decoy type in ["Dissimilar0", "Principal Agonist"]
-    valid_identifiers = list()
-    for i, row in ground_truth.iterrows():
-        if row["Decoy Type"] == "Principal Agonist":
-            valid_identifiers.append(row["identifier"])
-        else:
-            if row["Decoy Type"] == "Dissimilar" and int(row["Decoy Rank"]) < 1:
-                valid_identifiers.append(row["identifier"])
-    ground_truth = ground_truth[ground_truth["identifier"].isin(valid_identifiers)]
-
+    # get 1on1 identifiers from af3 predictions
+    for m in models:
+        if m[0] == "AF3":
+            af3 = m[1]
+            valid_identifiers = af3["identifier"].values
+            break
     # filter models
     models = [
         (name, df[df["identifier"].isin(valid_identifiers)]) for name, df in models
@@ -308,6 +305,53 @@ def show_nans_as_x(df):
             )
 
 
+def add_random(df, negatives_per_positive):
+    """
+    Add a row for a random model to the DataFrame with a given positive to negative ratio.
+
+    Parameters:
+    df: pandas DataFrame containing the original data.
+    positive_to_negative_ratio: float. The ratio of positive to negative samples for the random model.
+
+    Returns:
+    Updated DataFrame with the random model added.
+    """
+    # Assume 100 gpcrs
+    n_pos = 100
+    n_neg = n_pos * negatives_per_positive
+    total = n_pos + n_neg
+    pos_neg_ratio = n_pos / total
+    # only 1 positive may be chosen per gpcr
+    tp = n_pos * pos_neg_ratio
+    fn = n_pos - tp
+    tn = n_neg * (1 - pos_neg_ratio)
+    fp = n_neg - tn
+    # stats
+    precision = tp / (tp + fp)
+    recall = tp / (tp + fn)
+    f1 = 2 * (precision * recall) / (precision + recall)
+    accuracy = (tp + tn) / total
+
+    # Add to df
+    pred_df = pd.DataFrame(
+        {
+            "Model": ["random"],
+            "TP": [tp],
+            "FP": [fp],
+            "TN": [tn],
+            "FN": [fn],
+            "Precision": [precision],
+            "Recall": [recall],
+            "F1": [f1],
+            "Accuracy": [accuracy],
+        }
+    )
+    pred_df = pred_df.set_index("Model")
+    pred_df = pred_df.astype(float)
+    df = pd.concat([df, pred_df])
+    return df
+
+
 def plot_combined():
     """Create a heatmap.
     - summarizes the 3 evaluation modes
@@ -318,6 +362,7 @@ def plot_combined():
     plt.style.use("seaborn-v0_8-whitegrid")
 
     metric_1on1 = get_metrics_for_1on1()
+    metric_1on1 = add_random(metric_1on1, 1)
     metric_1on1 = metric_1on1.sort_values(by="F1", ascending=False)
     models = metric_1on1.index
     rows = models
@@ -329,15 +374,18 @@ def plot_combined():
     for col in cols:
         metric_similar.loc["AF3", col] = np.nan
     metric_similar = metric_similar.apply(pd.to_numeric, errors="coerce")
+    metric_similar = add_random(metric_similar, 5)
     metric_similar = metric_similar.loc[rows, cols]
 
     metric_dissimilar = get_metrics_for_dissimilar()
     for col in cols:
         metric_dissimilar.loc["AF3", col] = np.nan
     metric_dissimilar = metric_dissimilar.apply(pd.to_numeric, errors="coerce")
+    metric_dissimilar = add_random(metric_dissimilar, 5)
     metric_dissimilar = metric_dissimilar.loc[rows, cols]
 
     metric_all = get_metrics_for_all()
+    metric_all = add_random(metric_all, 10)
     for col in cols:
         metric_all.loc["AF3", col] = np.nan
     metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
@@ -374,7 +422,7 @@ def plot_combined():
     )
     plt.xlabel("")
     plt.ylabel("")
-    plt.title("1on1")
+    plt.title("agonist vs dissimilar4 (1:1)")
 
     # plot 5on1 in slot 2
     metric_similar = metric_similar.astype(float)
@@ -396,7 +444,7 @@ def plot_combined():
     plt.xlabel("")
     plt.ylabel("")
     show_nans_as_x(metric_similar)
-    plt.title("similar")
+    plt.title("similar (5:1)")
 
     # plot 5 on 1 in slot 3
     metric_dissimilar = metric_dissimilar.astype(float)
@@ -414,11 +462,12 @@ def plot_combined():
         cbar=False,
         square=square,
     )
+    show_nans_as_x(metric_dissimilar)
     # disable the row labels (already in slot 1)
     plt.yticks([])
     plt.xlabel("")
     plt.ylabel("")
-    plt.title("dissimilar")
+    plt.title("dissimilar (5:1)")
 
     # plot all in slot 4
     metric_all = metric_all.astype(float)
@@ -442,7 +491,7 @@ def plot_combined():
     plt.xlabel("")
     plt.ylabel("")
     show_nans_as_x(metric_all)
-    plt.title("10on1")
+    plt.title("all (10:1)")
 
     # place xtick labels on the top for all
     for ax in axs:
@@ -489,7 +538,12 @@ def plot_combined():
         for text in ax.texts:
             text.set_fontsize(11)
 
-    plt.savefig(plot_p, dpi=300)
+    plt.savefig(
+        plot_p,
+        dpi=300,
+        # transp bgr
+        transparent=True,
+    )
 
 
 if __name__ == "__main__":

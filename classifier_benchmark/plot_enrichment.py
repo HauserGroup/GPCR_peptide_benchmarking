@@ -27,12 +27,15 @@ def run_main():
     """ """
     # set models to keep to [] to use all models
     MODELS_TO_KEEP = [
-        "AF2 (no templates)",
-        "AF2 LIS (no templates)",
-        "RF-AA (no templates)",
-        "AF2 (no templates)+pocket",
-        "AF2 LIS (no templates)+pocket",
-        "RF-AA (no templates)+pocket",
+        # "AF2 (no templates)",
+        # "AF2 LIS (no templates)",
+        "AF2",
+        "AF2 LIS",
+        "AF2 APPRAISE",
+        # "RF-AA (no templates)",
+        # "AF2 (no templates)+pocket",
+        # "AF2 LIS (no templates)+pocket",
+        # "RF-AA (no templates)+pocket",
     ]
     print("models to keep", MODELS_TO_KEEP)
     script_dir = pathlib.Path(__file__).parent

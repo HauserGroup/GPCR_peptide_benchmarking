@@ -215,11 +215,15 @@ def run_main():
 
     # {'Decoy ID' -> <int>}
     targets_per_ligand = agonist_df.groupby("Ligand ID")["Target ID"].nunique()
+    # rename "Target ID" to number of targets
+    targets_per_ligand = targets_per_ligand.rename("number of targets")
+
     target_to_principal_agonist = get_gpcr_to_principal_agonist(classifier_df)
     plot_p = plot_dir / f"{plot_base}_ranking_vs_peptide_selectivity.png"
     plot_ranking_with_peptide_selectivity(
         targets_per_ligand, ranking_df, plot_p, target_to_principal_agonist
     )
+    targets_per_ligand.to_csv(plot_dir / f"{plot_base}_targets_per_ligand.csv")
 
 
 if __name__ == "__main__":
