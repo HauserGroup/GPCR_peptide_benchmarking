@@ -171,6 +171,7 @@ cython_debug/
 *.ss2
 *.gff3
 output.json
+alphafold_training_seqres.txt
 prediction_results.txt
 processed_entries.fasta
 pdb_seqres.txt
