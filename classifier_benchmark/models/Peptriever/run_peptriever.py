@@ -212,6 +212,8 @@ def main():
         )
     # lower distance = better binder
     out_df["InteractionProbability"] = out_df["Distance"].apply(lambda x: 1 / (1 + x))
+    # rename col header "Identifier" to "identifier"
+    out_df = out_df.rename(columns={"Identifier": "identifier"})
 
     # save
     out_df.to_csv(script_dir / "predictions.csv", index=False)
