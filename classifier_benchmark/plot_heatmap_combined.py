@@ -360,13 +360,20 @@ def plot_combined():
     # print(plt.style.available)
     # ['Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid', 'bmh', 'classic', 'dark_background', 'fast', 'fivethirtyeight', 'ggplot', 'grayscale', 'seaborn-v0_8', 'seaborn-v0_8-bright', 'seaborn-v0_8-colorblind', 'seaborn-v0_8-dark', 'seaborn-v0_8-dark-palette', 'seaborn-v0_8-darkgrid', 'seaborn-v0_8-deep', 'seaborn-v0_8-muted', 'seaborn-v0_8-notebook', 'seaborn-v0_8-paper', 'seaborn-v0_8-pastel', 'seaborn-v0_8-poster', 'seaborn-v0_8-talk', 'seaborn-v0_8-ticks', 'seaborn-v0_8-white', 'seaborn-v0_8-whitegrid', 'tableau-colorblind10']
     plt.style.use("seaborn-v0_8-whitegrid")
+    metric_all = get_metrics_for_all()
+    metric_all = add_random(metric_all, 10)
+    metric_all = metric_all.sort_values(by="F1", ascending=False)
+    models = metric_all.index
+    rows = models
+    cols = ["Accuracy", "Precision", "Recall", "F1"]
+    for col in cols:
+        metric_all.loc["AF3", col] = np.nan
+    metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
+    metric_all = metric_all.loc[rows, cols]
 
     metric_1on1 = get_metrics_for_1on1()
     metric_1on1 = add_random(metric_1on1, 1)
     metric_1on1 = metric_1on1.sort_values(by="F1", ascending=False)
-    models = metric_1on1.index
-    rows = models
-    cols = ["Accuracy", "Precision", "Recall", "F1"]
     metric_1on1 = metric_1on1.loc[rows, cols]
     metric_1on1 = metric_1on1.apply(pd.to_numeric, errors="coerce")
 
@@ -383,13 +390,6 @@ def plot_combined():
     metric_dissimilar = metric_dissimilar.apply(pd.to_numeric, errors="coerce")
     metric_dissimilar = add_random(metric_dissimilar, 5)
     metric_dissimilar = metric_dissimilar.loc[rows, cols]
-
-    metric_all = get_metrics_for_all()
-    metric_all = add_random(metric_all, 10)
-    for col in cols:
-        metric_all.loc["AF3", col] = np.nan
-    metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
-    metric_all = metric_all.loc[rows, cols]
 
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/combined_heatmap.svg"
