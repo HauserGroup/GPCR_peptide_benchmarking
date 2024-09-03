@@ -34,28 +34,28 @@ def get_sdf_from_neuralplexer_sm(np_dir):
 def run_main():
     # sm
     script_dir = pathlib.Path(__file__).parent
-    sm_dir = "~/Downloads/predictions_sm"
-    sm_dir = pathlib.Path(sm_dir).expanduser()
-    out_dir = script_dir / "neuralplexer_sm"
-    out_dir.mkdir(exist_ok=True)
-    for subdir in sm_dir.iterdir():
-        if not subdir.is_dir():
-            continue
-        pdb_id = subdir.name
-        out_p = out_dir / f"{pdb_id}.pdb"
-        if out_p.exists():
-            print(f"Skipping {pdb_id} as {out_p} already exists.")
-            continue
-        pdb_file = get_pdb_from_neuralplexer_sm(subdir)
-        pdb_file = pdb_file.resolve()
-        print(f"Copying {pdb_file} to {out_p}")
-        pathlib.Path(pdb_file).replace(out_p)
-        # also include the .sdf file
-        sdf_file = get_sdf_from_neuralplexer_sm(subdir)
-        sdf_file = sdf_file.resolve()
-        out_sdf = out_dir / f"{pdb_id}.sdf"
-        print(f"Copying {sdf_file} to {out_sdf}")
-        pathlib.Path(sdf_file).replace(out_sdf)
+    # sm_dir = "~/Downloads/predictions_sm"
+    # sm_dir = pathlib.Path(sm_dir).expanduser()
+    # out_dir = script_dir / "neuralplexer_sm"
+    # out_dir.mkdir(exist_ok=True)
+    # for subdir in sm_dir.iterdir():
+    #     if not subdir.is_dir():
+    #         continue
+    #     pdb_id = subdir.name
+    #     out_p = out_dir / f"{pdb_id}.pdb"
+    #     if out_p.exists():
+    #         print(f"Skipping {pdb_id} as {out_p} already exists.")
+    #         continue
+    #     pdb_file = get_pdb_from_neuralplexer_sm(subdir)
+    #     pdb_file = pdb_file.resolve()
+    #     print(f"Copying {pdb_file} to {out_p}")
+    #     pathlib.Path(pdb_file).replace(out_p)
+    #     # also include the .sdf file
+    #     sdf_file = get_sdf_from_neuralplexer_sm(subdir)
+    #     sdf_file = sdf_file.resolve()
+    #     out_sdf = out_dir / f"{pdb_id}.sdf"
+    #     print(f"Copying {sdf_file} to {out_sdf}")
+    #     pathlib.Path(sdf_file).replace(out_sdf)
 
     # chain
     chain_dir = "~/Downloads/predictions_chain"
