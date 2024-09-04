@@ -356,6 +356,10 @@ def run_dockq_scoring(input_df, model_paths, output_file):
 
     # Drop chain_map column
     results_df = results_df.drop(columns=["chain_map"])
+
+    # Reorder columns
+    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2"]
+    results_df = results_df[columns]
     results_df.to_csv(output_file, index=False)
 
     return results_df
@@ -386,7 +390,7 @@ if __name__ == "__main__":
     }
 
     # Output file path
-    output_file = f"{repo_dir}/structure_benchmark_data/DockQ_results_new.csv"
+    output_file = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 
     # Run DockQ scoring
     run_dockq_scoring(input_df, model_paths, output_file)
