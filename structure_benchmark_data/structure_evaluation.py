@@ -309,6 +309,8 @@ def run_dockq_scoring(input_df, model_paths, output_file):
 
             if "RFAA_no_templates" in model_name:
                 model_path = model_paths[model_name] + "/" + row["pdb"] + "_no_templates.pdb"
+            elif "Chai-1_no_MSAs" in model_name:
+                model_path = model_paths[model_name] + "/" + row["pdb"] + "_no_MSAs.pdb"
             else:
                 model_path = model_paths[model_name] + "/" + row["pdb"] + ".pdb"
 
@@ -386,7 +388,10 @@ if __name__ == "__main__":
         "AF2" : f"{repo_dir}/structure_benchmark/AF2",
         "AF2_no_templates" : f"{repo_dir}/structure_benchmark/AF2_no_templates",
         "ESMFold" : f"{repo_dir}/structure_benchmark/ESMFold",
-        "AF3": f"{repo_dir}/structure_benchmark/AF3"
+        "AF3": f"{repo_dir}/structure_benchmark/AF3",
+        "Chai-1": f"{repo_dir}/structure_benchmark/Chai-1",
+        "Chai-1_no_MSAs": f"{repo_dir}/structure_benchmark/Chai-1_no_MSAs"
+
     }
 
     # Output file path
