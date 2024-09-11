@@ -88,6 +88,49 @@ def remove_missing_residues(pdb_path, missing_atom_dict, output_pdb_path = ""):
 
     return output_pdb_path
 
+
+def rename_pdb_chains(pdb_file, output_file=""):
+    """
+    Rename chains in a PDB file to sequential letters starting from 'A'.
+
+    :param pdb_file: str or Path, path to the PDB file.
+    :param output_file: str or Path, path to the output file.
+    """
+    if output_file == "":
+        output_file = pdb_file.replace(".pdb", "_renamed_chains.pdb")
+
+    with open(pdb_file, 'r') as f:
+        lines = f.readlines()
+
+    # Define the chain identifiers we will use (A, B, C, ...)
+    chain_ids = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    chain_map = {}  # Map original chain ID to new chain ID
+    current_chain_index = 0
+
+    with open(output_file, 'w') as out:
+        for line in lines:
+            # Only modify ATOM and HETATM lines that contain chain information
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                chain_id = line[21]  # Chain identifier is in column 22 (index 21)
+
+                # Map the original chain ID to a new one if not already mapped
+                if chain_id not in chain_map:
+                    if current_chain_index < len(chain_ids):
+                        chain_map[chain_id] = chain_ids[current_chain_index]
+                        current_chain_index += 1
+                    else:
+                        raise ValueError("Too many chains. Only 26 unique chain identifiers (A-Z) are supported.")
+
+                # Replace the chain identifier in the line (column 22)
+                new_chain_id = chain_map[chain_id]
+                line = line[:21] + new_chain_id + line[22:]
+
+            # Write the (modified) line to the output file
+            out.write(line)
+
+    return output_file
+
+
 def download_pdb(pdb_code, file_format='pdb', output_path='.', overwrite=False):
     """
     Download a PDB file using a PDB code.
@@ -241,6 +284,38 @@ def renumber_residues(pdb_file, output_file = ""):
 
     return output_file
 
+
+def renumber_residues(pdb_file, output_file=""):
+    """
+    Increment all atom numbers and residue numbers in a PDB file by one.
+
+    :param pdb_file: str or Path, path to the PDB file.
+    :param output_file: str or Path, path to the output file.
+    """
+    if output_file == "":
+        output_file = pdb_file.replace(".pdb", "_renumbered.pdb")
+
+    with open(pdb_file, 'r') as f:
+        lines = f.readlines()
+
+    with open(output_file, 'w') as out:
+        for line in lines:
+            # Only modify ATOM and HETATM lines that contain atom and residue information
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                # Atom number is in columns 7-11 (index 6-11), strip leading/trailing spaces
+                atom_number = int(line[6:11].strip()) + 1
+                # Residue number is in columns 23-26 (index 22-26)
+                residue_number = int(line[22:26].strip()) + 1
+
+                # Replace atom number in the line (columns 7-11)
+                line = f"{line[:6]}{atom_number:>5}{line[11:22]}{residue_number:>4}{line[26:]}"
+
+            # Write the modified line to the output file
+            out.write(line)
+
+    return output_file
+
+
 def parse_dataset(input_path, output_file, pdb_dir, overwrite = False):
     """
     Helper function to parse the dataset and download the PDB files.
@@ -324,6 +399,10 @@ def run_dockq_scoring(input_df, model_paths, output_file):
 
             # Renumber residues in the predicted model so that each chain starts from 1
             renumbered_path = renumber_residues(model_path)
+
+            # Rename chains for Chai models
+            if "Chai" in model_name:
+                renumbered_path = rename_pdb_chains(renumbered_path)
 
             # Remove missing residues from the predicted model
             missing_residues = {
