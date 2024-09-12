@@ -19,6 +19,7 @@ from colors import *
 if __name__ == "__main__":
     # Get the file directory
     file_dir = os.path.dirname(__file__)
+    plot_dir = f"{file_dir}/plots"
 
     # Path to the DockQ results file
     dockq_path = f"{file_dir}/DockQ_results.csv"
@@ -36,9 +37,6 @@ if __name__ == "__main__":
     af2_lis_df = pd.read_csv(f"{file_dir}/AF_LIS_results/AF2_LIS_results.csv", sep = ",")
     af3_lis_df = pd.read_csv(f"{file_dir}/AF_LIS_results/AF3_LIS_results.csv", sep = ",")
 
-    print(af2_lis_df.columns)
-    print(af3_lis_df.columns)
-
     af3_lis_df["pdb"] = [i.split("_")[-1].upper() for i in af3_lis_df["folder_name"]]
     af2_lis_df["pdb"] = [i.split("/")[-1].upper() for i in af2_lis_df["saved folder"]]
 
@@ -46,11 +44,13 @@ if __name__ == "__main__":
     af2_lis_df["MODEL_NAME"] = af2_lis_df["saved folder"].apply(lambda x: "AF2_no_templates" if "no_templates" in x else "AF2")
     af3_lis_df["MODEL_NAME"] = "AF3"
 
-
     # Make column names uppercase
     af2_lis_df.columns = af2_lis_df.columns.str.upper()
     af3_lis_df.columns = af3_lis_df.columns.str.upper()
 
+    # Keep only model number 0 for AF3
+    af3_lis_df = af3_lis_df[af3_lis_df["MODEL_NUMBER"] == "0"]
+    
     # Drop PROTEIN_1 and PROTEIN_2 columns
     af2_lis_df.drop(columns = ["PROTEIN_1", "PROTEIN_2", "PKL", "RECYCLE", "MODEL", "CONFIDENCE", "PTM", "PLDDT", "SAVED FOLDER"], inplace = True)
     af3_lis_df.drop(columns = ["PROTEIN_1", "PROTEIN_2", "MODEL_NUMBER", "CLIS", "CLIA", "CLIR", "LIR", "FOLDER_NAME"], inplace = True)
@@ -93,5 +93,5 @@ if __name__ == "__main__":
     plt.legend(handles, legend_labels, title="MODEL_NAME", loc="upper right", fontsize=12)
 
     # Show the improved scatter plot
-    plt.show()
+    plt.savefig(f"{plot_dir}/dockq_vs_lis.png", dpi = 300)
             
