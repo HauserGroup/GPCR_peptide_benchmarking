@@ -10,8 +10,6 @@ import re
 import json
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-from matplotlib.patches import Rectangle
 from collections import Counter
 from scipy.spatial.distance import pdist, squareform
 
@@ -39,7 +37,7 @@ def reverse_and_scale_matrix(matrix: np.ndarray, pae_cutoff: float = 12.0) -> np
     
     return scaled_matrix
 
-def process_alphafold_output(base_directory: str, Protein_1 = "A", Protein_2 = "B", pae_cutoff: float = 12.0, lis_threshold: float = 0.203, lia_threshold: float = 3432.0) -> pd.DataFrame:
+def process_alphafold_output(base_directory: str, model_numbers: int = 5, recycling_numbers: int = 5, Protein_1 = "A", Protein_2 = "B", pae_cutoff: float = 12.0, lis_threshold: float = 0.203, lia_threshold: float = 3432.0) -> pd.DataFrame:
     """
     Process AlphaFold output files and return a DataFrame containing relevant information.
     
@@ -58,151 +56,125 @@ def process_alphafold_output(base_directory: str, Protein_1 = "A", Protein_2 = "
     # Initialize a list to hold the Pandas Series objects
     series_list = []
 
-    model_name = os.path.basename(base_directory)
-    pdb_name = f"{model_name}.pdb"
-    pdb_file_path = os.path.join(base_directory, pdb_name)
-    parser = PDB.PDBParser(QUIET=True)
-    structure = parser.get_structure("example", pdb_file_path)
-    
-    chain_lengths = {}
-    
-    for model in structure:
-        for chain in model:
-            chain_id = chain.get_id()
-            chain_length = sum(1 for _ in chain.get_residues())  # Calculate chain length
-            chain_lengths[chain_id] = chain_length
-            # Accessing the length of chain 'A' from the dictionary
-            protein_a_len = chain_lengths.get('B', 0)  # Default to 0 if 'A' chain is not found
+    # Loop over each model number and recycling number
+    for model_num in range(1, int(model_numbers)+1):
+        for recycling_num in range(0, recycling_numbers):
+            pdb_name = f"unrelaxed_model_{model_num}_multimer_v3_pred_{recycling_num}.pdb"
+            pdb_file_path = os.path.join(base_directory, pdb_name)
 
-    pkl_name = f"{model_name}_results.pkl"
-    pkl_file_path = os.path.join(base_directory, pkl_name)
-    d = pickle.load(open(pkl_file_path,'rb'))
-    # added on 2024/03/28 #
-    pae = d.get('predicted_aligned_error')
-    # added on 2024/03/28 #
-    plddt = np.mean(d.get('plddt'))
-    confidence = d.get('ranking_confidence')
+            parser = PDB.PDBParser(QUIET=True)
+            structure = parser.get_structure("example", pdb_file_path)
+            
+            chain_lengths = {}
+            
+            for model in structure:
+                for chain in model:
+                    chain_id = chain.get_id()
+                    chain_length = sum(1 for _ in chain.get_residues())  # Calculate chain length
+                    chain_lengths[chain_id] = chain_length
+                    # Accessing the length of chain 'A' from the dictionary
+                    protein_a_len = chain_lengths.get('B', 0)  # Default to 0 if 'A' chain is not found
 
-    # Get missing data from the pkl file
-    pae_name = f"{model_name}_results.json"
-    pae_file_path = os.path.join(base_directory, pae_name)
-    with open(pae_file_path, 'r') as file:
-        json_data = json.load(file)
-    iptm = json_data.get('iptm')
-    ptm = json_data.get('ptm')
+            pkl_name = f"result_model_{model_num}_multimer_v3_pred_{recycling_num}.pkl"
+            pkl_file_path = os.path.join(base_directory, pkl_name)
+            d = pickle.load(open(pkl_file_path,'rb'))
+            iptm = d.get('iptm')
+            ptm = d.get('ptm')
+            # added on 2024/03/28 #
+            pae = d.get('predicted_aligned_error')
+            # added on 2024/03/28 #
+            plddt = np.mean(d.get('plddt'))
+            confidence = d.get('ranking_confidence')
+            pae_cutoff = 12
 
-    thresholded_pae = np.where(pae < pae_cutoff, 1, 0)
+            thresholded_pae = np.where(pae < pae_cutoff, 1, 0)
 
-    # Calculate the interaction amino acid numbers
-    local_interaction_protein_a = np.count_nonzero(thresholded_pae[:protein_a_len, :protein_a_len])
-    local_interaction_protein_b = np.count_nonzero(thresholded_pae[protein_a_len:, protein_a_len:])
-    local_interaction_interface_1 = np.count_nonzero(thresholded_pae[:protein_a_len, protein_a_len:])
-    local_interaction_interface_2 = np.count_nonzero(thresholded_pae[protein_a_len:, :protein_a_len])
-    local_interaction_interface_avg = (
-        local_interaction_interface_1 + local_interaction_interface_2
-    )
-    
-    # Calculate average thresholded_pae for each region
-    average_thresholded_protein_a = thresholded_pae[:protein_a_len,:protein_a_len].mean() * 100
-    average_thresholded_protein_b = thresholded_pae[protein_a_len:,protein_a_len:].mean() * 100
-    average_thresholded_interaction1 = thresholded_pae[:protein_a_len,protein_a_len:].mean() * 100
-    average_thresholded_interaction2 = thresholded_pae[protein_a_len:,:protein_a_len].mean() * 100
-    average_thresholded_interaction_total = (average_thresholded_interaction1 + average_thresholded_interaction2) / 2
-    
-    pae_protein_a = np.mean( pae[:protein_a_len,:protein_a_len] )
-    pae_protein_b = np.mean( pae[protein_a_len:,protein_a_len:] )
-    pae_interaction1 = np.mean(pae[:protein_a_len,protein_a_len:])
-    pae_interaction2 = np.mean(pae[protein_a_len:,:protein_a_len])
-    pae_interaction_total = ( pae_interaction1 + pae_interaction2 ) / 2
+            # Calculate the interaction amino acid numbers
+            local_interaction_protein_a = np.count_nonzero(thresholded_pae[:protein_a_len, :protein_a_len])
+            local_interaction_protein_b = np.count_nonzero(thresholded_pae[protein_a_len:, protein_a_len:])
+            local_interaction_interface_1 = np.count_nonzero(thresholded_pae[:protein_a_len, protein_a_len:])
+            local_interaction_interface_2 = np.count_nonzero(thresholded_pae[protein_a_len:, :protein_a_len])
+            local_interaction_interface_avg = (
+                local_interaction_interface_1 + local_interaction_interface_2
+            )
 
-    # For pae_A
-    selected_values_protein_a = pae[:protein_a_len, :protein_a_len][thresholded_pae[:protein_a_len, :protein_a_len] == 1]
-    average_selected_protein_a = np.mean(selected_values_protein_a)
+            
+            # Calculate average thresholded_pae for each region
+            average_thresholded_protein_a = thresholded_pae[:protein_a_len,:protein_a_len].mean() * 100
+            average_thresholded_protein_b = thresholded_pae[protein_a_len:,protein_a_len:].mean() * 100
+            average_thresholded_interaction1 = thresholded_pae[:protein_a_len,protein_a_len:].mean() * 100
+            average_thresholded_interaction2 = thresholded_pae[protein_a_len:,:protein_a_len].mean() * 100
+            average_thresholded_interaction_total = (average_thresholded_interaction1 + average_thresholded_interaction2) / 2
+            
 
-    # For pae_B
-    selected_values_protein_b = pae[protein_a_len:, protein_a_len:][thresholded_pae[protein_a_len:, protein_a_len:] == 1]
-    average_selected_protein_b = np.mean(selected_values_protein_b)
+            pae_protein_a = np.mean( pae[:protein_a_len,:protein_a_len] )
+            pae_protein_b = np.mean( pae[protein_a_len:,protein_a_len:] )
+            pae_interaction1 = np.mean(pae[:protein_a_len,protein_a_len:])
+            pae_interaction2 = np.mean(pae[protein_a_len:,:protein_a_len])
+            pae_interaction_total = ( pae_interaction1 + pae_interaction2 ) / 2
 
-    # For pae_interaction1
-    selected_values_interaction1 = pae[:protein_a_len, protein_a_len:][thresholded_pae[:protein_a_len, protein_a_len:] == 1]
-    average_selected_interaction1 = np.mean(selected_values_interaction1) if selected_values_interaction1.size > 0 else pae_cutoff
+            # For pae_A
+            selected_values_protein_a = pae[:protein_a_len, :protein_a_len][thresholded_pae[:protein_a_len, :protein_a_len] == 1]
+            average_selected_protein_a = np.mean(selected_values_protein_a)
 
-    # For pae_interaction2
-    selected_values_interaction2 = pae[protein_a_len:, :protein_a_len][thresholded_pae[protein_a_len:, :protein_a_len] == 1]
-    average_selected_interaction2 = np.mean(selected_values_interaction2) if selected_values_interaction2.size > 0 else pae_cutoff
+            # For pae_B
+            selected_values_protein_b = pae[protein_a_len:, protein_a_len:][thresholded_pae[protein_a_len:, protein_a_len:] == 1]
+            average_selected_protein_b = np.mean(selected_values_protein_b)
 
-    # For pae_interaction_total
-    average_selected_interaction_total = (average_selected_interaction1 + average_selected_interaction2) / 2
+            # For pae_interaction1
+            selected_values_interaction1 = pae[:protein_a_len, protein_a_len:][thresholded_pae[:protein_a_len, protein_a_len:] == 1]
+            average_selected_interaction1 = np.mean(selected_values_interaction1) if selected_values_interaction1.size > 0 else pae_cutoff
 
-    # At this point, plddt_data and pae_data dictionaries will have the extracted data
-    print_results = False
-    if print_results:
-        # Print the total results
-        print("Total pae_A : {:.2f}".format(pae_protein_a))
-        print("Total pae_B : {:.2f}".format(pae_protein_b))
-        print("Total pae_i_1 : {:.2f}".format(pae_interaction1))
-        print("Total pae_i_2 : {:.2f}".format(pae_interaction2))
-        print("Total pae_i_avg : {:.2f}".format(pae_interaction_total))
+            # For pae_interaction2
+            selected_values_interaction2 = pae[protein_a_len:, :protein_a_len][thresholded_pae[protein_a_len:, :protein_a_len] == 1]
+            average_selected_interaction2 = np.mean(selected_values_interaction2) if selected_values_interaction2.size > 0 else pae_cutoff
 
-        # Print the local results
-        print("Local pae_A : {:.2f}".format(average_selected_protein_a))
-        print("Local pae_B : {:.2f}".format(average_selected_protein_b))
-        print("Local pae_i_1 : {:.2f}".format(average_selected_interaction1))
-        print("Local pae_i_2 : {:.2f}".format(average_selected_interaction2))
-        print("Local pae_i_avg : {:.2f}".format(average_selected_interaction_total))
+            # For pae_interaction_total
+            average_selected_interaction_total = (average_selected_interaction1 + average_selected_interaction2) / 2
 
-        # Print the >PAE-cutoff area
-        print("Local interaction area (Protein A):", local_interaction_protein_a)
-        print("Local interaction area (Protein B):", local_interaction_protein_b)
-        print("Local interaction area (Interaction 1):", local_interaction_interface_1)
-        print("Local interaction area (Interaction 2):", local_interaction_interface_2)
-        print("Total Interaction area (Interface):", local_interaction_interface_avg)
+            # Transform the pae matrix
+            scaled_pae = reverse_and_scale_matrix(pae, pae_cutoff)
 
-    # Transform the pae matrix
-    scaled_pae = reverse_and_scale_matrix(pae, pae_cutoff)
+            # For local interaction score for protein_a
+            selected_values_protein_a = scaled_pae[:protein_a_len, :protein_a_len][thresholded_pae[:protein_a_len, :protein_a_len] == 1]
+            average_selected_protein_a_score = np.mean(selected_values_protein_a)
 
-    # For local interaction score for protein_a
-    selected_values_protein_a = scaled_pae[:protein_a_len, :protein_a_len][thresholded_pae[:protein_a_len, :protein_a_len] == 1]
-    average_selected_protein_a_score = np.mean(selected_values_protein_a)
+            # For local interaction score for protein_b
+            selected_values_protein_b = scaled_pae[protein_a_len:, protein_a_len:][thresholded_pae[protein_a_len:, protein_a_len:] == 1]
+            average_selected_protein_b_score = np.mean(selected_values_protein_b)
 
-    # For local interaction score for protein_b
-    selected_values_protein_b = scaled_pae[protein_a_len:, protein_a_len:][thresholded_pae[protein_a_len:, protein_a_len:] == 1]
-    average_selected_protein_b_score = np.mean(selected_values_protein_b)
+            # For local interaction score1
+            selected_values_interaction1_score = scaled_pae[:protein_a_len, protein_a_len:][thresholded_pae[:protein_a_len, protein_a_len:] == 1]
+            average_selected_interaction1_score = np.mean(selected_values_interaction1_score) if selected_values_interaction1_score.size > 0 else 0
 
-    # For local interaction score1
-    selected_values_interaction1_score = scaled_pae[:protein_a_len, protein_a_len:][thresholded_pae[:protein_a_len, protein_a_len:] == 1]
-    average_selected_interaction1_score = np.mean(selected_values_interaction1_score) if selected_values_interaction1_score.size > 0 else 0
+            # For local interaction score2
+            selected_values_interaction2_score = scaled_pae[protein_a_len:, :protein_a_len][thresholded_pae[protein_a_len:, :protein_a_len] == 1]
+            average_selected_interaction2_score = np.mean(selected_values_interaction2_score) if selected_values_interaction2_score.size > 0 else 0
 
-    # For local interaction score2
-    selected_values_interaction2_score = scaled_pae[protein_a_len:, :protein_a_len][thresholded_pae[protein_a_len:, :protein_a_len] == 1]
-    average_selected_interaction2_score = np.mean(selected_values_interaction2_score) if selected_values_interaction2_score.size > 0 else 0
+            # For average local interaction score
+            average_selected_interaction_total_score = (average_selected_interaction1_score + average_selected_interaction2_score) / 2
 
-    # For average local interaction score
-    average_selected_interaction_total_score = (average_selected_interaction1_score + average_selected_interaction2_score) / 2
-
-    # Append the data to the series list
-    series_list.append(pd.Series({
-        'Protein_1': Protein_1,
-        'Protein_2': Protein_2,
-        'LIS': round(average_selected_interaction_total_score, 3), # Local Interaction Score (LIS)
-        'LIA': local_interaction_interface_avg, # Local Interaction Area (LIA)
-        'ipTM': round(float(iptm), 3),
-        'Confidence': round(float(iptm*0.8 + ptm*0.2),3),
-        'pTM': round(float(ptm), 3),
-        'pLDDT': round(plddt, 2),
-        'Model': model_name,
-        'saved folder': os.path.dirname(pdb_file_path),
-        'pdb': os.path.basename(pdb_file_path),
-        'pkl': os.path.basename(pkl_file_path),
-    }))
+            # Append the data to the series list
+            series_list.append(pd.Series({
+                'Protein_1': Protein_1,
+                'Protein_2': Protein_2,
+                'LIS': round(average_selected_interaction_total_score, 3), # Local Interaction Score (LIS)
+                'LIA': local_interaction_interface_avg, # Local Interaction Area (LIA)
+                'ipTM': round(float(iptm), 3),
+                'Confidence': round(float(iptm*0.8 + ptm*0.2),3),
+                'pTM': round(float(ptm), 3),
+                'pLDDT': round(plddt, 2),
+                'Model': model_num,
+                'Recycle': recycling_num,
+                'saved folder': os.path.dirname(pdb_file_path),
+                'pdb': os.path.basename(pdb_file_path),
+                'pkl': os.path.basename(pkl_file_path),
+            }))
 
     # Concatenate all Pandas Series objects into a single DataFrame
     result_df = pd.concat(series_list, axis=1).T
     
-    # Filter rows based on the specified LIS and LIA thresholds
-    result_df_filtered = result_df[(result_df['LIS'] >= lis_threshold) & (result_df['LIA'] >= lia_threshold)]
-    
-    return result_df, result_df_filtered
+    return result_df
 
 def transform_pae_matrix(pae_matrix, pae_cutoff):
     # Initialize the transformed matrix with zeros
@@ -471,14 +443,16 @@ if __name__ == "__main__":
     # Get paths to AF3 jsons
     af3 = f"{repo_dir}/structure_benchmark/AF3/full_results"
     af3_lis_paths = glob.glob(f"{af3}/*")
-    af3_jsons = []
+    af3_jsons = {}
     for path in af3_lis_paths:
+        model = path.split("/")[-1].split("_")[-1]
         json_files = glob.glob(f"{path}/*full_data*.json")
-        af3_jsons.extend(json_files)
+        af3_jsons[model] = json_files
     print(f"Number of AF3 models: {len(af3_jsons)}")
+    print(af3_jsons)
 
     # Create a subdirectory for LIS results
-    lis_results_dir = os.path.join(repo_dir, "/structure_benchmark_data/AF2_LIS_results")
+    lis_results_dir = f"{repo_dir}/structure_benchmark_data/AF_LIS_results"
     os.makedirs(lis_results_dir, exist_ok=True)
     print(f"LIS results directory: {lis_results_dir}")
 
@@ -486,7 +460,7 @@ if __name__ == "__main__":
     af2_results = []
     for model_dir in af2_subfolders:
         try: 
-            total_prediction, positive_prediction = process_alphafold_output(model_dir, "A", "B")
+            total_prediction =  process_alphafold_output(model_dir, model_numbers = 5, recycling_numbers = 5, Protein_1 = "A", Protein_2 = "B")
             af2_results.append(total_prediction)
         except Exception as e:
             print(f"Error processing {model_dir}: {e}", flush=True)
@@ -497,6 +471,10 @@ if __name__ == "__main__":
     print(f"AF2 LIS results saved to: {lis_results_dir}/AF2_LIS_results.csv")
 
     # Calculate LIS for AF3 models
-    total_prediction, positive_prediction = afm3_plot_average_to_df(af3_jsons, result_save = False)
-    total_prediction.to_csv(f"{lis_results_dir}/AF3_LIS_results.csv", index=False)
+    af3_results = []
+    for model in af3_jsons.keys():
+        total_prediction = afm3_plot_average_to_df(af3_jsons[model], result_save = False)
+        af3_results.append(total_prediction)
+    af3_results_df = pd.concat(af3_results)
+    af3_results_df.to_csv(f"{lis_results_dir}/AF3_LIS_results.csv", index=False)
     print(f"AF3 LIS results saved to: {lis_results_dir}/AF3_LIS_results.csv")
