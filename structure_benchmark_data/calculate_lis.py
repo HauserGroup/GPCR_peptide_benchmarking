@@ -52,6 +52,11 @@ def process_alphafold_output(base_directory: str, model_numbers: int = 5, recycl
     Returns:
     - pd.DataFrame: DataFrame containing processed data.
     """
+
+    # Read in ranking_debug.json
+    ranking_debug_path = os.path.join(base_directory, "ranking_debug.json")
+    ranking_debug = json.load(open(ranking_debug_path, 'rb'))
+    best_model = ranking_debug["order"][0]
     
     # Initialize a list to hold the Pandas Series objects
     series_list = []
@@ -61,6 +66,8 @@ def process_alphafold_output(base_directory: str, model_numbers: int = 5, recycl
         for recycling_num in range(0, recycling_numbers):
             pdb_name = f"unrelaxed_model_{model_num}_multimer_v3_pred_{recycling_num}.pdb"
             pdb_file_path = os.path.join(base_directory, pdb_name)
+            if best_model not in pdb_file_path:
+                continue
 
             parser = PDB.PDBParser(QUIET=True)
             structure = parser.get_structure("example", pdb_file_path)
