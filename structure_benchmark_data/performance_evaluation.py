@@ -34,6 +34,7 @@ data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA\n(no templates
 data["model"] = data["model"].replace("RFAA", "RF-AA")
 data["model"] = data["model"].replace("AF2", "AF2")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2\n(no templates)")
+data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1\n(no MSAs)")
 
 # Plotting
 fig, ax = plt.subplots(figsize=(8, 5))
@@ -47,6 +48,8 @@ colors = {
     'AF2': COLOR["AF2"], 
     'AF2\n(no templates)': COLOR["AF2 (no templates)"],
     'AF3': COLOR["AF3"],
+    'Chai-1': COLOR["Chai-1"],
+    'Chai-1\n(no MSAs)': COLOR["Chai-1 (no MSAs)"],
 } 
 data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
 data = data.reset_index(drop=True)
@@ -97,4 +100,4 @@ ax.tick_params(axis="y",direction="in")
 
 plt.tight_layout()
 print(plot_dir)
-plt.savefig(f"{plot_dir}/DockQ_scores.svg", dpi=600)
+plt.savefig(f"{plot_dir}/DockQ_scores.png", dpi=600)
