@@ -26,10 +26,9 @@ if __name__ == "__main__":
     dockq_path = f"{file_dir}/DockQ_results.csv"
     dockq_df = pd.read_csv(dockq_path)
 
-
     # Keep only AF2 and AF3 models
     dockq_df = dockq_df[dockq_df["model"].isin(["AF2", "AF3", "AF2_no_templates"])]
-    print(dockq_df.columns)
+
     # Rename model to model_name
     dockq_df.rename(columns = {"model": "MODEL_NAME"}, inplace = True)
     # Make column names uppercase
@@ -68,46 +67,47 @@ if __name__ == "__main__":
     # Save the merged dataframe
     lis_dockq_df.to_csv(f"{file_dir}/lis_dockq_merged.csv", index = False)
 
+    # Rename AF2_no_templates to AF2 (no templates)
+    lis_dockq_df["MODEL_NAME"] = lis_dockq_df["MODEL_NAME"].replace("AF2_no_templates", "AF2 (no templates)")
+
     # Prepare the data for plotting
     x = lis_dockq_df['LIS']
     y = lis_dockq_df['DOCKQ']
     model_names = lis_dockq_df['MODEL_NAME']
 
     # Create a larger figure for better visibility
-    plt.figure(figsize=(12, 8))
+    fig, ax = plt.subplots(figsize=(7, 5))
 
     # Custom color and marker mapping for each model
     custom_color_mapping = {
         'AF2': COLOR["AF2"],
-        'AF2_no_templates': COLOR["AF2 (no templates)"],
+        'AF2 (no templates)': COLOR["AF2 (no templates)"],
         'AF3': COLOR["AF3"]
     }
 
     custom_marker_mapping = {
         'AF2': 'o',  # Circle
-        'AF2_no_templates': 's',  # Square
+        'AF2 (no templates)': 's',  # Square
         'AF3': '^'  # Triangle
     }
 
     # Specify the path to the Aptos font file
     font_path = f'{repo_dir}/Aptos.ttf'
-
-    # Adjust the font properties
-    font_prop_title = fm.FontProperties(fname=font_path, size=25, weight='bold')
-    font_prop_labels = fm.FontProperties(fname=font_path, size=20)
+    font_prop_labels = fm.FontProperties(fname=font_path, size=14)
     font_prop_legend = fm.FontProperties(fname=font_path, size=16)
-    font_prop_legend_title = fm.FontProperties(fname=font_path, size=20, weight='bold')
-    font_prop = fm.FontProperties(fname=font_path, size=15, weight='bold')
+    font_prop_legend_title = fm.FontProperties(fname=font_path, size=0)
 
     # Plot each model separately with its own color and shape
     for model in custom_color_mapping.keys():
         model_data = lis_dockq_df[model_names == model]
-        plt.scatter(
+        ax.scatter(
             model_data['LIS'], 
             model_data['DOCKQ'], 
             c=custom_color_mapping[model], 
             marker=custom_marker_mapping[model], 
-            s=20, alpha=0.8, label=model
+            s=20, 
+            alpha=0.8, 
+            label=model
         )
 
         # Add regression lines with confidence intervals
@@ -121,35 +121,44 @@ if __name__ == "__main__":
         )
 
     # Add grid
-    plt.grid(color='gray', linestyle='--', linewidth=0.5)
+    ax.grid(color='gray', linestyle='-', linewidth=0.25)
 
     # Add labels and title using the font properties object
-    plt.title('DockQ score vs AFM-LIS', fontproperties=font_prop_title)
-    plt.xlabel('LIS (Local Interface Score)', fontproperties=font_prop_labels)
-    plt.ylabel('DockQ score', fontproperties=font_prop_labels)
+    ax.set_xlabel('AFM-LIS', fontproperties=font_prop_labels)
+    ax.set_ylabel('DockQ score', fontproperties=font_prop_labels)
 
-    # Set x and y limits
+    # Set x and y limits and edit ticks
     plt.xlim(0, 1)
     plt.ylim(0, 1)
-
-    # Add horizontal line and text annotation
-    plt.axhline(0.23, color='grey', linestyle='-', alpha=0.5)
-    padding = -0.01
-    plt.text(0.02, 0.23-padding, 'Incorrect (DockQ < 0.23)', color='black', alpha=0.5, fontproperties=font_prop)
+    ax.tick_params(axis="y",direction="in")
+    ax.tick_params(axis="x",direction="in")
 
     # Customize legend
-    legend = plt.legend(title="Model", loc="lower right", prop=font_prop_legend)
+    legend = ax.legend(
+        title="Model", 
+        facecolor="white", 
+        prop=font_prop_legend, 
+        framealpha=1, 
+        loc = "lower right", 
+        handletextpad=0.0, 
+        borderaxespad = 0.1,
+        borderpad = 0.1,
+        labelspacing = 0.2
+    )
     legend.get_title().set_fontproperties(font_prop_legend_title)
+    frame = legend.get_frame()
+    frame.set_linewidth(0.25)  
 
     # Save the plot
-    plt.savefig(f"{plot_dir}/DockQ_vs_LIS.png", dpi=300)
+    #plt.rcParams['svg.fonttype'] = 'none'
+    plt.tight_layout()
+    plt.savefig(f"{plot_dir}/DockQ_vs_LIS.svg", dpi=600)
 
-    import scipy.stats as stats
     # Loop through each model and calculate the Pearson correlation between LIS and DockQ
+    import scipy.stats as stats
     for model in lis_dockq_df["MODEL_NAME"].unique():
         model_data = lis_dockq_df[lis_dockq_df['MODEL_NAME'] == model]
         correlation, p_value = stats.pearsonr(model_data['LIS'], model_data['DOCKQ'])
-        
         print(f"Model: {model}")
         print(f"Pearson correlation: {correlation}")
         print(f"P-value: {p_value}")

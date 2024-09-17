@@ -2,9 +2,23 @@ import pandas as pd
 from scipy.stats import wilcoxon
 import itertools
 from statsmodels.stats.multitest import multipletests
+import os 
+# Build the path to the pdb files
+file_dir = os.path.dirname(__file__)
+folder_name = file_dir.split('/')[-1]
 
-dockq_path = "/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/DockQ_results_new.csv"
+repo_name = "GPRC_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
+
+dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 data = pd.read_csv(dockq_path)
+
+# Make model names more readable
+data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA (no templates)")
+data["model"] = data["model"].replace("RFAA", "RF-AA")
+data["model"] = data["model"].replace("AF2_no_templates", "AF2 (no templates)")
+data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1 (no MSAs)")
 
 # Prepare a list to store Wilcoxon test results
 wilcoxon_results = []
@@ -50,9 +64,11 @@ def significance_stars(p):
     else:
         return 'ns'
 
+
+
 # Apply the function to create a new column with significance stars
 wilcoxon_results_df['Significance'] = wilcoxon_results_df['Corrected P-value'].apply(significance_stars)
 
 # Save the results to a CSV file
-wilcoxon_results_df.to_csv('wilcoxon_results.csv', index=False)
+wilcoxon_results_df.to_csv(f'{repo_dir}/structure_benchmark_data/wilcoxon_results.csv', index=False)
 

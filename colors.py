@@ -54,8 +54,8 @@ COLOR = {
     "AF2": "#115185",
     "AF2 (no templates)": "#008FD7",
     "AF3": "#061F4A",
-    "Chai-1": "#FF9D1E",
-    "Chai-1 (no MSAs)": "#FFC375",
+    "Chai-1": "#855e40",
+    "Chai-1 (no MSAs)": "#b89881",
     # models (no structure)
     "Peptriever": "#aeb0b5",
     "D-SCRIPT2": "#aeb0b5",
