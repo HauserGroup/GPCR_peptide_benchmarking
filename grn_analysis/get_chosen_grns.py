@@ -95,4 +95,6 @@ plt.yticks(fontsize = 12)
 plt.xticks(fontsize = 12)
 plt.tick_params(axis="x",direction="in")
 plt.tick_params(axis="y",length=0)
-plt.savefig(f"{plot_dir}/pdbs_covered.png", bbox_inches='tight', dpi = 300)
+plt.rcParams['svg.fonttype'] = 'none'
+plt.tight_layout()
+plt.savefig(f"{plot_dir}/pdbs_covered.svg", bbox_inches='tight', dpi = 300)

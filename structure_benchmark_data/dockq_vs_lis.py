@@ -150,7 +150,7 @@ if __name__ == "__main__":
     frame.set_linewidth(0.25)  
 
     # Save the plot
-    #plt.rcParams['svg.fonttype'] = 'none'
+    plt.rcParams['svg.fonttype'] = 'none'
     plt.tight_layout()
     plt.savefig(f"{plot_dir}/DockQ_vs_LIS.svg", dpi=600)
 
@@ -160,6 +160,8 @@ if __name__ == "__main__":
         model_data = lis_dockq_df[lis_dockq_df['MODEL_NAME'] == model]
         correlation, p_value = stats.pearsonr(model_data['LIS'], model_data['DOCKQ'])
         print(f"Model: {model}")
+        # Print degrees of freedom
+        print(f"Degrees of freedom: {len(model_data) - 2}")
         print(f"Pearson correlation: {correlation}")
         print(f"P-value: {p_value}")
         print("-" * 30)

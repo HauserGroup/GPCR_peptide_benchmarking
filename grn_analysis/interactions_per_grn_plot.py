@@ -33,7 +33,7 @@ chosen_grns, _, _  = get_chosen_grns(grn_freq_path, interaction_csv_path)
 grn_subset = grn_frequencies[grn_frequencies["percentage"] > 10]
 
 # Make bar plot
-fig = plt.figure(figsize=(15, 5))
+fig = plt.figure(figsize=(13, 5))
 plt.bar(grn_subset.index, grn_subset["percentage"], color=COLOR["Receptor"], width=0.7)
 plt.xlabel("Generic residue number", fontproperties=font_prop, fontsize=16)
 plt.ylabel("PDBs covered (%)", fontproperties=font_prop, fontsize=16)
@@ -54,4 +54,6 @@ plt.tick_params(axis="y", direction="in", length=2)
 plt.ylim(0, 100)
 
 # Save the plot
-plt.savefig(f"{plot_dir}/interacting_residues_percentage.png", dpi = 600)
+plt.rcParams['svg.fonttype'] = 'none'
+plt.tight_layout()
+plt.savefig(f"{plot_dir}/interacting_residues_percentage.svg", dpi = 600)

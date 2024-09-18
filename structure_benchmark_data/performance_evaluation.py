@@ -109,5 +109,6 @@ ax.set_ylabel('DockQ Score', fontproperties=font_prop_ylabels)
 ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontproperties=font_prop_xlabels)
 ax.tick_params(axis="y",direction="in")
 
+plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
 plt.savefig(f"{plot_dir}/DockQ_scores.svg", dpi=600)

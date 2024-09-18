@@ -260,6 +260,7 @@ ax.axis('off')
 fig.tight_layout(pad=0)
 
 # Save the legend as a PNG file
+plt.rcParams['svg.fonttype'] = 'none'
 plt.savefig(f'{script_dir}/legend.svg', dpi=600)
 
 

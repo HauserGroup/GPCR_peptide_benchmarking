@@ -90,6 +90,10 @@ def make_pymol_script(pdb_path, ligand_PDB_chain, receptor_PDB_chain, generic_re
     script += f"color ligand_color, {ligand_name} \n"
     script += f"color receptor_color, binding_site_{pdb_code} \n"
     script += f"show cartoon, {selection_name}\n"
+
+    # Show stick for binding_site_selection
+    script += f"show sticks, binding_site_{pdb_code}\n"
+
     script += "deselect \n"
 
     script += f"create {pdb_code}_ligand, {selection_name} and chain {ligand_PDB_chain}\n"
@@ -192,16 +196,56 @@ interactions_df = pd.read_csv(interaction_csv_path)
 chosen_grns, _, _ = get_chosen_grns(grn_freq_path, interaction_csv_path)
 mapping_file_path = f"{file_dir}/mapping_gpcrdbb.txt"
 
+# Loop through interactions_df
+grns_per_pdb = {}
+for index, row in interactions_df.iterrows():
+    if row["pdb_code"] not in grns_per_pdb:
+        grns_per_pdb[row["pdb_code"]] = [row["generic_residue_number_a"]]
+    elif row["generic_residue_number_a"] not in grns_per_pdb[row["pdb_code"]]:
+        grns_per_pdb[row["pdb_code"]].append(row["generic_residue_number_a"])
 
+# Get the pdb codes included in the structural benchmark
+structural_benchmark_pdbs = pd.read_csv(f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv")["pdb"].tolist()
+print("structural_benchmark_pdbs: ", structural_benchmark_pdbs) 
+print("Number of structural benchmark pdbs: ", len(structural_benchmark_pdbs))
+# Loop through the dictionary and check if a pdb contains all chosen GRNs
+pdb_codes = []
+max_count = 0
+for pdb_code, grns in grns_per_pdb.items():
+    # Count how many GRNs are in the chosen GRNs
+    count = 0
+    for grn in grns:
+        if grn in chosen_grns:
+            count += 1
+    if count >= max_count and pdb_code in structural_benchmark_pdbs:
+        best_pdb = pdb_code
+        max_count = count
 
-pdb_code = "7EIB"
+pdb_code = best_pdb
 pdb_path = f"{repo_dir}/structure_benchmark_data/cleaned_pdbs/{pdb_code}_AB.pdb"
 interacting_grns = get_interacting_grns(pdb_code, mapping_file_path)
+
+# Loop through interacting GRNs and remove the ones that are not in chosen GRNs
+removed_grns = []
+for grn in interacting_grns:
+    # Clean up the GRN
+    receptor_grn = re.sub(r'\.\d+', '', grn)
+    if len(receptor_grn.split("x")[-1]) == 3:
+        receptor_grn = receptor_grn[:-1]
+
+    if receptor_grn not in chosen_grns:
+        removed_grns.append(grn)
+for grn in removed_grns:
+    interacting_grns.pop(grn)
+    print(f"Removed {grn}")
+
+print("pdb_code: ", pdb_code)  
+print("interacting_grns: ", interacting_grns)
+print("chosen_grns: ", chosen_grns)
 config_path = f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt"
 output_path = f"{file_dir}/pymol_scripts/{pdb_code}_grn_interactions.pml"
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-print(interacting_grns)
 pymol_script = "reinit\n"
 pymol_script += make_pymol_script(pdb_path, "B", "A", interacting_grns.values(), COLOR, config_path)
 
