@@ -19,11 +19,89 @@ decoy_df = decoy_df[(decoy_df["Decoy Rank"].isin([0.0, 4.0])) | (decoy_df["Decoy
 # Sort dataframe first based on Target ID and then "Target Similarity to Original Target" in descending order 
 decoy_df = decoy_df.sort_values(by = ["Target ID", "Target Similarity to Original Target"], ascending = [True, False])
 
+import pandas as pd
+import os
+import sys
+import requests
+from Bio import Entrez
+
+def get_receptor_sequence(uniprot_id):
+    '''
+    Function to get fasta sequence of the receptor without its signal peptide using UniProt API.
+    Returns the fasta sequence and the description of the entry given a UniProt ID.
+    '''
+
+    # Get features of the receptor from UniProt
+    url = f"https://www.uniprot.org/uniprot/{uniprot_id}.json"   
+    response = requests.get(url)
+
+    if response.status_code == 200:
+
+        # Parse the JSON response
+        data = response.json()
+
+        try:
+            # Get the full sequence
+            sequence = data["sequence"]["value"]
+        except KeyError:
+            return None, None
+
+        try:
+            # Extract feature information
+            features = data["features"]
+        except KeyError:
+            return None, None
+
+        # Get the start and end positions of the chain and signal peptide
+        for feature in features:
+            if feature["type"] == "Chain":
+                chain_start = feature["location"]["start"]["value"]
+                chain_end = feature["location"]["end"]["value"]
+                return feature["description"], sequence[chain_start-1:chain_end]
+    else:
+        print(f"Error: Unable to retrieve data from UniProt using ID {uniprot_id}. Status code {response.status_code}")
+        return None, None
+
+def get_gene_name(uniprot_id, verbose = False):
+    # UniProt API endpoint for retrieving UniProt entry in JSON format
+    url = f"https://www.uniprot.org/uniprot/{uniprot_id}.json"
+
+    # Make GET request to retrieve UniProt entry
+    response = requests.get(url)
+
+    # Check if request was successful
+    if response.status_code == 200:
+        # Parse JSON response
+        data = response.json()
+        
+        # Extract gene name from the entry
+        gene_name = data['genes']
+        
+        return gene_name[0]["geneName"]["value"]
+    else:
+        if verbose:
+            print(f"Failed to retrieve UniProt entry for {uniprot_id}. Status code: {response.status_code}")
+        return None
+    
+def get_uniprot_id(receptor_id):
+    '''
+    Function to get the UniProt ID of a receptor given its ID in the GPCRdb.
+    '''
+    url = f"https://gpcrdb.org/services/protein/{receptor_id}/"
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        return data["accession"]
+    else:
+        print(f"Error: Unable to retrieve data from GPCRdb using ID {receptor_id}. Status code {response.status_code}")
+        return None
 
 # Loop over receptors and make fasta files with all ligands
 for receptor in decoy_df["Target ID"].unique():
     receptor_df = decoy_df[decoy_df["Target ID"] == receptor]
-    receptor_sequence = receptor_df["GPCR Sequence"].values[0]
+    receptor_id = get_uniprot_id(receptor)
+    receptor_sequence = get_receptor_sequence(receptor_id)[1]
+    print(receptor, receptor_id, receptor_sequence)
     ligands = receptor_df["Decoy ID"].unique()
     with open(f"{fasta_dir}/{receptor.split('_')[0]}_tournament.fasta", "w") as f:
         f.write(f">{receptor}\n")
