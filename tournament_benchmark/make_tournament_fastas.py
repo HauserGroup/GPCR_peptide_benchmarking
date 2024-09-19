@@ -101,7 +101,11 @@ for receptor in decoy_df["Target ID"].unique():
     receptor_df = decoy_df[decoy_df["Target ID"] == receptor]
     receptor_id = get_uniprot_id(receptor)
     receptor_sequence = get_receptor_sequence(receptor_id)[1]
+    if receptor_sequence is None:
+        receptor_sequence = receptor_df["GPCR Sequence"].values[0]
+
     print(receptor, receptor_id, receptor_sequence)
+
     ligands = receptor_df["Decoy ID"].unique()
     with open(f"{fasta_dir}/{receptor.split('_')[0]}_tournament.fasta", "w") as f:
         f.write(f">{receptor}\n")
