@@ -46,6 +46,7 @@ receptors_with_wrong_seq = [
     "lgr4_human"
 ]
 
+seq_856 = "QHHGVTKCNITCSKMTSKIPVALLIHYQQNQASCGKRAIILETRQHRLFCADPKEQWVKDAMQHLDRQAAALTRN"
 
 def get_receptor_sequence(uniprot_id):
     '''
@@ -126,12 +127,14 @@ for receptor in decoy_df["Target ID"].unique():
     if receptor_sequence is None or receptor in receptors_with_wrong_seq:
         receptor_sequence = receptor_df["GPCR Sequence"].values[0]
 
-    print(receptor, receptor_id, receptor_sequence)
-
     ligands = receptor_df["Decoy ID"].unique()
     with open(f"{fasta_dir}/{receptor.split('_')[0]}_tournament.fasta", "w") as f:
         f.write(f">{receptor}\n")
         f.write(f"{receptor_sequence}\n")
         for ligand in ligands:
+            ligand_seq = receptor_df[receptor_df["Decoy ID"] == ligand]['Ligand Sequence'].values[0]
+            if str(ligand) == "856":
+                ligand_seq = seq_856
+
             f.write(f">{ligand}\n")
-            f.write(f"{receptor_df[receptor_df['Decoy ID'] == ligand]['Ligand Sequence'].values[0]}\n")
+            f.write(f"{ligand_seq}\n")
