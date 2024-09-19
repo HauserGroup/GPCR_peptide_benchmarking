@@ -1,8 +1,7 @@
 import os 
 import sys
 import pandas as pd
-import matplotlib.font_manager as fm
-import matplotlib.pyplot as plt
+import requests
 
 # Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
@@ -19,11 +18,34 @@ decoy_df = decoy_df[(decoy_df["Decoy Rank"].isin([0.0, 4.0])) | (decoy_df["Decoy
 # Sort dataframe first based on Target ID and then "Target Similarity to Original Target" in descending order 
 decoy_df = decoy_df.sort_values(by = ["Target ID", "Target Similarity to Original Target"], ascending = [True, False])
 
-import pandas as pd
-import os
-import sys
-import requests
-from Bio import Entrez
+receptors_with_wrong_seq = [
+    "mchr1_human", 
+    "ednrb_human", 
+    "g37l1_human",
+    "gpr37_human",
+    "lgr6_human",
+    "lgr5_human", 
+    "ccr8_human", 
+    "cx3c1_human", 
+    "ackr2_human",
+    "fzd1_human",
+    "par4_human",
+    "glr_human",
+    "glp1r_human",
+    "ednra_human",
+    "calrl_human",
+    "sctr_human",
+    "fzd6_human",
+    "ccr4_human",
+    "gpr39_human",
+    "fzd2_human",
+    "gp107_human",
+    "ccr7_human",
+    "xcr1_human",
+    "ccr6_human",
+    "lgr4_human"
+]
+
 
 def get_receptor_sequence(uniprot_id):
     '''
@@ -101,7 +123,7 @@ for receptor in decoy_df["Target ID"].unique():
     receptor_df = decoy_df[decoy_df["Target ID"] == receptor]
     receptor_id = get_uniprot_id(receptor)
     receptor_sequence = get_receptor_sequence(receptor_id)[1]
-    if receptor_sequence is None:
+    if receptor_sequence is None or receptor in receptors_with_wrong_seq:
         receptor_sequence = receptor_df["GPCR Sequence"].values[0]
 
     print(receptor, receptor_id, receptor_sequence)
