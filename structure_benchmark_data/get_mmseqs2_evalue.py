@@ -247,11 +247,11 @@ if __name__ == "__main__":
     # Get the closest training structures
     af_training_struct = get_closest_training_structures(af_input_path)
     af_training_struct.to_csv(
-        f"{file_dir}/mmseq2_af_training_structures.csv", index=False
+        f"{file_dir}/mmseq2_results/mmseq2_af_training_structures.csv", index=False
     )
     rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
     rfaa_training_struct.to_csv(
-        f"{file_dir}/mmseq2_rfaa_training_structures.csv", index=False
+        f"{file_dir}/mmseq2_results/mmseq2_rfaa_training_structures.csv", index=False
     )
 
     # Path to the DockQ results file

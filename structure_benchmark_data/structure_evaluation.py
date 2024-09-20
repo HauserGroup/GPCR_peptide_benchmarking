@@ -9,6 +9,40 @@ from Bio.PDB import PDBParser, PDBIO, Select, PDBList
 from pathlib import Path
 from DockQ.DockQ import load_PDB, run_on_all_native_interfaces, run_on_chains
 
+from Bio.PDB import PDBParser, Superimposer, Select
+
+def calculate_rmsd(pdb_file_1, pdb_file_2, chain_id_1, chain_id_2):
+    """
+    Helper function to calculate the RMSD between two chains in two PDB files.
+    """
+    # Create a PDB parser
+    parser = PDBParser(QUIET=True)
+
+    # Parse the structures
+    structure_1 = parser.get_structure("protein1", pdb_file_1)
+    structure_2 = parser.get_structure("protein2", pdb_file_2)
+
+    # Select the specified chains from each structure
+    chain_1 = structure_1[0][chain_id_1]  # Model 0, Chain ID A
+    chain_2 = structure_2[0][chain_id_2]  # Model 0, Chain ID A
+
+    # Extract the CA atoms for superimposition
+    atoms_1 = [atom for atom in chain_1.get_atoms() if atom.get_id() == "CA"]
+    atoms_2 = [atom for atom in chain_2.get_atoms() if atom.get_id() == "CA"]
+
+    # Check if both chains have the same number of CA atoms
+    if len(atoms_1) != len(atoms_2):
+        raise ValueError("The chains have different numbers of CA atoms, cannot calculate RMSD directly.")
+
+    # Superimposer for RMSD calculation
+    super_imposer = Superimposer()
+    super_imposer.set_atoms(atoms_1, atoms_2)
+    super_imposer.apply(structure_2.get_atoms())
+
+    # RMSD
+    return super_imposer.rms
+
+
 def list_missing_residues(pdb_filename):
     """
     Helper function to create a dictionary of missing residues per chain in an experimental PDB file.
@@ -415,6 +449,9 @@ def run_dockq_scoring(input_df, model_paths, output_file):
                 cleaned_path = remove_missing_residues(renumbered_path, missing_residues)
                 os.remove(renumbered_path)
 
+            # Calculate RMSD
+            rmsd = calculate_rmsd(cleaned_path, row["pdb_path"], "A", "A")
+
             model = load_PDB(cleaned_path)
             model.id = cleaned_path
             native = load_PDB(row['pdb_path'])  
@@ -426,6 +463,7 @@ def run_dockq_scoring(input_df, model_paths, output_file):
             results = results[("A", "B")]
             results["model"] = model_name
             results["pdb"] = row["pdb"]
+            results["receptor_rmsd"] = rmsd
             results_dicts.append(results)
 
             # Remove temporary files
@@ -439,7 +477,7 @@ def run_dockq_scoring(input_df, model_paths, output_file):
     results_df = results_df.drop(columns=["chain_map"])
 
     # Reorder columns
-    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2"]
+    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2","receptor_rmsd"]
     results_df = results_df[columns]
     results_df.to_csv(output_file, index=False)
 

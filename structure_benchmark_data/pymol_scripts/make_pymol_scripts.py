@@ -263,8 +263,6 @@ fig.tight_layout(pad=0)
 plt.rcParams['svg.fonttype'] = 'none'
 plt.savefig(f'{script_dir}/legend.svg', dpi=600)
 
-
-
 columns = ["model", "pdb","DockQ", "irms", "Lrms", "fnat", "fnonnat"]
 models_to_check = ["AF2", "AF2_no_templates","AF3", "RFAA", "RFAA_no_templates", "Chai-1", "Chai-1_no_MSAs"]
 data = data[data["model"].isin(models_to_check)][columns]
