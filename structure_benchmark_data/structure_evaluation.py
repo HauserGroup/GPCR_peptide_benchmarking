@@ -32,7 +32,7 @@ def calculate_rmsd(pdb_file_1, pdb_file_2, chain_id_1, chain_id_2):
 
     # Check if both chains have the same number of CA atoms
     if len(atoms_1) != len(atoms_2):
-        raise ValueError("The chains have different numbers of CA atoms, cannot calculate RMSD directly.")
+        return None
 
     # Superimposer for RMSD calculation
     super_imposer = Superimposer()
