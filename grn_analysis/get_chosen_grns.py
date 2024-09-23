@@ -70,6 +70,11 @@ print(chosen_grns)
 chosen_grns_labels = ["+ " + str(i[0][-1]) for i in chosen_grns_per_round]
 chosen_grns_labels[0] = chosen_grns_labels[0].replace("+ ", " ")
 
+# Sve chosen GRNs to a file
+with open(f"{file_dir}/chosen_grns.txt", "w") as f:
+    for grn in chosen_grns:
+        f.write(f"{grn}\n")
+
 # Cumulative plot of number of PDBs covered by the generic residue numbers
 fig, ax = plt.subplots()
 fig.set_figwidth(10) 

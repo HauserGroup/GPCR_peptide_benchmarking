@@ -23,12 +23,32 @@ from colors import *
 structural_benchmark_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv"
 structural_benchmark_df = pd.read_csv(structural_benchmark_path)
 
+# Print the number of rows where ligand_pdb_seq is less than 30 amino acids long
+print("Number of rows where ligand_pdb_seq is less than 30 amino acids long:")
+print(structural_benchmark_df[structural_benchmark_df["ligand_pdb_seq"].str.len() < 30].shape[0])
+
+# Receptor RMSD data
+receptor_rmsd_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
+receptor_rmsd_df = pd.read_csv(receptor_rmsd_path)
+
 # Load DockQ data
 dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 dockq_df = pd.read_csv(dockq_path)
 
 # Merge the DockQ data with the structural benchmark data
 dockq_df = dockq_df.merge(structural_benchmark_df, on="pdb")
+
+# Merge the DockQ data with the receptor RMSD data
+dockq_df = dockq_df.merge(receptor_rmsd_df, on=["pdb", "model"])
+
+# Print all receptor_rmsd values for alphafold 2
+print("Receptor RMSD values for AlphaFold 2:")
+print(receptor_rmsd_df[receptor_rmsd_df["model"] == "AF2"]["rmsd"])
+print(dockq_df[dockq_df["model"] == "AF2"]["rmsd"])
+
+# Print average receptor rmsd values for each model
+print("Average receptor RMSD values for each model:")
+print(dockq_df.groupby("model")["rmsd"].mean())
 
 # Check whether DockQ score is significantly correlated with the number of residues in the receptor
 dockq_df["receptor_length"] = dockq_df["receptor_pdb_seq"].str.len()
@@ -38,6 +58,8 @@ dockq_df["receptor_length"] = dockq_df["receptor_pdb_seq"].str.len()
 #   Acceptable if 0.23 <= DockQ < 0.49
 #   Medium if 0.49 <= DockQ < 0.80
 #   High if DockQ >= 0.80
+
+
 
 dockq_df["success"] = "Fail"
 dockq_df.loc[dockq_df["DockQ"] >= 0.23, "success"] = "Acceptable"
@@ -51,6 +73,28 @@ dockq_df.loc[dockq_df["DockQ"] >= 0.23, "correct"] = "True"
 rf_aa_df = dockq_df[dockq_df["model"].str.contains("RFAA")]
 rf_aa_no_templates = rf_aa_df[rf_aa_df["model"].str.contains("no_templates")]
 rf_aa_templates = rf_aa_df[~rf_aa_df["model"].str.contains("no_templates")]
+
+from scipy import stats
+
+# Separate the data into two groups based on the 'correct' column
+rmsd_true = rf_aa_no_templates[rf_aa_no_templates['correct'] == "True"]['rmsd']
+rmsd_false = rf_aa_no_templates[rf_aa_no_templates['correct'] == "False"]['rmsd']
+
+# Perform an independent t-test to compare the means of the two groups
+t_stat, p_value = stats.ttest_ind(rmsd_true, rmsd_false, nan_policy='omit')
+
+# Prepare the results for display
+t_test_result = {
+    'Group 1 (Correct = True) Mean RMSD': rmsd_true.mean(),
+    'Group 2 (Correct = False) Mean RMSD': rmsd_false.mean(),
+    'T-Statistic': t_stat,
+    'P-Value': p_value
+}
+
+print("T-Test Results:")
+for key, value in t_test_result.items():
+    print(f"{key}: {value}")
+    
 
 # Get value counts of success for RF-AA predictions
 rf_aa_template_success = rf_aa_templates["success"].value_counts()
@@ -128,7 +172,8 @@ def pymol_script(config_path, repo_dir, pdbs, colors, model, name):
         script += f"align {pdb}_{model}, {pdb}_experimental\n"
         
         # Color structures
-        script += "color white, chain A\n"
+        script += f"color grey70, chain A and {pdb}_{model}\n"
+        script += f"color white, chain A and {pdb}_experimental\n"
         script += f"color {model_color}, {pdb}_{model} and chain B\n"
         script += f"color experimental_color, {pdb}_experimental and chain B\n"
 
@@ -174,8 +219,6 @@ def pymol_script(config_path, repo_dir, pdbs, colors, model, name):
         f.write(script)
 
 config_path = f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt"
-#pymol_script(config_path, repo_dir, failed_rf_aa["pdb"].values, COLOR)
-
 for model in dockq_df["model"].unique():
     name = f"{model}_rfaa_failed_predictions"
     pymol_script(config_path, repo_dir, failed_rf_aa["pdb"].values, COLOR, model, name)

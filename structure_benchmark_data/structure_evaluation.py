@@ -463,7 +463,6 @@ def run_dockq_scoring(input_df, model_paths, output_file):
             results = results[("A", "B")]
             results["model"] = model_name
             results["pdb"] = row["pdb"]
-            results["receptor_rmsd"] = rmsd
             results_dicts.append(results)
 
             # Remove temporary files
@@ -477,7 +476,7 @@ def run_dockq_scoring(input_df, model_paths, output_file):
     results_df = results_df.drop(columns=["chain_map"])
 
     # Reorder columns
-    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2","receptor_rmsd"]
+    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2"]
     results_df = results_df[columns]
     results_df.to_csv(output_file, index=False)
 

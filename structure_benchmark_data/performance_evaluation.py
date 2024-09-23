@@ -112,3 +112,5 @@ ax.tick_params(axis="y",direction="in")
 plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
 plt.savefig(f"{plot_dir}/DockQ_scores.svg", dpi=600)
+
+

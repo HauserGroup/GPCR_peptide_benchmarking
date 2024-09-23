@@ -45,7 +45,8 @@ set_color ESMFold, [0.278, 0.514, 0.278]
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7SK4_AB.pdb, 7SK4_experimental
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7SK4.pdb, 7SK4_ESMFold
 align 7SK4_ESMFold, 7SK4_experimental
-color white, chain A
+color grey70, chain A and 7SK4_ESMFold
+color white, chain A and 7SK4_experimental
 color ESMFold, 7SK4_ESMFold and chain B
 color experimental_color, 7SK4_experimental and chain B
 create 7SK4_exp_ligand, 7SK4_experimental and chain B
@@ -60,7 +61,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7F6I.pdb, 7F6I_ESMFold
 align 7F6I_experimental, 7SK4_experimental 
 align 7F6I_ESMFold, 7F6I_experimental
-color white, chain A
+color grey70, chain A and 7F6I_ESMFold
+color white, chain A and 7F6I_experimental
 color ESMFold, 7F6I_ESMFold and chain B
 color experimental_color, 7F6I_experimental and chain B
 create 7F6I_exp_ligand, 7F6I_experimental and chain B
@@ -75,7 +77,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/8IA8.pdb, 8IA8_ESMFold
 align 8IA8_experimental, 7SK4_experimental 
 align 8IA8_ESMFold, 8IA8_experimental
-color white, chain A
+color grey70, chain A and 8IA8_ESMFold
+color white, chain A and 8IA8_experimental
 color ESMFold, 8IA8_ESMFold and chain B
 color experimental_color, 8IA8_experimental and chain B
 create 8IA8_exp_ligand, 8IA8_experimental and chain B
@@ -90,7 +93,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/8HK2.pdb, 8HK2_ESMFold
 align 8HK2_experimental, 7SK4_experimental 
 align 8HK2_ESMFold, 8HK2_experimental
-color white, chain A
+color grey70, chain A and 8HK2_ESMFold
+color white, chain A and 8HK2_experimental
 color ESMFold, 8HK2_ESMFold and chain B
 color experimental_color, 8HK2_experimental and chain B
 create 8HK2_exp_ligand, 8HK2_experimental and chain B
@@ -105,7 +109,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7Y64.pdb, 7Y64_ESMFold
 align 7Y64_experimental, 7SK4_experimental 
 align 7Y64_ESMFold, 7Y64_experimental
-color white, chain A
+color grey70, chain A and 7Y64_ESMFold
+color white, chain A and 7Y64_experimental
 color ESMFold, 7Y64_ESMFold and chain B
 color experimental_color, 7Y64_experimental and chain B
 create 7Y64_exp_ligand, 7Y64_experimental and chain B
@@ -120,7 +125,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7W40.pdb, 7W40_ESMFold
 align 7W40_experimental, 7SK4_experimental 
 align 7W40_ESMFold, 7W40_experimental
-color white, chain A
+color grey70, chain A and 7W40_ESMFold
+color white, chain A and 7W40_experimental
 color ESMFold, 7W40_ESMFold and chain B
 color experimental_color, 7W40_experimental and chain B
 create 7W40_exp_ligand, 7W40_experimental and chain B
@@ -135,7 +141,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7W3Z.pdb, 7W3Z_ESMFold
 align 7W3Z_experimental, 7SK4_experimental 
 align 7W3Z_ESMFold, 7W3Z_experimental
-color white, chain A
+color grey70, chain A and 7W3Z_ESMFold
+color white, chain A and 7W3Z_experimental
 color ESMFold, 7W3Z_ESMFold and chain B
 color experimental_color, 7W3Z_experimental and chain B
 create 7W3Z_exp_ligand, 7W3Z_experimental and chain B
@@ -150,7 +157,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/8DWG.pdb, 8DWG_ESMFold
 align 8DWG_experimental, 7SK4_experimental 
 align 8DWG_ESMFold, 8DWG_experimental
-color white, chain A
+color grey70, chain A and 8DWG_ESMFold
+color white, chain A and 8DWG_experimental
 color ESMFold, 8DWG_ESMFold and chain B
 color experimental_color, 8DWG_experimental and chain B
 create 8DWG_exp_ligand, 8DWG_experimental and chain B
@@ -165,7 +173,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7S8L.pdb, 7S8L_ESMFold
 align 7S8L_experimental, 7SK4_experimental 
 align 7S8L_ESMFold, 7S8L_experimental
-color white, chain A
+color grey70, chain A and 7S8L_ESMFold
+color white, chain A and 7S8L_experimental
 color ESMFold, 7S8L_ESMFold and chain B
 color experimental_color, 7S8L_experimental and chain B
 create 7S8L_exp_ligand, 7S8L_experimental and chain B
@@ -180,7 +189,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7VDM.pdb, 7VDM_ESMFold
 align 7VDM_experimental, 7SK4_experimental 
 align 7VDM_ESMFold, 7VDM_experimental
-color white, chain A
+color grey70, chain A and 7VDM_ESMFold
+color white, chain A and 7VDM_experimental
 color ESMFold, 7VDM_ESMFold and chain B
 color experimental_color, 7VDM_experimental and chain B
 create 7VDM_exp_ligand, 7VDM_experimental and chain B
@@ -195,7 +205,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7VV0.pdb, 7VV0_ESMFold
 align 7VV0_experimental, 7SK4_experimental 
 align 7VV0_ESMFold, 7VV0_experimental
-color white, chain A
+color grey70, chain A and 7VV0_ESMFold
+color white, chain A and 7VV0_experimental
 color ESMFold, 7VV0_ESMFold and chain B
 color experimental_color, 7VV0_experimental and chain B
 create 7VV0_exp_ligand, 7VV0_experimental and chain B
@@ -210,7 +221,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7P00.pdb, 7P00_ESMFold
 align 7P00_experimental, 7SK4_experimental 
 align 7P00_ESMFold, 7P00_experimental
-color white, chain A
+color grey70, chain A and 7P00_ESMFold
+color white, chain A and 7P00_experimental
 color ESMFold, 7P00_ESMFold and chain B
 color experimental_color, 7P00_experimental and chain B
 create 7P00_exp_ligand, 7P00_experimental and chain B
@@ -225,7 +237,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7W56.pdb, 7W56_ESMFold
 align 7W56_experimental, 7SK4_experimental 
 align 7W56_ESMFold, 7W56_experimental
-color white, chain A
+color grey70, chain A and 7W56_ESMFold
+color white, chain A and 7W56_experimental
 color ESMFold, 7W56_ESMFold and chain B
 color experimental_color, 7W56_experimental and chain B
 create 7W56_exp_ligand, 7W56_experimental and chain B
@@ -240,7 +253,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7W53.pdb, 7W53_ESMFold
 align 7W53_experimental, 7SK4_experimental 
 align 7W53_ESMFold, 7W53_experimental
-color white, chain A
+color grey70, chain A and 7W53_ESMFold
+color white, chain A and 7W53_experimental
 color ESMFold, 7W53_ESMFold and chain B
 color experimental_color, 7W53_experimental and chain B
 create 7W53_exp_ligand, 7W53_experimental and chain B
@@ -255,7 +269,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7W55.pdb, 7W55_ESMFold
 align 7W55_experimental, 7SK4_experimental 
 align 7W55_ESMFold, 7W55_experimental
-color white, chain A
+color grey70, chain A and 7W55_ESMFold
+color white, chain A and 7W55_experimental
 color ESMFold, 7W55_ESMFold and chain B
 color experimental_color, 7W55_experimental and chain B
 create 7W55_exp_ligand, 7W55_experimental and chain B
@@ -270,7 +285,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7W57.pdb, 7W57_ESMFold
 align 7W57_experimental, 7SK4_experimental 
 align 7W57_ESMFold, 7W57_experimental
-color white, chain A
+color grey70, chain A and 7W57_ESMFold
+color white, chain A and 7W57_experimental
 color ESMFold, 7W57_ESMFold and chain B
 color experimental_color, 7W57_experimental and chain B
 create 7W57_exp_ligand, 7W57_experimental and chain B
@@ -285,7 +301,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7VGX.pdb, 7VGX_ESMFold
 align 7VGX_experimental, 7SK4_experimental 
 align 7VGX_ESMFold, 7VGX_experimental
-color white, chain A
+color grey70, chain A and 7VGX_ESMFold
+color white, chain A and 7VGX_experimental
 color ESMFold, 7VGX_ESMFold and chain B
 color experimental_color, 7VGX_experimental and chain B
 create 7VGX_exp_ligand, 7VGX_experimental and chain B
@@ -300,7 +317,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/8F7W.pdb, 8F7W_ESMFold
 align 8F7W_experimental, 7SK4_experimental 
 align 8F7W_ESMFold, 8F7W_experimental
-color white, chain A
+color grey70, chain A and 8F7W_ESMFold
+color white, chain A and 8F7W_experimental
 color ESMFold, 8F7W_ESMFold and chain B
 color experimental_color, 8F7W_experimental and chain B
 create 8F7W_exp_ligand, 8F7W_experimental and chain B
@@ -315,7 +333,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/8F7Q.pdb, 8F7Q_ESMFold
 align 8F7Q_experimental, 7SK4_experimental 
 align 8F7Q_ESMFold, 8F7Q_experimental
-color white, chain A
+color grey70, chain A and 8F7Q_ESMFold
+color white, chain A and 8F7Q_experimental
 color ESMFold, 8F7Q_ESMFold and chain B
 color experimental_color, 8F7Q_experimental and chain B
 create 8F7Q_exp_ligand, 8F7Q_experimental and chain B
@@ -330,7 +349,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/8F7X.pdb, 8F7X_ESMFold
 align 8F7X_experimental, 7SK4_experimental 
 align 8F7X_ESMFold, 8F7X_experimental
-color white, chain A
+color grey70, chain A and 8F7X_ESMFold
+color white, chain A and 8F7X_experimental
 color ESMFold, 8F7X_ESMFold and chain B
 color experimental_color, 8F7X_experimental and chain B
 create 8F7X_exp_ligand, 8F7X_experimental and chain B
@@ -345,7 +365,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7T10.pdb, 7T10_ESMFold
 align 7T10_experimental, 7SK4_experimental 
 align 7T10_ESMFold, 7T10_experimental
-color white, chain A
+color grey70, chain A and 7T10_ESMFold
+color white, chain A and 7T10_experimental
 color ESMFold, 7T10_ESMFold and chain B
 color experimental_color, 7T10_experimental and chain B
 create 7T10_exp_ligand, 7T10_experimental and chain B
@@ -360,7 +381,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7T11.pdb, 7T11_ESMFold
 align 7T11_experimental, 7SK4_experimental 
 align 7T11_ESMFold, 7T11_experimental
-color white, chain A
+color grey70, chain A and 7T11_ESMFold
+color white, chain A and 7T11_experimental
 color ESMFold, 7T11_ESMFold and chain B
 color experimental_color, 7T11_experimental and chain B
 create 7T11_exp_ligand, 7T11_experimental and chain B
@@ -375,7 +397,8 @@ load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_be
 load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/ESMFold/7XMS.pdb, 7XMS_ESMFold
 align 7XMS_experimental, 7SK4_experimental 
 align 7XMS_ESMFold, 7XMS_experimental
-color white, chain A
+color grey70, chain A and 7XMS_ESMFold
+color white, chain A and 7XMS_experimental
 color ESMFold, 7XMS_ESMFold and chain B
 color experimental_color, 7XMS_experimental and chain B
 create 7XMS_exp_ligand, 7XMS_experimental and chain B
