@@ -125,7 +125,7 @@ for rank in ranks:
     dissimilar_ranks = ranks[rank]["Dissimilar"]
     similar_ranks = ranks[rank]["Similar"]
 
-    fasta_dir = f'{file_dir}/{rank}_fastas'
+    fasta_dir = f'{file_dir}/fastas/{rank}_fastas'
     os.makedirs(fasta_dir, exist_ok = True)
 
     print(f"Creating fasta files for {rank} setup")
