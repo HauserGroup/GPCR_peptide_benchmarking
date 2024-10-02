@@ -25,6 +25,13 @@ from colors import *
 dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 data = pd.read_csv(dockq_path)
 
+# Load receptor RMSD data
+receptor_rmsd_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
+receptor_rmsd = pd.read_csv(receptor_rmsd_path)
+
+# Merge with data
+data = data.merge(receptor_rmsd, on=["pdb", "model"])
+
 # Output path for plots 
 if not os.path.exists(plot_dir):
     os.makedirs(plot_dir)
@@ -35,9 +42,6 @@ data["model"] = data["model"].replace("RFAA", "RF-AA")
 data["model"] = data["model"].replace("AF2", "AF2")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2\n(no templates)")
 data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1\n(no MSAs)")
-
-# Plotting
-fig, ax = plt.subplots(figsize=(8, 6))
 
 # Color the points based on model
 colors = {
@@ -60,7 +64,9 @@ font_prop = fm.FontProperties(fname=font_path, size = 14)
 font_prop_xlabels = fm.FontProperties(fname=font_path, size=14)
 font_prop_ylabels = fm.FontProperties(fname=font_path, size=14)
 
+# DockQ plot
 # Creating a swarm plot
+fig, ax = plt.subplots(figsize=(8, 6))
 sns.swarmplot(
     x='model', 
     y='DockQ', 
@@ -77,8 +83,6 @@ for i, model in enumerate(list(colors.keys())):
 # Calculate the mean and standard error of the mean (SEM) for each category
 means = data.groupby('model')['DockQ'].mean()
 sems = data.groupby('model')['DockQ'].sem()
-
-#plt.rcParams['svg.fonttype'] = 'none'
 
 # Add error bars and mean points
 for i, model in enumerate(list(colors.keys())):
@@ -98,9 +102,8 @@ ax.text(0.02, 0.49-padding, 'Acceptable\n0.23 ≤ DockQ < 0.49', color='black', 
 ax.text(0.02, 0.80-padding, 'Medium\n0.49 ≤ DockQ < 0.80', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
 ax.text(0.02, 1.0-padding, 'High\nDockQ ≥ 0.80', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
 
-# Set y-axis limit
+# Set y-axis limit and remove x-axis ticks
 ax.set_ylim(0, 1)
-
 ax.xaxis.set_ticks_position('none')
 
 # Set labels and title
@@ -112,5 +115,58 @@ ax.tick_params(axis="y",direction="in")
 plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
 plt.savefig(f"{plot_dir}/DockQ_scores.svg", dpi=600)
+plt.close()
 
+# RMSD plot
+# Calculate the mean and standard error of the mean (SEM) for each category
+means = data.groupby('model')['rmsd'].mean()
+sems = data.groupby('model')['rmsd'].sem()
 
+# Specify the path to the Aptos font file
+font_path = f'{repo_dir}/Aptos.ttf' 
+font_prop = fm.FontProperties(fname=font_path, size = 18)
+font_prop_xlabels = fm.FontProperties(fname=font_path, size=18)
+font_prop_ylabels = fm.FontProperties(fname=font_path, size=18)
+
+# Creating a bar plot
+fig, ax = plt.subplots(figsize=(8, 6))
+sns.barplot(
+    x='model', 
+    y='rmsd', 
+    data=data, 
+    ax=ax, 
+    alpha=0.9,
+    palette=colors.values(), 
+    order=list(colors.keys()), 
+    ci=None  # Disable built-in error bars to add custom ones
+)
+
+# Add error bars
+for i, model in enumerate(list(colors.keys())):
+    ax.errorbar(
+        i, 
+        means[model], 
+        yerr=sems[model], 
+        fmt='none', 
+        color='black', 
+        capsize=5, 
+        label='Mean ± SEM' if i == 0 else ""
+    )
+
+# Customize the bar colors according to the `colors` dictionary
+for bar, model in zip(ax.patches, list(colors.keys())):
+    bar.set_facecolor(colors[model])
+
+# Set labels and title
+ax.set_xlabel('', fontsize=0)
+ax.set_ylabel('Receptor RMSD', fontproperties=font_prop_ylabels)
+ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontproperties=font_prop_xlabels)
+ax.tick_params(axis="y", direction="in")
+plt.title('Receptor RMSD of predicted complexes', fontproperties=font_prop)
+
+# Remove the x-axis ticks
+ax.xaxis.set_ticks_position('none')
+
+plt.rcParams['svg.fonttype'] = 'none'
+plt.tight_layout()
+plt.savefig(f"{plot_dir}/receptor_rmsd.png", dpi=600)
