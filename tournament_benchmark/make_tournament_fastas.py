@@ -112,6 +112,7 @@ def get_uniprot_id(receptor_id):
 
 # Ranks for tournament setup
 ranks = {
+    "one_to_one": {"Similar": [10.0], "Dissimilar": [10.0]},
     "one_to_two": {"Similar": [0.0], "Dissimilar": [4.0]},
     "one_to_four": {"Similar": [0.0, 4.0], "Dissimilar": [0.0, 4.0]},
     "one_to_eight": {"Similar": [0.0, 1,0, 3.0, 4.0], "Dissimilar": [0.0, 1.0, 3.0, 4.0]},
@@ -126,6 +127,8 @@ for rank in ranks:
 
     fasta_dir = f'{file_dir}/{rank}_fastas'
     os.makedirs(fasta_dir, exist_ok = True)
+
+    print(f"Creating fasta files for {rank} setup")
 
     # Keep rows where Decoy type is Similar and Decoy Rank is in similar_ranks OR Decoy type is Dissimilar and Decoy Rank is in dissimilar_ranks
     decoy_df = decoy_df[(decoy_df["Decoy Type"] == "Similar") & (decoy_df["Decoy Rank"].isin(similar_ranks)) | (decoy_df["Decoy Type"] == "Dissimilar") & (decoy_df["Decoy Rank"].isin(dissimilar_ranks)) | (decoy_df["Decoy Rank"].isnull())]
