@@ -10,12 +10,10 @@ from scipy import stats
 import numpy as np
 from sklearn.metrics import r2_score
 
-
 # Get the top-level directory
 top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(top_level_dir)
 from colors import *
-
 
 def get_closest_training_structures(input_path):
     # List files in the input directory
@@ -52,7 +50,6 @@ def get_closest_training_structures(input_path):
     df.columns = ["pdb", "e_value", "Identity"]
 
     return df
-
 
 def calculate_average_plddt(pdb_file_path):
     """
@@ -139,17 +136,15 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
     x_mean = np.mean(data[x])
     y_mean = np.mean(data[y])
     n = data[x].size
-    m = 2
+    m = 2  # Two parameters: slope and intercept
     dof = n - m
     t = stats.t.ppf(0.975, dof)
-    residual = data[y] - y_model
-    std_error = (np.sum(residual**2) / dof) ** 0.5  # Standard deviation of the error
+
     numerator = np.sum((data[x] - x_mean) * (data[y] - y_mean))
     denominator = (
         np.sum((data[x] - x_mean) ** 2) * np.sum((data[y] - y_mean) ** 2)
     ) ** 0.5
-    correlation_coef = numerator / denominator
-    r2 = correlation_coef**2
+    r2 = (numerator / denominator)**2
     MSE = 1 / n * np.sum((data[y] - y_model) ** 2)
     x_line = np.linspace(np.min(data[x]), np.max(data[x]), 100)
     y_line = np.polyval([slope, intercept], x_line)
@@ -158,6 +153,36 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
         * std_error
         * (1 / n + (x_line - x_mean) ** 2 / np.sum((data[x] - x_mean) ** 2)) ** 0.5
     )
+
+    # Residuals and standard error
+    residual = data[y] - y_model
+    std_error = (np.sum(residual**2) / dof) ** 0.5  # Standard deviation of the error
+
+    # Mean of the x values
+    x_mean = np.mean(data[x])
+
+    # Standard error of the slope
+    SE_slope = std_error / np.sqrt(np.sum((data[x] - x_mean) ** 2))
+
+    # t-statistic for the slope
+    t_stat_slope = slope / SE_slope
+
+    # p-value (two-tailed)
+    p_value = 2 * (1 - stats.t.cdf(np.abs(t_stat_slope), dof))
+
+
+    print("Manual calculation: ")
+    print(f"Slope: {slope}")
+    print(f"Intercept: {intercept}")
+    print(f"t-statistic for slope: {t_stat_slope}")
+    print(f"p-value: {p_value}\n\n")
+
+    slope, intercept, r_value, p_value, std_err = stats.linregress(data[x], data[y])
+    print("Using function: ")
+    print(f"Slope: {slope}")
+    print(f"Intercept: {intercept}")
+    print(f"t-statistic for slope: {t_stat_slope}")
+    print(f"p-value: {p_value}")
 
     # Create new figure
     fig, ax = plt.subplots()

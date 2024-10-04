@@ -77,8 +77,8 @@ with open(f"{file_dir}/chosen_grns.txt", "w") as f:
 
 # Cumulative plot of number of PDBs covered by the generic residue numbers
 fig, ax = plt.subplots()
-fig.set_figwidth(10) 
-fig.set_figheight(5) 
+fig.set_figwidth(7) 
+fig.set_figheight(6) 
 
 labels = []
 labels = chosen_grns_labels
@@ -94,7 +94,7 @@ for i, v in enumerate(pdbs_covered_p):
 
 ax.set_xlabel('Percentage (%)', fontproperties=font_prop, size = 16)
 ax.set_title("Percentage of PDBs covered by the generic residue numbers", size = 20, fontproperties=font_prop)
-ax.set_xlim(0,100)
+ax.set_xlim(70,100)
 
 plt.yticks(fontsize = 12)
 plt.xticks(fontsize = 12)
