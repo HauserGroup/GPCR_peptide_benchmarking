@@ -33,48 +33,67 @@ png ~/Documents/Github/GPRC_peptide_benchmarking/plots/figure2_classifier/descri
 
 # color receptor grey80
 color grey80, complex and chain B
-set_color custom_blue, [0.043, 0.239, 0.569]
+# set_color custom_blue, [0.043, 0.239, 0.569]
+
+# use light-yellow instead
+# set_color custom_yellow, [1.000, 0.647, 0.000]
+# slightly lighter yellow
+# set_color custom_yellow, [1.000, 0.800, 0.200]
+# even lighter yellow
+# set_color custom_yellow, [1.000, 0.900, 0.400]
+# set color custom_yellow, [1.000, 0.800, 0.800]
+# rgb(170, 51, 106)
+# set_color custom_yellow, [0.667, 0.200, 0.416]
+# lighter shade
+set_color custom_yellow, [0.800, 0.400, 0.600]
+# even lighter shade
+set_color custom_yellow, [0.900, 0.600, 0.800]
+# even lighter shade
+# #2e8540
+set_color custom_yellow, [0.180, 0.522, 0.251]
+# set cartoon_transparency, 0.2
+set cartoon_transparency, 0.2
+
 # color binding pocket, from sticks_for_grns.py
 #5x44 308, R308
-show spheres, complex and chain B and resi 308
-color custom_blue, complex and chain B and resi 308
+show sticks, complex and chain B and resi 308
+color custom_yellow, complex and chain B and resi 308
 #3x40 239, Y239
-show spheres, complex and chain B and resi 239
-color custom_blue, complex and chain B and resi 239
+show sticks, complex and chain B and resi 239
+color custom, complex and chain B and resi 239
 #7x41 389, S389
-show spheres, complex and chain B and resi 389
-color custom_blue, complex and chain B and resi 389
+show sticks, complex and chain B and resi 389
+color custom_yellow, complex and chain B and resi 389
 #3x36 235, I235
-show spheres, complex and chain B and resi 235
-color custom_blue, complex and chain B and resi 235
+show sticks, complex and chain B and resi 235
+color custom_yellow, complex and chain B and resi 235
 #7x42 390, S390
-show spheres, complex and chain B and resi 390
-color custom_blue, complex and chain B and resi 390
+show sticks, complex and chain B and resi 390
+color custom_yellow, complex and chain B and resi 390
 #7x35 383, F383
-show spheres, complex and chain B and resi 383
-color custom_blue, complex and chain B and resi 383
+show sticks, complex and chain B and resi 383
+color custom_yellow, complex and chain B and resi 383
 #1x36 142, Q142
-show spheres, complex and chain B and resi 142
-color custom_blue, complex and chain B and resi 142
+show sticks, complex and chain B and resi 142
+color custom_yellow, complex and chain B and resi 142
 #6x54 368, V368
-show spheres, complex and chain B and resi 368
-color custom_blue, complex and chain B and resi 368
+show sticks, complex and chain B and resi 368
+color custom_yellow, complex and chain B and resi 368
 #7x38 386, L386
-show spheres, complex and chain B and resi 386
-color custom_blue, complex and chain B and resi 386
+show sticks, complex and chain B and resi 386
+color custom_yellow, complex and chain B and resi 386
 #1x32 138, Y138
-show spheres, complex and chain B and resi 138
-color custom_blue, complex and chain B and resi 138
+show sticks, complex and chain B and resi 138
+color custom_yellow, complex and chain B and resi 138
 #5x47 311, V311
-show spheres, complex and chain B and resi 311
-color custom_blue, complex and chain B and resi 311
+show sticks, complex and chain B and resi 311
+color custom_yellow, complex and chain B and resi 311
 #45x51 295, W295
-show spheres, complex and chain B and resi 295
-color custom_blue, complex and chain B and resi 295
-# save binding pocket
-# give cartoon opacity
-# set cartoon_transparency, 0.2
-# hide spheres
+show sticks, complex and chain B and resi 295
+color custom_yellow, complex and chain B and resi 295
+
+@/Users/kcd635/Documents/GitHub/GPRC_peptide_benchmarking/ray.pm
+
 ray 1200,1200
 png ~/Documents/Github/GPRC_peptide_benchmarking/plots/figure2_classifier/describe_decoys/binding_pocket.png
 

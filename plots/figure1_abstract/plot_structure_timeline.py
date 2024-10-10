@@ -34,33 +34,76 @@ def plot_structure_discovery(df, cutoff_datetime, save_path):
             counts_per_class[structure_class].append(count)
 
     # plot
-    plt.figure(figsize=(10, 5))
+    plt.figure(figsize=(6, 3))
     # plot total
-    plt.plot(
-        months,
-        [df[df["publication_date"] < month].shape[0] for month in months],
+    # plt.plot(
+    #     months,
+    #     [df[df["publication_date"] < month].shape[0] for month in months],
+    #     label="Total",
+    # )
+    # # plot for each class
+    # for structure_class in structure_classes:
+    #     plt.plot(months, counts_per_class[structure_class], label=structure_class)
+
+    # sns plot total
+    sns.set_style("whitegrid")
+    # # set blue red color scheme
+    # # "ESMFold": "#478347",
+    # # "RF-AA": "#A676D6",
+    # # "AF2": "#115185",
+    # # "AF3": "#061f4a",
+    colors = ["#0b3d91", "#478347", "#A676D6", "#115185", "#061f4a"]
+    line_width = 2
+
+    sns.lineplot(
+        x=months,
+        y=[df[df["publication_date"] < month].shape[0] for month in months],
         label="Total",
+        color=colors[0],
+        linewidth=line_width,
+        # add dots
+        marker=".",
     )
     # plot for each class
     for structure_class in structure_classes:
-        plt.plot(months, counts_per_class[structure_class], label=structure_class)
+        sns.lineplot(
+            x=months,
+            y=counts_per_class[structure_class],
+            label=structure_class,
+            color=colors[structure_classes.index(structure_class) + 1],
+            linewidth=line_width,
+            # add dots
+            marker=".",
+        )
 
-    add_training_cutoff_dates(ymax=df.shape[0])
-    plt.xlabel("Date")
-    plt.ylabel("Total number of structures discovered")
-    plt.title("Number of GPCR structures discovered per month")
-    plt.legend()
+
+    add_training_cutoff_dates(ymax=df.shape[0],
+                              fontsize=12)
+    fontsize = 12 
+    # plt.xlabel("Date")
+    plt.ylabel("Total number of structures discovered", fontsize=fontsize)
+    plt.title("Number of GPCR structures discovered per month", fontsize=fontsize,
+              # align left
+                loc="left")
+    plt.legend(fontsize=fontsize, loc="upper left",
+               # add border
+                frameon=True)
+
+    # set font size to 12
+    plt.xticks(fontsize=fontsize)
+    plt.yticks(fontsize=fontsize)
+    plt.tight_layout()
     plt.savefig(save_path)
     plt.close()
 
 
 
-def add_training_cutoff_dates(ymax):
+def add_training_cutoff_dates(ymax, fontsize=12):
     # AF2: We have fine-tuned new AlphaFold-Multimer weights using identical model architecture but a new training cutoff of 2021-09-30.
     # NeuralPlexer (v2): The datasets used for training and testing end-to-end structure prediction were constructed from chains of all monomeric proteins and homomeric complexes in the PDB accessed in April 2022.
     # RF-AA: Similar to RF2 [11], we train on protein monomer and protein complexes structures deposited into the PDB before April 30, 2020.
-    ymax = ymax * 0.99
-    fontdict={"size": 8,
+    ymax = ymax * 0.90
+    fontdict={"size": fontsize,
               "rotation": 270,
               "verticalalignment" : "top",
               "horizontalalignment" : "left",
@@ -68,7 +111,7 @@ def add_training_cutoff_dates(ymax):
 
     plt.axvline(
         datetime.datetime(2021, 9, 30),
-        color="r",
+        color="black",
         linestyle="--",
         # label="AlphaFold2 2.3 model training cutoff",
     )
@@ -76,7 +119,7 @@ def add_training_cutoff_dates(ymax):
     plt.text(
         datetime.datetime(2021, 9, 30),
         ymax,
-        "AF2",
+        "AF2 + AF3",
         color="black",
         fontdict = fontdict,
     )
@@ -199,7 +242,7 @@ def plot_gpcr_status_per_month(df, cutoff_datetime, save_path):
     plt.yticks(range(0, df["Target GPCRdb ID"].nunique() + 1, 31))
 
     plt.xlim(min_date, max_date)
-    plt.xlabel("Date")
+    # plt.xlabel("Date")
     # add xticks every 12 months
     plt.xticks(months[::12], [month.strftime("%Y") for month in months[::12]], rotation=45)
     plt.ylabel("Number of GPCRs")
@@ -208,7 +251,6 @@ def plot_gpcr_status_per_month(df, cutoff_datetime, save_path):
     # place the cutoff labels next to the lines
     plt.legend()
     plt.tight_layout()
-
     plt.savefig(save_path, dpi=300)
     plt.close()
 
@@ -234,7 +276,7 @@ def run_main():
         else:
             known_df.at[i, "signalling_protein"] = []
 
-    disc_plot_p = script_dir / "plot_structure_discovery.png"
+    disc_plot_p = script_dir / "plot_structure_discovery.svg"
     # plot the number of structures discovered per month
     plot_structure_discovery(df=known_df, cutoff_datetime=cutoff_datetime, 
                              save_path=disc_plot_p)
