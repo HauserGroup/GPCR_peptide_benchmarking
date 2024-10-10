@@ -44,7 +44,7 @@ def get_models(model_dir, identifier_column="identifier"):
             # check identifier column is unique
             assert prediction_csv[
                 identifier_column
-            ].is_unique, "Identifier column is not unique."
+            ].is_unique, f"Identifier column is not unique. {[prediction_csv[identifier_column].value_counts()[:5]]}"
             # append list and df
             models.append((model_name, prediction_csv))
 

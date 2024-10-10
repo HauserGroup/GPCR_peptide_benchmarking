@@ -15,7 +15,8 @@ sys.path.append(".")
 from colors import COLOR
 
 
-def create_roc(invalid_identifiers, plot_p, log_p):
+def create_roc(invalid_identifiers, plot_p, log_p,
+               label_missing=True, disable_labels=False):
     """
     valid_identifiers: list of str, identifiers to keep. Remove other ones
     """
@@ -28,14 +29,24 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     # run
     logging.basicConfig(filename=log_p, level=logging.INFO, filemode="w")
     models = get_models(model_dir)
+    # remove models with 'APPRAISE' or 'LIS' in name
+    models = [(name, df) for name, df in models if "APPRAISE" not in name and "LIS" not in name]
+
     ground_truth = get_ground_truth_df()
     # filter invalid identifiers
     ground_truth = ground_truth[~ground_truth[identifier_col].isin(invalid_identifiers)]
     number_positives = len(ground_truth[ground_truth["Acts as agonist"] == 1])
     number_negatives = len(ground_truth[ground_truth["Acts as agonist"] == 0])
 
-    # empty fig
-    fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+    # set sns style
+    sns.set_context("paper")
+    sns.set_style("whitegrid") 
+    fig, ax = plt.subplots(figsize=(4, 4))
+    
+    # grid with opacity
+    plt.grid()
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
+    plt.grid(axis="x", linestyle="--", alpha=0.5)
 
     # iterate over models
     for model_name, prediction_df in models:
@@ -61,9 +72,10 @@ def create_roc(invalid_identifiers, plot_p, log_p):
         # calculate ROC curve
         fpr, tpr, _ = roc_curve(y_true, y_pred)
         roc_auc = auc(fpr, tpr)
-        label = f"{model_name}, AUC = {roc_auc:.2f}"
+        label = f"{model_name},\nAUC = {roc_auc:.2f}"
+        
         missing_values = len(ground_truth) - len(y_pred)
-        if missing_values > 0:
+        if missing_values > 0 and label_missing:
             label += f" ({missing_values} missing)"
         color = COLOR.get(model_name, "black")
 
@@ -75,18 +87,28 @@ def create_roc(invalid_identifiers, plot_p, log_p):
             ax=ax,
             # marker="o",
             # markersize=4,
-            # markers=True,
+            # width 2
+            linewidth=1,
+            # dashes
+            linestyle="-",
+            # other styles
+            # add variabilty to the line
             errorbar=None,
         )
+    plt.xlim(0, 1.01)
+    plt.ylim(0, 1.01)
+    plt.xticks([0, 0.2, 0.4, 0.6, 0.8, 1.0], fontsize=12)
+    plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0], fontsize=12)
+
 
     # make plot informative
-    ax.plot([0, 1], [0, 1], color="navy", lw=2, linestyle="--")
+    ax.plot([0, 1], [0, 1], color="black", lw=1, linestyle="--")
     ax.set_xlabel("False Positive Rate")
     ax.set_ylabel("True Positive Rate")
     ax.set_title("ROC Curve")
     ax.legend(loc="lower right")
-    ax.set_xlim([0.0, 1.0])
-    ax.set_ylim([0.0, 1.0])
+    # ax.set_xlim([0.0, 1.0])
+    # ax.set_ylim([0.0, 1.0])
     plt.title(
         f"Classifier performance\n n={len(ground_truth)}, ({number_positives} +, {number_negatives} -)"
     )
@@ -97,11 +119,45 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     labels, handles = zip(
         *sorted(zip(labels, handles), key=lambda x: get_auc(x[0]), reverse=True)
     )
-    ax.legend(handles, labels, loc="lower right")
+    ax.legend(handles, labels,
+              # place legend outside of plot (right)
+              # bbox_to_anchor=(1.05, 1),
+                loc='upper left',
+                borderaxespad=0.)
+    
+    # disable labels
+    if disable_labels:
+        plt.title("")
+        ax.set_xlabel("")
+        ax.set_ylabel("")
 
-    # adjust legend font dict
-    for text in ax.get_legend().get_texts():
-        text.set_fontsize("small")
+    # set xticks as every 0.1, but labels every 0.2
+    ax.set_xticks(np.arange(0, 1.1, 0.1))
+    ax.set_yticks(np.arange(0, 1.1, 0.1))
+    xticks_labels = []
+    yticks_labels = []
+    for i in range(0, 11, 1):
+        if i % 2 == 0:
+            xticks_labels.append(str(i / 10))
+            yticks_labels.append(str(i / 10))
+        else:
+            xticks_labels.append("")
+            yticks_labels.append("")
+    ax.set_xticklabels(xticks_labels, fontsize=12)
+    ax.set_yticklabels(yticks_labels, fontsize=12)
+
+    # add xticks for every 0.1
+    # plt.xticks(np.arange(0, 1.1, 0.1))
+    # plt.yticks(np.arange(0, 1.1, 0.1))
+
+    plt.tight_layout()
+
+    # remove the legend
+    plt.legend().remove()
+
+    # ensure the roc plot is square
+    plt.gca().set_aspect("equal", adjustable="box")
+    # adjust so plot is total height
     plt.savefig(plot_p, dpi=300)
     logging.info(f"Wrote ROC curve to {plot_p}")
 
@@ -110,6 +166,10 @@ def main():
     ground_truth = get_ground_truth_df()
     script_dir = pathlib.Path(__file__).parent
 
+    # set sns style
+    sns.set_style("whitegrid")
+    sns.set_context("notebook")
+    
     # create roc for all
     create_roc(
         invalid_identifiers=[],
@@ -128,19 +188,30 @@ def main():
         log_p=script_dir / "plots/roc_no_similar.log",
     )
 
-    # create roc for ONLY most dissimilar
-    not_included = list()
+    # create roc for ONLY most dissimilar. 
+    # Use AF3 as reference as decoys were redefined in step 2
+    for m, pred in get_models(script_dir / "models"):
+        if "AF3" in m:
+            af3_identifiers = list(pred["identifier"])
+            break
+    # add missing identifier to af3 (trfr_human), which is missing it's principal agonist
+    af3_identifiers.append("trfr_human___2139")
+
+    all_identifiers = list(ground_truth["identifier"])
+    not_included = list(set(all_identifiers) - set(af3_identifiers))
+    # print which type the identifiers are
     for i, row in ground_truth.iterrows():
-        if row["Decoy Type"] == "Similar":
-            not_included.append(row["identifier"])
-        elif row["Decoy Rank"] > 0:
-            not_included.append(row["identifier"])
+        if row["identifier"] not in not_included:
+            print(row["Decoy Type"], row["identifier"], row['Decoy Rank'])
 
     create_roc(
         invalid_identifiers=not_included,
-        plot_p=script_dir / "plots/roc_most_dissimilar.png",
+        plot_p=script_dir / "plots/roc_most_dissimilar.svg",
         log_p=script_dir / "plots/roc_most_dissimilar.log",
+        label_missing=False,
+        disable_labels=True,
     )
+    
 
 
 if __name__ == "__main__":

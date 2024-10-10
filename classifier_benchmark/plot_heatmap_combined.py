@@ -364,6 +364,12 @@ def plot_combined():
     metric_all = add_random(metric_all, 10)
     metric_all = metric_all.sort_values(by="F1", ascending=False)
     models = metric_all.index
+
+    # remove models if 'LIS' in model name or 'APPRAISE'
+    models = [model for model in models if "LIS" not in model and "APPRAISE" not in model.upper()]
+    # place AF3 after 'AF2'
+    af2_index = models.index("AF2")
+    models = models[:af2_index + 1] + ["AF3"] + models[af2_index + 1:]
     rows = models
     cols = ["Accuracy", "Precision", "Recall", "F1"]
     for col in cols:
@@ -419,10 +425,12 @@ def plot_combined():
         annot=annot,
         linewidths=linewidths,
         square=square,
+        # set cell size
+        # cbar_kws={"shrink": 0.5},
     )
     plt.xlabel("")
     plt.ylabel("")
-    plt.title("agonist vs dissimilar4 (1:1)")
+    plt.title("agonist vs most dissimilar (1:1)")
 
     # plot 5on1 in slot 2
     metric_similar = metric_similar.astype(float)
@@ -546,5 +554,131 @@ def plot_combined():
     )
 
 
+def plot_10_to_1_only():
+    """Create a heatmap.
+    - summarizes the 3 evaluation modes
+
+    """
+    # print(plt.style.available)
+    # ['Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid', 'bmh', 'classic', 'dark_background', 'fast', 'fivethirtyeight', 'ggplot', 'grayscale', 'seaborn-v0_8', 'seaborn-v0_8-bright', 'seaborn-v0_8-colorblind', 'seaborn-v0_8-dark', 'seaborn-v0_8-dark-palette', 'seaborn-v0_8-darkgrid', 'seaborn-v0_8-deep', 'seaborn-v0_8-muted', 'seaborn-v0_8-notebook', 'seaborn-v0_8-paper', 'seaborn-v0_8-pastel', 'seaborn-v0_8-poster', 'seaborn-v0_8-talk', 'seaborn-v0_8-ticks', 'seaborn-v0_8-white', 'seaborn-v0_8-whitegrid', 'tableau-colorblind10']
+    plt.style.use("seaborn-v0_8-whitegrid")
+    metric_all = get_metrics_for_all()
+    # metric_all = add_random(metric_all, 10)
+    metric_all = metric_all.sort_values(by="F1", ascending=False)
+    models = metric_all.index
+    rows = models
+    cols = ["Accuracy", "Precision", "Recall", "F1"]
+    for col in cols:
+        metric_all.loc["AF3", col] = np.nan
+    metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
+    metric_all = metric_all.loc[rows, cols]
+
+    script_dir = pathlib.Path(__file__).parent
+    plot_p = script_dir / "plots/combined_heatmap_10on1.svg"
+
+    # create a figure with 5 subplots (4 modes, 1 cbar)
+    fig, axs = plt.subplots(1, 2, figsize=(10, 5))
+    cmap = CMAP_GOOD_BAD
+    vmin = 0
+    vmax = 1.0
+    fmt = ".2f"
+    annot = True
+    cell_width = 10
+    cell_height = 10
+    linewidths = 0.5
+    square = True
+
+    # plot all 
+    metric_all = metric_all.astype(float)
+    plt.sca(axs[0])
+    sns.heatmap(
+        metric_all,
+        cmap=cmap,
+        vmin=vmin,
+        vmax=vmax,
+        # hide cbar
+        fmt=fmt,
+        annot=annot,
+        mask=metric_all.isna(),
+        linewidths=linewidths,
+        cbar=False,
+        square=square,
+        # set cell width
+    )
+
+    # disable the row labels (already in slot 1)
+    plt.xlabel("")
+    plt.ylabel("")
+    show_nans_as_x(metric_all)
+
+    # place xtick labels on the top for all
+    for ax in axs:
+        ax.xaxis.set_ticks_position("top")
+        # remove ticks
+        ax.tick_params(axis="both", which="both", length=0)
+        # tighten the layout
+        ax.set_aspect("equal")  # auto instead of equal
+
+    # set cell width wider
+    plt.sca(axs[0])
+    plt.xticks(rotation=15, fontsize=9)
+    plt.yticks(rotation=0, fontsize=9)
+
+    # make the cells larger of the heatmap in the 1st plot
+    plt.sca(axs[0])
+    plt.yticks(rotation=0, fontsize=9)
+    plt.xticks(rotation=15, fontsize=9)
+    plt.title("")
+    cell_width = 10
+    cell_height = 7
+    plt.gcf().set_size_inches(cell_width, cell_height)
+
+
+    # in the 2nd plot, place the cbar (no heatmap)
+    plt.sca(axs[1])
+    plt.axis("off")
+    sns.heatmap(
+        [[]],
+        vmin=vmin,
+        vmax=vmax,
+        cbar=True,
+        fmt=fmt,
+        annot=annot,
+        linewidths=linewidths,
+        square=square,
+        cmap=cmap,
+        cbar_kws={
+            "shrink": 0.25,
+            "location": "left",
+            # center
+            "anchor": (0.1, 0.5),
+            # left pad
+            "pad": 0.1,
+        },
+    )
+    plt.tight_layout()
+
+    # increase font size of heatmap labels
+    for ax in axs:
+        for item in (
+            [ax.title, ax.xaxis.label, ax.yaxis.label]
+            + ax.get_xticklabels()
+            + ax.get_yticklabels()
+        ):
+            item.set_fontsize(9)
+
+        # increase font size of annotations
+        for text in ax.texts:
+            text.set_fontsize(11)
+
+    plt.savefig(
+        plot_p,
+        dpi=300,
+        # transp bgr
+        transparent=True,
+    )
+
+
 if __name__ == "__main__":
     plot_combined()
+    plot_10_to_1_only()
