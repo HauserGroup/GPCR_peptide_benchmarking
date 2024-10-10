@@ -71,7 +71,7 @@ def create_roc(invalid_identifiers, plot_p, log_p):
             x=fpr,
             y=tpr,
             label=label,
-            color=color,
+            # color=color,
             ax=ax,
             # marker="o",
             # markersize=4,
@@ -102,8 +102,12 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     # adjust legend font dict
     for text in ax.get_legend().get_texts():
         text.set_fontsize("small")
-    plt.savefig(plot_p, dpi=300)
+    plt.savefig(plot_p)
     logging.info(f"Wrote ROC curve to {plot_p}")
+    # also save as png
+    plt.savefig(plot_p.with_suffix(".png"), dpi=600)
+    plt.close()
+
 
 
 def main():
@@ -124,7 +128,7 @@ def main():
             similar_identifiers.append(row["identifier"])
     create_roc(
         invalid_identifiers=similar_identifiers,
-        plot_p=script_dir / "plots/roc_no_similar.png",
+        plot_p=script_dir / "plots/roc_no_similar.svg",
         log_p=script_dir / "plots/roc_no_similar.log",
     )
 
@@ -138,7 +142,7 @@ def main():
 
     create_roc(
         invalid_identifiers=not_included,
-        plot_p=script_dir / "plots/roc_most_dissimilar.png",
+        plot_p=script_dir / "plots/roc_most_dissimilar.svg",
         log_p=script_dir / "plots/roc_most_dissimilar.log",
     )
 
