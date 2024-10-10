@@ -55,8 +55,9 @@ COLOR = {
     "AF2 (no templates)": "#008FD7",
     "AF3": "#061f4a",
     # models (no structure)
-    "Peptriever": "#aeb0b5",
+    "Peptriever": "#9E005D",
     "D-SCRIPT2": "#aeb0b5",
+    "D-SCRIPT": "#aeb0b5",
     # models (subanalysis)
     "AF2 LIS (no templates)": "#9E005D",
     "AF2 LIS": "#9E005D",
