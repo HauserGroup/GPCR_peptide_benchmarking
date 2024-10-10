@@ -9,6 +9,40 @@ from Bio.PDB import PDBParser, PDBIO, Select, PDBList
 from pathlib import Path
 from DockQ.DockQ import load_PDB, run_on_all_native_interfaces, run_on_chains
 
+from Bio.PDB import PDBParser, Superimposer, Select
+
+def calculate_rmsd(pdb_file_1, pdb_file_2, chain_id_1, chain_id_2):
+    """
+    Helper function to calculate the RMSD between two chains in two PDB files.
+    """
+    # Create a PDB parser
+    parser = PDBParser(QUIET=True)
+
+    # Parse the structures
+    structure_1 = parser.get_structure("protein1", pdb_file_1)
+    structure_2 = parser.get_structure("protein2", pdb_file_2)
+
+    # Select the specified chains from each structure
+    chain_1 = structure_1[0][chain_id_1]  # Model 0, Chain ID A
+    chain_2 = structure_2[0][chain_id_2]  # Model 0, Chain ID A
+
+    # Extract the CA atoms for superimposition
+    atoms_1 = [atom for atom in chain_1.get_atoms() if atom.get_id() == "CA"]
+    atoms_2 = [atom for atom in chain_2.get_atoms() if atom.get_id() == "CA"]
+
+    # Check if both chains have the same number of CA atoms
+    if len(atoms_1) != len(atoms_2):
+        return None
+
+    # Superimposer for RMSD calculation
+    super_imposer = Superimposer()
+    super_imposer.set_atoms(atoms_1, atoms_2)
+    super_imposer.apply(structure_2.get_atoms())
+
+    # RMSD
+    return super_imposer.rms
+
+
 def list_missing_residues(pdb_filename):
     """
     Helper function to create a dictionary of missing residues per chain in an experimental PDB file.
@@ -87,6 +121,49 @@ def remove_missing_residues(pdb_path, missing_atom_dict, output_pdb_path = ""):
                 f.write(line)
 
     return output_pdb_path
+
+
+def rename_pdb_chains(pdb_file, output_file=""):
+    """
+    Rename chains in a PDB file to sequential letters starting from 'A'.
+
+    :param pdb_file: str or Path, path to the PDB file.
+    :param output_file: str or Path, path to the output file.
+    """
+    if output_file == "":
+        output_file = pdb_file.replace(".pdb", "_renamed_chains.pdb")
+
+    with open(pdb_file, 'r') as f:
+        lines = f.readlines()
+
+    # Define the chain identifiers we will use (A, B, C, ...)
+    chain_ids = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    chain_map = {}  # Map original chain ID to new chain ID
+    current_chain_index = 0
+
+    with open(output_file, 'w') as out:
+        for line in lines:
+            # Only modify ATOM and HETATM lines that contain chain information
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                chain_id = line[21]  # Chain identifier is in column 22 (index 21)
+
+                # Map the original chain ID to a new one if not already mapped
+                if chain_id not in chain_map:
+                    if current_chain_index < len(chain_ids):
+                        chain_map[chain_id] = chain_ids[current_chain_index]
+                        current_chain_index += 1
+                    else:
+                        raise ValueError("Too many chains. Only 26 unique chain identifiers (A-Z) are supported.")
+
+                # Replace the chain identifier in the line (column 22)
+                new_chain_id = chain_map[chain_id]
+                line = line[:21] + new_chain_id + line[22:]
+
+            # Write the (modified) line to the output file
+            out.write(line)
+
+    return output_file
+
 
 def download_pdb(pdb_code, file_format='pdb', output_path='.', overwrite=False):
     """
@@ -241,6 +318,38 @@ def renumber_residues(pdb_file, output_file = ""):
 
     return output_file
 
+
+def renumber_residues(pdb_file, output_file=""):
+    """
+    Increment all atom numbers and residue numbers in a PDB file by one.
+
+    :param pdb_file: str or Path, path to the PDB file.
+    :param output_file: str or Path, path to the output file.
+    """
+    if output_file == "":
+        output_file = pdb_file.replace(".pdb", "_renumbered.pdb")
+
+    with open(pdb_file, 'r') as f:
+        lines = f.readlines()
+
+    with open(output_file, 'w') as out:
+        for line in lines:
+            # Only modify ATOM and HETATM lines that contain atom and residue information
+            if line.startswith("ATOM") or line.startswith("HETATM"):
+                # Atom number is in columns 7-11 (index 6-11), strip leading/trailing spaces
+                atom_number = int(line[6:11].strip()) + 1
+                # Residue number is in columns 23-26 (index 22-26)
+                residue_number = int(line[22:26].strip()) + 1
+
+                # Replace atom number in the line (columns 7-11)
+                line = f"{line[:6]}{atom_number:>5}{line[11:22]}{residue_number:>4}{line[26:]}"
+
+            # Write the modified line to the output file
+            out.write(line)
+
+    return output_file
+
+
 def parse_dataset(input_path, output_file, pdb_dir, overwrite = False):
     """
     Helper function to parse the dataset and download the PDB files.
@@ -309,6 +418,8 @@ def run_dockq_scoring(input_df, model_paths, output_file):
 
             if "RFAA_no_templates" in model_name:
                 model_path = model_paths[model_name] + "/" + row["pdb"] + "_no_templates.pdb"
+            elif "Chai-1_no_MSAs" in model_name:
+                model_path = model_paths[model_name] + "/" + row["pdb"] + "_no_MSAs.pdb"
             else:
                 model_path = model_paths[model_name] + "/" + row["pdb"] + ".pdb"
 
@@ -323,6 +434,10 @@ def run_dockq_scoring(input_df, model_paths, output_file):
             # Renumber residues in the predicted model so that each chain starts from 1
             renumbered_path = renumber_residues(model_path)
 
+            # Rename chains for Chai models
+            if "Chai" in model_name:
+                renumbered_path = rename_pdb_chains(renumbered_path)
+
             # Remove missing residues from the predicted model
             missing_residues = {
                 "A" : ast.literal_eval(row["missing_receptor_pos"]),
@@ -333,6 +448,9 @@ def run_dockq_scoring(input_df, model_paths, output_file):
             else:
                 cleaned_path = remove_missing_residues(renumbered_path, missing_residues)
                 os.remove(renumbered_path)
+
+            # Calculate RMSD
+            rmsd = calculate_rmsd(cleaned_path, row["pdb_path"], "A", "A")
 
             model = load_PDB(cleaned_path)
             model.id = cleaned_path
@@ -356,6 +474,10 @@ def run_dockq_scoring(input_df, model_paths, output_file):
 
     # Drop chain_map column
     results_df = results_df.drop(columns=["chain_map"])
+
+    # Reorder columns
+    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2"]
+    results_df = results_df[columns]
     results_df.to_csv(output_file, index=False)
 
     return results_df
@@ -382,11 +504,14 @@ if __name__ == "__main__":
         "AF2" : f"{repo_dir}/structure_benchmark/AF2",
         "AF2_no_templates" : f"{repo_dir}/structure_benchmark/AF2_no_templates",
         "ESMFold" : f"{repo_dir}/structure_benchmark/ESMFold",
-        "AF3": f"{repo_dir}/structure_benchmark/AF3"
+        "AF3": f"{repo_dir}/structure_benchmark/AF3",
+        "Chai-1": f"{repo_dir}/structure_benchmark/Chai-1",
+        "Chai-1_no_MSAs": f"{repo_dir}/structure_benchmark/Chai-1_no_MSAs"
+
     }
 
     # Output file path
-    output_file = f"{repo_dir}/structure_benchmark_data/DockQ_results_new.csv"
+    output_file = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 
     # Run DockQ scoring
     run_dockq_scoring(input_df, model_paths, output_file)

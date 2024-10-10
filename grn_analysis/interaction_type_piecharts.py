@@ -5,6 +5,8 @@ import matplotlib.font_manager as fm
 import matplotlib.pyplot as plt
 from get_chosen_grns import get_chosen_grns
 
+from colors import *
+
 # Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
@@ -21,7 +23,7 @@ from colors import *
 font_path = f'{repo_dir}/Aptos.ttf'
 font_prop = fm.FontProperties(fname=font_path)
 
-def plot_piechart(df, column, output_path = "", title = "", fontprop = ""):
+def plot_piechart(df, column, output_path = "", title = "", fontprop = "", svg = False):
 
     # Make a pie chart of df column
     x = df[column].value_counts()
@@ -32,6 +34,10 @@ def plot_piechart(df, column, output_path = "", title = "", fontprop = ""):
     # Get total number of values in column
     total = sum(x)
 
+    # Color the pie chart using COLORS["Class A (Rhodopsin)"] and COLORS["Class B1 (Secretin)"]
+    colors = [COLOR["Class A (Rhodopsin)"], COLOR["Class B1 (Secretin)"]]
+    plt.rcParams['axes.prop_cycle'] = plt.cycler(color=colors)
+    
     # Edit labels - include percentage
     labels = [ f"{i} ({round(int(i)/total*100, 2)} %)" if int(i) > 30 else "" for i in x ]
 
@@ -45,6 +51,9 @@ def plot_piechart(df, column, output_path = "", title = "", fontprop = ""):
         text.set_fontproperties(fontprop)
         
     if output_path != "":
+        if svg:
+            plt.rcParams['svg.fonttype'] = 'none'
+            output_path = output_path.replace(".png", ".svg")
         plt.tight_layout()
         plt.savefig(output_path, bbox_inches='tight', dpi = 600) 
     else:

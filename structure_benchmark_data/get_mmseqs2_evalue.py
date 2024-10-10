@@ -3,13 +3,9 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib.font_manager as fm
-import matplotlib.colors as mcolors
-from matplotlib.colors import LinearSegmentedColormap
 from scipy import stats
 import numpy as np
 from sklearn.metrics import r2_score
-
 
 # Get the top-level directory
 top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -53,7 +49,6 @@ def get_closest_training_structures(input_path):
 
     return df
 
-
 def calculate_average_plddt(pdb_file_path):
     """
     Calculate the average plddt score from a PDB file.
@@ -90,14 +85,13 @@ def calculate_average_plddt(pdb_file_path):
         return None
 
 
-def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
+def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", x="Identity", y="DockQ"):
     data = pd.read_csv(dockq_path)
     data = data[data["model"] == model]
     data = data.merge(training_struct_df, left_on="pdb", right_on="pdb", how="left")
 
-    # Get the top-level directory
+    # Get the top-level directory and build the path to the plot directory
     repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
     if plot_path == "":
         plot_path = f"{repo_dir}/structure_benchmark_data/plots"
 
@@ -119,121 +113,84 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path=""):
             average_plddt = average_plddt * 100
         data.loc[data["pdb"] == pdb, "average_plddt"] = average_plddt
 
-    # Make a scatter plot of DockQ vs e-value
-    fig, ax = plt.subplots(figsize=(8, 5))
-    x = "Identity"
-    y = "DockQ"
+    # Use Spearman's rank correlation to calculate the correlation between the two variables
+    statistic, corr_p_val = stats.spearmanr(data[[x, y]], axis=0, nan_policy='propagate', alternative='two-sided')
+    statistic = np.round(statistic, 3)
+    corr_p_val = np.round(corr_p_val, 3)
+    n = len(data[x])
 
-    # Plot path
-    if not os.path.exists(plot_path):
-        os.makedirs(plot_path)
-    output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.png")
+    # Calculate the regression statistics
+    slope, intercept, r_value, p_value, std_err = stats.linregress(data[x], data[y])
 
-    # Specify the path to the Aptos font file
-    font_path = f"{repo_dir}/Aptos.ttf"
-    font_prop = fm.FontProperties(fname=font_path)
+    # Make the plot using Seaborn
+    plt.figure(figsize=(8, 5))
 
-    # Calculate the linear regression line and 95% confidence interval
-    slope, intercept = np.polyfit(data[x], data[y], 1)
-    y_model = np.polyval([slope, intercept], data[x])
-    x_mean = np.mean(data[x])
-    y_mean = np.mean(data[y])
-    n = data[x].size
-    m = 2
-    dof = n - m
-    t = stats.t.ppf(0.975, dof)
-    residual = data[y] - y_model
-    std_error = (np.sum(residual**2) / dof) ** 0.5  # Standard deviation of the error
-    numerator = np.sum((data[x] - x_mean) * (data[y] - y_mean))
-    denominator = (
-        np.sum((data[x] - x_mean) ** 2) * np.sum((data[y] - y_mean) ** 2)
-    ) ** 0.5
-    correlation_coef = numerator / denominator
-    r2 = correlation_coef**2
-    MSE = 1 / n * np.sum((data[y] - y_model) ** 2)
-    x_line = np.linspace(np.min(data[x]), np.max(data[x]), 100)
-    y_line = np.polyval([slope, intercept], x_line)
-    ci = (
-        t
-        * std_error
-        * (1 / n + (x_line - x_mean) ** 2 / np.sum((data[x] - x_mean) ** 2)) ** 0.5
+    # Create the scatterplot using plt.scatter with fixed colormap scale
+    points = plt.scatter(
+        data[x],
+        data[y],
+        c=data["average_plddt"],  # Set color based on average pLDDT
+        cmap=get_good_bad_cmap(),  # Use a consistent colormap
+        s=100,  # Set point size
+        linewidth=0,  # Set edge width
+        vmin=0,  # Fix the minimum value at 0
+        vmax=100  # Fix the maximum value at 100
     )
 
-    # Create new figure
-    fig, ax = plt.subplots()
+    # Add colorbar for the scatter plot
+    cbar = plt.colorbar(points)
+    cbar.set_label("Average pLDDT", fontsize=14)
 
-    # Set the normalization range for the colormap from 0 to 100
-    norm = mcolors.Normalize(vmin=0, vmax=100)
-
-    # Make the scatterplot
-    sc = ax.scatter(
+    # Create the scatterplot with regression line and confidence intervals using sns.regplot()
+    scatter_plot = sns.regplot(
         x=data[x],
         y=data[y],
-        c=data["average_plddt"],
-        cmap=get_good_bad_cmap(),
-        norm=norm,
-        s=15,
-    )
-    ax.plot(x_line, y_line, color=COLOR["Receptor"])
-    ax.fill_between(
-        x_line,
-        y_line + ci,
-        y_line - ci,
-        color=COLOR["Receptor"],
-        label="95% confidence interval",
-        alpha=0.1,
-    )
-    ax.text(
-        0.0025,
-        0.85,
-        "y = "
-        + str(np.round(intercept, 2))
-        + " + "
-        + str(np.round(slope, 2))
-        + "x\n"
-        + "r$^2$ = "
-        + str(np.round(r2, 3))
-        + "\nMSE = "
-        + str(np.round(MSE, 3)),
-        font_properties=font_prop,
-        fontsize=12,
+        scatter_kws={"s": 0},
+        line_kws={"color": "#0b3d91", "alpha": 0.9},
+        ci=95
     )
 
-    # Add colorbar
-    cbar = plt.colorbar(sc, ax=ax, orientation="vertical")
-    cbar.set_label("Average pLDDT", fontproperties=font_prop, fontsize=14)
-
-    # Optionally, set custom ticks and labels for the colorbar
-    cbar.set_ticks([0, 20, 40, 60, 80, 100])  # Customize the ticks if needed
-    cbar.set_ticklabels([0, 20, 40, 60, 80, 100])  # Customize the tick labels if needed
-
-    # Update fonts and labels
-    plt.xlabel(x, fontproperties=font_prop, fontsize=14)
-    plt.ylabel(y, fontproperties=font_prop, fontsize=14)
-
-    # Update fonts and labels
-    plt.xlabel(x, fontproperties=font_prop, fontsize=14)
-    plt.ylabel(y, fontproperties=font_prop, fontsize=14)
-
-    # Modify the title
+    # Set axis labels and title
+    plt.xlabel(x, fontsize=14)
+    plt.ylabel(y, fontsize=14)
     model_title = model.split("_")[0]
     if "no_templates" in model:
         model_title += " (no templates)"
-    plt.title(f"{model_title}", fontproperties=font_prop, fontsize=16)
+    plt.title(f"{model_title}, r({n}) = {statistic}, p = {corr_p_val}", fontsize=16)
 
-    # Set the font properties for the ticks
-    for label in ax.get_xticklabels() + ax.get_yticklabels():
-        label.set_fontproperties(font_prop)
-        label.set_fontsize(12)
-
-    # Modift ticks and set axis limits
-    plt.tick_params(axis="y", direction="in")
-    plt.tick_params(axis="x", direction="in")
+    # Set axis limits
     plt.ylim(-0.025, 1.025)
     plt.xlim(-0.025, 1.025)
 
-    # Save the figure
+    # Annotate the plot with the regression statistics
+    plt.text(
+        0.05,
+        0.85,
+        f"y = {intercept:.2f} + {slope:.2f}x\nr² = {r_value:.3f}",
+        fontsize=12,
+        transform=scatter_plot.transAxes
+    )
+
+    # Hide grid and legend
+    plt.grid(False)
+
+    # Make frame around the plot grey
+    for spine in plt.gca().spines.values():
+        spine.set_edgecolor("#d0d0d0")
+
+    # Make tickmarks go inward
+    plt.tick_params(direction="in", length=2)
+
+    # Remove tickmarks from colorbar
+    cbar.ax.tick_params(direction="in", length=0)
+
+    # Save the plot
+    if not os.path.exists(plot_path):
+        os.makedirs(plot_path)
+    output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.png")
+    plt.tight_layout()
     plt.savefig(output_path, dpi=600)
+    plt.close()
 
 
 if __name__ == "__main__":
@@ -247,11 +204,11 @@ if __name__ == "__main__":
     # Get the closest training structures
     af_training_struct = get_closest_training_structures(af_input_path)
     af_training_struct.to_csv(
-        f"{file_dir}/mmseq2_af_training_structures.csv", index=False
+        f"{file_dir}/mmseqs2_results/mmseq2_af_training_structures.csv", index=False
     )
     rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
     rfaa_training_struct.to_csv(
-        f"{file_dir}/mmseq2_rfaa_training_structures.csv", index=False
+        f"{file_dir}/mmseqs2_results/mmseq2_rfaa_training_structures.csv", index=False
     )
 
     # Path to the DockQ results file

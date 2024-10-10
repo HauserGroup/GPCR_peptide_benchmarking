@@ -70,10 +70,15 @@ print(chosen_grns)
 chosen_grns_labels = ["+ " + str(i[0][-1]) for i in chosen_grns_per_round]
 chosen_grns_labels[0] = chosen_grns_labels[0].replace("+ ", " ")
 
+# Sve chosen GRNs to a file
+with open(f"{file_dir}/chosen_grns.txt", "w") as f:
+    for grn in chosen_grns:
+        f.write(f"{grn}\n")
+
 # Cumulative plot of number of PDBs covered by the generic residue numbers
 fig, ax = plt.subplots()
-fig.set_figwidth(10) 
-fig.set_figheight(5) 
+fig.set_figwidth(7) 
+fig.set_figheight(6) 
 
 labels = []
 labels = chosen_grns_labels
@@ -89,10 +94,12 @@ for i, v in enumerate(pdbs_covered_p):
 
 ax.set_xlabel('Percentage (%)', fontproperties=font_prop, size = 16)
 ax.set_title("Percentage of PDBs covered by the generic residue numbers", size = 20, fontproperties=font_prop)
-ax.set_xlim(0,100)
+ax.set_xlim(70,100)
 
 plt.yticks(fontsize = 12)
 plt.xticks(fontsize = 12)
 plt.tick_params(axis="x",direction="in")
 plt.tick_params(axis="y",length=0)
-plt.savefig(f"{plot_dir}/pdbs_covered.png", bbox_inches='tight', dpi = 300)
+plt.rcParams['svg.fonttype'] = 'none'
+plt.tight_layout()
+plt.savefig(f"{plot_dir}/pdbs_covered.svg", bbox_inches='tight', dpi = 300)
