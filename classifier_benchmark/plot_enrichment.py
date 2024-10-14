@@ -25,21 +25,24 @@ from plot_heatmap_combined import apply_first_pick_to_predictions
 
 def run_main():
     """ """
-    # set models to keep to [] to use all models
-    MODELS_TO_KEEP = [
-        # "AF2 (no templates)",
-        # "AF2 LIS (no templates)",
-        "AF2",
-        "AF2 LIS",
-        "AF2 APPRAISE",
-        # "RF-AA (no templates)",
-        # "AF2 (no templates)+pocket",
-        # "AF2 LIS (no templates)+pocket",
-        # "RF-AA (no templates)+pocket",
-    ]
-    print("models to keep", MODELS_TO_KEEP)
+    # # set models to keep to [] to use all models
+    # MODELS_TO_KEEP = [
+    #     # "AF2 (no templates)",
+    #     # "AF2 LIS (no templates)",
+    #     "AF2",
+    #     "AF2 LIS",
+    #     "AF2 APPRAISE",
+    #     # "RF-AA (no templates)",
+    #     # "AF2 (no templates)+pocket",
+    #     # "AF2 LIS (no templates)+pocket",
+    #     # "RF-AA (no templates)+pocket",
+    # ]
+    # print("models to keep", MODELS_TO_KEEP)
+
     script_dir = pathlib.Path(__file__).parent
     models = get_models(script_dir / "models")
+    # remove models with LIS or APPRAISE
+    models = [m for m in models if "LIS" not in m[0] and "APPRAISE" not in m[0] and not "RIA" in m[0]]
     unique_models = list([m[0] for m in models])
     plot_p = script_dir / "plots/enrichment.svg"
     ground_truth = get_ground_truth_df()
@@ -52,10 +55,6 @@ def run_main():
 
     # remove AF3 from models
     models = [m for m in models if m[0] != "AF3"]
-    # remove models not in MODELS_TO_KEEP
-    if len(MODELS_TO_KEEP) > 0:
-        models = [m for m in models if m[0] in MODELS_TO_KEEP]
-
     for model_name, pred_df in models:
         pred_df["gpcr"] = pred_df["identifier"].apply(lambda x: x.split("___")[0])
         pred_df["class"] = pred_df["gpcr"].apply(lambda x: gpcr_to_class[x])
@@ -69,6 +68,15 @@ def run_main():
     )
     for keep_top_n in range(1, 12):
         for model_name, pred_df in models:
+            # print stats if keep_top_n == 1
+            if keep_top_n == 1:
+                pa_count = pred_df[pred_df["is_agonist"]].shape[0]
+                decoy_count = pred_df[~pred_df["is_agonist"]].shape[0]
+                total_pa = pred_df["is_agonist"].sum()
+                print(
+                    f"Model: {model_name}, PA count: {pa_count}, Decoy count: {decoy_count}, Total PA: {total_pa}"
+                )
+
             # sort
             filter_df = pred_df.sort_values(
                 ["class", "gpcr", "InteractionProbability"],
@@ -98,9 +106,9 @@ def run_main():
     )
 
     # plot
-    sns.set_context("talk")
-    sns.set_style("whitegrid")
-    fig, ax = plt.subplots(figsize=(5, 5))
+    sns.set_context("paper")
+    sns.set_style("whitegrid") 
+    fig, ax = plt.subplots(figsize=(4, 4))
     colors = [COLOR.get(m, "black") for m in plot_df["model"].unique()]
     sns.lineplot(
         x="keep_top_n",
@@ -111,9 +119,10 @@ def run_main():
         ax=ax,
         # add markers
         marker="o",
-        markersize=5,
-        linewidth=2,
+        markersize=4,
+        linewidth=1,
     )
+
     # plot dashed line at random performance
     random_performance_yvals = 1 / 11 * plot_df["keep_top_n"]
     ax.plot(
@@ -124,21 +133,24 @@ def run_main():
         label="Random",
         # opacity
         alpha=0.5,
+        # width = 2
+        linewidth=1,
     )
 
     # save
-    plt.xlim(0, 12)
-    plt.ylim(0, 1.05)
+    plt.xlim(0.8, 11.2)
+    plt.ylim(0, 1.01)
     # grid with opacity
     plt.grid()
     plt.grid(axis="y", linestyle="--", alpha=0.5)
     plt.grid(axis="x", linestyle="--", alpha=0.5)
     # reduce legend font size
     # zoom
-    plt.title("True agonist retention")
-    plt.ylabel("Percent agonists retained")
-    plt.xlabel("Number of samples chosen")
-    plt.legend(title="Model", loc="lower right", fontsize=8, title_fontsize=8)
+    # plt.title("True agonist retention")
+    # plt.ylabel("Percent agonists retained")
+    # plt.xlabel("Number of samples chosen")
+    plt.legend(title="Model", loc="lower right", fontsize=11, title_fontsize=12)
+
     plt.xticks(range(1, 12))
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
     plt.tight_layout()
@@ -150,21 +162,26 @@ def run_main():
     # reverse
     labels = labels[::-1]
     colors = [COLOR.get(m, "black") for m in labels]
-    handles = [plt.Line2D([0], [0], color=c, lw=2) for c in colors]
+    handles = [plt.Line2D([0], [0], color=c, lw=1) for c in colors]
     ax = plt.gca()
     ax.legend(
         handles,
         labels,
         title="Model",
         loc="lower right",
-        fontsize=8,
-        title_fontsize=8,
+        fontsize=11,
+        title_fontsize=12,
     )
     # fontsize of x and y labels
     plt.xticks(fontsize=12)
     plt.yticks(fontsize=12)
 
-    plt.savefig(plot_p, dpi=300)
+    # disable labels (add in illustrator)
+    plt.xlabel("")
+    plt.ylabel("")
+    plt.title("")
+
+    plt.savefig(plot_p)
     print(f"Saved plot to {plot_p}")
 
 

@@ -57,8 +57,9 @@ COLOR = {
     "Chai-1": "#855e40",
     "Chai-1 (no MSAs)": "#b89881",
     # models (no structure)
-    "Peptriever": "#aeb0b5",
+    "Peptriever": "#9E005D",
     "D-SCRIPT2": "#aeb0b5",
+    "D-SCRIPT": "#aeb0b5",
     # models (subanalysis)
     "AF2 LIS (no templates)": "#9E005D",
     "AF2 LIS": "#9E005D",

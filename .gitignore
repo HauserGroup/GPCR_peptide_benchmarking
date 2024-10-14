@@ -6,7 +6,9 @@
 *.DS_Store
 /classifier_benchmark/plots/rankings/*
 # ignore the models in subanalysis, as there are all links
-/classifier_subanalysis/models/*
+/classifier_subanalysis/models
+/classifier_subanalysis/models_temp
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -200,3 +202,15 @@ classifier_subanalysis/models_temp/AF2
 classifier_subanalysis/models_temp/AF2 LIS
 classifier_benchmark/models/AF2/models
 .DS_Store
+classifier_subanalysis/models_temp/RF-AA/roc_curve.png
+classifier_subanalysis/models_temp/RF-AA/RFAA_scores_with_templates.csv
+classifier_subanalysis/models_temp/RF-AA/predictions.csv
+classifier_subanalysis/models_temp/RF-AA/get_predictions.py
+classifier_subanalysis/models/RF-AA (no templates)/RFAA_scores_without_templates.csv
+classifier_subanalysis/models/RF-AA (no templates)/predictions.csv
+classifier_subanalysis/models/RF-AA (no templates)/get_predictions.py
+classifier_subanalysis/models/AF2 (no templates)/predictions.csv
+classifier_subanalysis/models/AF2 (no templates)/p3.csv
+classifier_subanalysis/models/AF2 (no templates)/p2.csv
+classifier_subanalysis/models/AF2 (no templates)/p1.csv
+classifier_subanalysis/models/AF2 (no templates)/combine_scores.py

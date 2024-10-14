@@ -3,26 +3,6 @@ import numpy as np
 import pathlib
 
 
-# fixed by just renaming the directories
-# def directory_to_model_name(directory_name: str) -> str:
-#     """
-#     # match color dictionary in colors.py
-#     """
-#     dir_to_name = {
-#         "AF2_template_iptm+ptm": "AF2",
-#         "AF2_template_LIS": "AF2-LIS",
-#         "AF3": "AF3",
-#         "DSCRIPT2_TTV1": "D-SCRIPT2",
-#         "Neuralplexer_sm_lig_plddt": "NeuralPLexer",
-#         "RFAA_no_template_pae_prot": "RF-AA (no templates)",
-#         "RFAA_template_pae_prot": "RF-AA",
-#     }
-#     if directory_name in dir_to_name:
-#         return dir_to_name[directory_name]
-#     else:
-#         return directory_name
-
-
 def get_models(model_dir, identifier_column="identifier"):
     """Get the models in the model directory.
 

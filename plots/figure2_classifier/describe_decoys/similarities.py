@@ -87,7 +87,7 @@ def run_main():
             opacity.append(0.5)
 
     # plot
-    plt.figure(figsize=(4, 4))
+    plt.figure(figsize=(2,2))
     # get index of first sim value > 30
     cutoff_index_key = sim_df[sim_df > 30].index[0]
     # one before
@@ -112,8 +112,7 @@ def run_main():
         sim_df,
         color="lightgrey",
         width=width,
-        edgecolor="black",
-        linewidth=0.5,
+        linewidth=0.0,
         alpha=0.5,
     )
     # plot similar bars individually
@@ -125,7 +124,7 @@ def run_main():
                 color=colors[i],
                 width=width,
                 edgecolor="black",
-                linewidth=0.5,
+                linewidth=0.2,
                 alpha=1,
             )
         elif gpcr_key in dissimilar[original_target_col].values:
@@ -135,7 +134,7 @@ def run_main():
                 color=colors[i],
                 width=width,
                 edgecolor="black",
-                linewidth=0.5,
+                linewidth=0.2,
                 alpha=1,
             )
 
@@ -148,7 +147,7 @@ def run_main():
     plt.xlim(-1, len(sim_df))
     plt.grid(axis="y")
     plt.ylabel("")
-    plt.xlabel("GPCR")
+    plt.xlabel("")
     plt.title(f"Similarity", fontsize=20)
     plt.tight_layout()
     plt.savefig(script_dir / f"{gpcr}_similarity_distribution.svg")
