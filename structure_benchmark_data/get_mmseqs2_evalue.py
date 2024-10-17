@@ -187,7 +187,8 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", 
     # Save the plot
     if not os.path.exists(plot_path):
         os.makedirs(plot_path)
-    output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.png")
+    plt.rcParams["svg.fonttype"] = "none"
+    output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.svg")
     plt.tight_layout()
     plt.savefig(output_path, dpi=600)
     plt.close()

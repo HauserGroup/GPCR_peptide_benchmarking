@@ -130,16 +130,20 @@ font_prop_ylabels = fm.FontProperties(fname=font_path, size=18)
 
 # Creating a bar plot
 fig, ax = plt.subplots(figsize=(8, 6))
-sns.barplot(
+
+sns.swarmplot(
     x='model', 
     y='rmsd', 
-    data=data, 
+    data=data,
     ax=ax, 
-    alpha=0.9,
+    size = 3, 
+    alpha=0.6, 
     palette=colors.values(), 
-    order=list(colors.keys()), 
-    ci=None  # Disable built-in error bars to add custom ones
+    order = list(colors.keys())
 )
+for i, model in enumerate(list(colors.keys())):
+    ax.get_children()[i].set_color(colors[model])
+
 
 # Add error bars
 for i, model in enumerate(list(colors.keys())):
@@ -148,7 +152,7 @@ for i, model in enumerate(list(colors.keys())):
         means[model], 
         yerr=sems[model], 
         fmt='none', 
-        color='black', 
+        color=colors[model], 
         capsize=5, 
         label='Mean ± SEM' if i == 0 else ""
     )
@@ -163,6 +167,8 @@ ax.set_ylabel('Receptor RMSD', fontproperties=font_prop_ylabels)
 ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontproperties=font_prop_xlabels)
 ax.tick_params(axis="y", direction="in")
 plt.title('Receptor RMSD of predicted complexes', fontproperties=font_prop)
+
+ax.set_ylim(0, max(data['rmsd'])/2)
 
 # Remove the x-axis ticks
 ax.xaxis.set_ticks_position('none')
