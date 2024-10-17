@@ -95,7 +95,8 @@ def show_how_real_agonist_is_saved():
         out_f.write(f"hide cartoon, chain B and resi 827-\n")
     # custom colors
     with open(out_p, "a") as out_f:
-        out_f.write("set_color decoy, (103, 133, 183)\n")
+        # #3860a3 = (56, 96, 163)
+        out_f.write("set_color decoy, (56, 96, 163)\n")
         out_f.write("set_color real_agonist, (249, 170, 67)\n")
 
     # for each pdb, color peptides

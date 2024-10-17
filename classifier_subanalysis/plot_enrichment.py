@@ -13,10 +13,11 @@ from parse_predictions import (
     get_models,
 )
 import matplotlib.pyplot as plt
+from matplotlib import rcParams
 import seaborn as sns
 import pandas as pd
 
-from colors_subanalysis import COLOR, MARKER
+from colors_subanalysis import COLOR, MARKER, STYLE
 
 # add "."
 sys.path.append(".")
@@ -25,10 +26,16 @@ from plot_heatmap_combined import apply_first_pick_to_predictions
 
 def run_main(plot_p,
              only_GPCRs_without_complex=False,
+             reject_models_with_substrings=[],
              ):
     """ """
+    rcParams['font.family'] = 'Helvetica'  # or use 'sans-serif' if Helvetica isn't available
+
     script_dir = pathlib.Path(__file__).parent
     models = get_models(script_dir / "models")
+    if len(reject_models_with_substrings) > 0:
+        models = [m for m in models if not any([r in m[0] for r in reject_models_with_substrings])]
+
     # remove models with LIS or APPRAISE
     unique_models = list([m[0] for m in models])
     ground_truth = get_ground_truth_df()
@@ -121,40 +128,30 @@ def run_main(plot_p,
     colors = [COLOR[m] for m in plot_df["model"].unique()]
     markers = [MARKER[m] for m in plot_df["model"].unique()]
     # plot dashed line at random performance
-    random_performance_yvals = 1 / 11 * plot_df["keep_top_n"]
+    random_performance_yvals = 1 / 11 * plot_df["keep_top_n"].unique()
     # random perf line
-    ax.plot(
-        plot_df["keep_top_n"],
+    plt.plot(
+        plot_df["keep_top_n"].unique(),
         random_performance_yvals,
-        linestyle="--",
         color="black",
-        label="Random",
-        # opacity
         alpha=0.5,
-        # width = 2
-        linewidth=1,
-        marker="",
+        # dotted instead of dashes
+        linestyle=":",
     )
-    # lines
-    sns.lineplot(
-        data=plot_df,
-        x="keep_top_n",
-        y="pa_retained",
-        ax=ax,
-        # color for models
-        palette=colors,
-        hue="model",
-        # markers for rescoring methods
-        markers=False,
-        # line style is solid
-        dashes=False,
-        linewidth=1,
-        legend=False,
-        linestyle="--",
-        # line opacity
-        alpha=0.5,
-    )
-
+    # plot lines with different styles
+    for model_name, model_line_style in STYLE.items():
+        model_df = plot_df[plot_df["model"] == model_name]
+        sns.lineplot(
+            data=model_df,
+            x="keep_top_n",
+            y="pa_retained",
+            ax=ax,
+            color=COLOR[model_name],
+            linestyle=model_line_style,
+            linewidth=1,
+            alpha=0.5,
+            legend=True,
+        )
     # markers
     sns.scatterplot(
         data=plot_df,
@@ -172,6 +169,7 @@ def run_main(plot_p,
         # make markers same size
         # line opacity
         alpha=1.0,
+        legend=False,
     )
 
     # save
@@ -181,6 +179,7 @@ def run_main(plot_p,
     plt.grid()
     plt.grid(axis="y", linestyle="--", alpha=0.5)
     plt.grid(axis="x", linestyle="--", alpha=0.5)
+
     # reduce legend font size
     # zoom
     plt.xticks(range(1, 12))
@@ -195,7 +194,37 @@ def run_main(plot_p,
     plt.xlabel("")
     plt.ylabel("")
     plt.title("")
+    
+    # fix the legend.
+    # first it should contain a line with the color of the base models
+    # then it should contain the black markers for the rescoring methods
+    for model_name in plot_df["model"].unique():
+        # get the color of the model
+        model_color = COLOR[model_name]
+        # get the line style of the model
+        model_line_style = STYLE[model_name]
+        # model marker
+        model_marker = MARKER[model_name]
+        # remove the (no templates) part and add a dagger symbol instead
+        replacement = r'$^\dagger$'
+        model_name = model_name.replace(" (no templates)", replacement)
+        # add a line, with the marker of the model, style and color
+        plt.plot([], [], color=model_color, linestyle=model_line_style, label=model_name,
+                    marker=model_marker, 
+                    # set marker color to black
+                    markerfacecolor='black', markeredgecolor='black', markersize=5)
+    
+    plt.legend(loc='lower right', fontsize=8,
+               # use helvetica font for legend
+    )
+   
     plt.tight_layout()
+    legend = plt.legend()
+    # for xticks and yticks
+    for text_object in ax.get_xticklabels() + ax.get_yticklabels() + legend.get_texts():
+        text_object.set_fontname('Helvetica')
+        text_object.set_fontsize(7)
+
 
     plt.savefig(plot_p)
     print(f"Saved plot to {plot_p}")
@@ -210,6 +239,6 @@ def run_main(plot_p,
 if __name__ == "__main__":
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/enrichment_plot.svg"
-    run_main(plot_p)
+    run_main(plot_p, reject_models_with_substrings=['energy'])
     plot_p = script_dir / "plots/enrichment_plot_no_complex.svg"
     run_main(plot_p, only_GPCRs_without_complex=True)

@@ -48,6 +48,7 @@ COLOR = {
     "Similar4": "#0b3d91",
     # models (3D)
     "NeuralPLexer": "#5b616b",
+    'Neuralplexer': "#5b616b",
     "ESMFold": "#478347",
     "RF-AA": "#A676D6",
     "RF-AA (no templates)": "#7352BF",
@@ -77,6 +78,20 @@ COLOR = {
     # general
     False: "#0b3d91",
     True: "#f9aa43",
+
+    # rescoring
+    "RF-AA APPRAISE": "#A676D6",
+    "RF-AA RIA energy": "#A676D6",
+    "RF-AA RIA sc": "#A676D6",    
+    "AF2 APPRAISE (no templates)": "#008FD7",
+    "AF2 LIS (no templates)": "#008FD7",
+    'AF2 LIS (no templates) 1m' :  "#008FD7",
+    "AF2 RIA energy (no templates)": "#008FD7",
+    'AF2 RIA energy': "#008FD7",
+    "AF2 RIA sc (no templates)": "#008FD7",
+    'AF2 RIA sc': "#008FD7",
+    "Peptriever": "#9E005D",
+
 }
 
 

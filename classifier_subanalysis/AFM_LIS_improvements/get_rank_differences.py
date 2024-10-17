@@ -32,7 +32,6 @@ def get_comparison_data(rankings):
 
     # use gpcrs as key
     gpcrs = rankings["GPCR"].unique()
-
     for gpcr in gpcrs:
         # get rows for 2 models
         af2_row = rankings[
@@ -41,6 +40,9 @@ def get_comparison_data(rankings):
         lis_row = rankings[
             (rankings["Model"] == "AF2 LIS (no templates)") & (rankings["GPCR"] == gpcr)
         ]
+        if len(af2_row) == 0 or len(lis_row) == 0:
+            print(f"Skipping {gpcr}")
+            continue
 
         # get ranks
         af2_rank = af2_row["AgonistRank"].values[0]
@@ -233,9 +235,10 @@ def plot_sankey_diagram(rank_diffs: pd.DataFrame, save_dir: pathlib.Path):
     for r in unique_ranks_af2 + unique_ranks_lis:
         node_colors.append(node_possible_colors[r - 1])
 
+    
     mynode = dict(
         pad=10,
-        thickness=20,
+        thickness=25,
         line=dict(color="black", width=0.5),
         label=node_labels,
         x=x_positions,
@@ -250,6 +253,7 @@ def plot_sankey_diagram(rank_diffs: pd.DataFrame, save_dir: pathlib.Path):
         target=targets,
         value=values,
         color=link_colors,
+        line=dict(color="black", width=0.25),  # Add black outline to the flows with width=1
     )
 
     fig = go.Figure(
@@ -257,22 +261,36 @@ def plot_sankey_diagram(rank_diffs: pd.DataFrame, save_dir: pathlib.Path):
             go.Sankey(arrangement="snap", node=mynode, link=mylink),
         ],
         # size
-        layout=dict(width=250, height=500),
+        layout=dict(width=250, height=450),
     )
+
 
     fig.update_layout(
         title_text="",
-        font_size=15,
-        font_family="Arial",
+        font_size=10,
+        font_family="Helvetica",
         title_font_size=14,
-        title_font_family="Arial",
+        title_font_family="Helvetica",
         title_x=0.5,
+    )
+
+    # resize figure
+    fig.update_layout(
+        autosize=False,
+        width=300,
+        height=400,
     )
 
     # Save the plot
     save_p = str(save_dir / "sankey_diagram.svg")
     fig.write_image(save_p)
     print(f"Sankey diagram saved to {save_p}")
+
+    # also save to png
+    save_p = str(save_dir / "sankey_diagram.png")
+    fig.write_image(save_p)
+    print(f"Sankey diagram saved to {save_p}")
+
 
 
 def run_main():
