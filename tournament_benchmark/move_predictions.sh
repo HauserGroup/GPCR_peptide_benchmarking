@@ -4,9 +4,9 @@
 
 # Check if three arguments are passed
 
-SOURCE_DIR="/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/tournament_benchmark/one_to_ten_test"
-TARGET_DIR="/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/tournament_benchmark/one_to_ten"
-FOLDER_LIST="/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/tournament_benchmark/model_names_one_to_ten.txt"
+SOURCE_DIR="/projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_ClassifierBenchmark_no_templates/benchmiss"
+TARGET_DIR="/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/tournament_benchmark/baseline"
+FOLDER_LIST="/projects/ilfgrid/people/pqh443/Git_projects/GPRC_peptide_benchmarking/tournament_benchmark/baseline_models.txt"
 
 # Check if folder list file exists
 if [ ! -f "$FOLDER_LIST" ]; then
