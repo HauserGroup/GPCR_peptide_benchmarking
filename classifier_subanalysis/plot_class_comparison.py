@@ -88,36 +88,39 @@ def get_plot_df(models, agonists, gpcr_to_class_dict):
     return plot_df
 
 
-def add_legend(plot_df, models, ax, bins, bin_width, last_index=3):
-    sns.histplot(
-        data=plot_df,
-        x="AgonistRank",
-        hue="Model",
-        bins=bins,
-        multiple="dodge",
-        ax=ax[3],
-        binwidth=bin_width,
-        element="bars",
-        palette=COLOR,
-        legend=True,
-        shrink=0.6,
-        discrete=True,
-        # line connecting the bins
-    )
-    legend = ax[last_index].get_legend()
-    # delete all but legend
-    ax[last_index].cla()
-    # remove background
-    ax[last_index].set_axis_off()
-    ax[last_index].legend(
-        handles=legend.legendHandles,
-        labels=[model[0] for model in models],
+def add_legend(plot_df, models, ax, bins, bin_width, new_color):
+    for color_label, color in new_color.items():
+        ax[-1].bar(
+            [0],
+            [0],
+            color=color,
+            label=color_label,
+            linewidth=0,
+            edgecolor="black",
+        )
+    ax[-1].legend(
+        title="GPCR Class",
+        title_fontsize=10,
+        fontsize=10,
         loc="center",
-        title="Model",
+        bbox_to_anchor=(0.5, 0.5),
     )
+    # remove grid
+    ax[-1].grid(False)
+    # remove y-axis
+    ax[-1].set_yticks([])
+    ax[-1].set_ylabel("")
+    # remove x-axis
+    ax[-1].set_xticks([])
+    # remove box around plot
+    ax[-1].spines["top"].set_visible(False)
+    ax[-1].spines["right"].set_visible(False)
+    ax[-1].spines["bottom"].set_visible(False)
+    ax[-1].spines["left"].set_visible(False)
 
+    
 
-def run_main(models_to_keep=["AF2", "RF-AA", "AF2 LIS"]):
+def run_main(plot_p, models_to_keep):
     """ """
     # load predictions
     script_dir = pathlib.Path(__file__).parent
@@ -129,27 +132,25 @@ def run_main(models_to_keep=["AF2", "RF-AA", "AF2 LIS"]):
     gpcr_to_class_dict = {g: get_gpcr_class(g) for g in gpcrs}
 
     agonists = get_principal_agonist_identifiers(ground_truth)
-
-    # plot details
-    plot_p = script_dir / "plots/class_comparisons.svg"
+    subplots_count = len(models_to_keep) + 1
     fig, ax = plt.subplots(
         1,
-        4,
-        figsize=(4 * 3, 3),
-        # do not share y-axis, as F is much smaller
-        sharey=False,
-    )
-    # add whitespace
-    plt.subplots_adjust(wspace=0.5)
+        subplots_count,
+        figsize=(subplots_count * 2, 2.5),
+        sharey=True,
+        # join the spines so only the first plot has an x-label
+        sharex=False,
 
+    )
     gpcr_classes = ["Class A (Rhodopsin)", "Class B1 (Secretin)", "Class F (Frizzled)"]
     # rename
     gpcr_renamed = {k: k.split(" (")[0] for k in gpcr_classes}
+    # keep only the models we want to plot
+    models = [(model_name, model_df) for model_name, model_df in models if model_name in models_to_keep]
 
     for plot_index, (model_name, model_df) in enumerate(models):
         # title
         ax[plot_index].set_title(model_name)
-
         plot_df = get_plot_df([(model_name, model_df)], agonists, gpcr_to_class_dict)
         # drop Other
         plot_df = plot_df[plot_df["Class"].isin(gpcr_classes)]
@@ -160,40 +161,63 @@ def run_main(models_to_keep=["AF2", "RF-AA", "AF2 LIS"]):
         for k, v in COLOR.items():
             if k in gpcr_renamed:
                 new_color[gpcr_renamed[k]] = v
-        print(new_color)
 
-        # boxplots with jitter for the rankings, with rank of y-axis
-        sns.boxplot(
+        # calculate mean and error
+        means = plot_df.groupby("Class")["AgonistRank"].mean()
+        sems = plot_df.groupby("Class")["AgonistRank"].sem()
+        # Add error bars and mean points
+        for i, gpcr_class in enumerate(plot_df["Class"].unique()):
+            ax[plot_index].errorbar(
+                i,
+                means[gpcr_class],
+                yerr=sems[gpcr_class],
+                color='black',
+                capsize=10,
+                # width
+                elinewidth=2,
+                # no legned
+                label=None,
+            )
+        # Add jitter for better visualization
+        sns.swarmplot(
             data=plot_df,
             x="Class",
             y="AgonistRank",
             ax=ax[plot_index],
             palette=new_color,
             hue="Class",
-            # mean line
-            meanline=True,
-            # make the mean line more visible
-            showmeans=False,
-            # mean color = black
-            meanprops={"color": "black", "linewidth": 1},
-            showfliers=False,
+            alpha=0.5,  # Set transparency
+            size=3,  # Size of points
+            legend=False,
         )
-        # plot jitter
-        sns.stripplot(
-            data=plot_df,
-            x="Class",
-            y="AgonistRank",
-            ax=ax[plot_index],
-            palette=new_color,
-            hue="Class",
-            dodge=False,
-            jitter=0.2,
-            linewidth=0.5,
-            alpha=0.5,
-        )
+        ax[plot_index].set_ylabel("")
+        ax[plot_index].set_xlabel("")
+        ax[plot_index].set_yticks([])
+        # disable grid
+        ax[plot_index].grid(False)
+
+    add_legend(plot_df, models, ax, bins=11, bin_width=1, new_color=new_color)
+
+    # add grid (not for legend)
+    for a in ax[:subplots_count-1]:
+        a.set_ylim(0, 12)
+        a.set_yticks(range(1, 12))
+        # ygrid opacity
+        a.grid(alpha=0.5)
+
     plt.tight_layout()
-    plt.savefig(plot_p, dpi=300)
+    plt.savefig(plot_p)
+    plt.savefig(plot_p.with_suffix(".png"), dpi=600)
+    plt.close()
 
 
 if __name__ == "__main__":
-    run_main()
+    script_dir = pathlib.Path(__file__).parent
+    sns.set(style="whitegrid")
+    sns.set_context("paper")
+    sns.set_palette("colorblind")
+    # set default fontsize to 10
+    plt.rcParams.update({"font.size": 10})
+    run_main(plot_p = script_dir / "plots/class_comparisons.svg",
+             models_to_keep=["Peptriever", "AF2 (no templates)", "AF2 LIS (no templates)"])
+

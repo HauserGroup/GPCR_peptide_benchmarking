@@ -21,6 +21,7 @@ import pandas as pd
 import seaborn as sns
 import pathlib
 import matplotlib.pyplot as plt
+from collections import OrderedDict
 
 # spearman rank correlation
 from scipy.stats import spearmanr
@@ -59,6 +60,18 @@ def load_rankings():
     rankings = pd.read_csv(rankings_path)
     return rankings
 
+def get_agonist_len(chain_lengths_s : str):
+    s = chain_lengths_s
+    return int(s.split("|")[1].split(":")[1])
+
+
+
+def get_msa_depth_from_seq_lengths(s: str, peptide_chain: int):
+    "s = '1:1248|2:18'  chain = 2  --> 18"
+    lengths = s.split("|")
+    s = lengths[peptide_chain - 1]
+    return int(s.split(":")[1])
+
 
 def get_len_and_msa():
     """
@@ -76,6 +89,16 @@ def get_len_and_msa():
     seq_and_msa["gpcr"] = seq_and_msa["identifier"].str.split("___").str[0]
     seq_and_msa["decoy"] = seq_and_msa["identifier"].str.split("___").str[1]
 
+    # get the length of the agonists. Agonist is chain 2
+    # 1:428|2:8 -> 8
+    seq_and_msa["agonist_length"] = seq_and_msa["chain_lengths"].apply(get_agonist_len)
+    
+    # get msa depth
+    peptide_chain = 2
+    seq_and_msa["msa_depth"] = seq_and_msa["msa_seq_lengths"].apply(
+        lambda x: get_msa_depth_from_seq_lengths(x, peptide_chain)
+    )
+
     return seq_and_msa
 
 
@@ -92,6 +115,17 @@ def get_selectivity_df():
     selectivity_path = script_dir / "get_selectivity/selectivity_targets_per_ligand.csv"
     selectivity_df = pd.read_csv(selectivity_path)
     return selectivity_df
+
+
+def get_gpcr_selectivity_df():
+    script_dir = pathlib.Path(__file__).parent.absolute()
+    gpcr_selectivity_path = script_dir / "get_selectivity/selectivity_ligands_per_target.csv"
+    gpcr_selectivity_df = pd.read_csv(gpcr_selectivity_path)
+    # rename '"Target GPCRdb ID" to "Target ID"
+    gpcr_selectivity_df = gpcr_selectivity_df.rename(
+        columns={"Target GPCRdb ID": "Target ID"}
+    )
+    return gpcr_selectivity_df
 
 
 def get_pki_df():
@@ -116,22 +150,27 @@ def get_pki_df():
     return pki_df
 
 
-def get_msa_depth_from_seq_lengths(s: str, peptide_chain: int):
-    "s = '1:1248|2:18'  chain = 2  --> 18"
-    lengths = s.split("|")
-    s = lengths[peptide_chain - 1]
-    return int(s.split(":")[1])
+def get_gpcr_n_term_len():
+    script_dir = pathlib.Path(__file__).parent.absolute()
+    chains = script_dir / 'GPCR_chains_info.csv'
+    chain_info = pd.read_csv(chains)
+    
+    # GPCR,Sequence,Domains
+    # ackr1_human,MGNCLHRAELSPSTENSSQLDFEDVWNSSYGVNDSFPDGDYGANLEAAAPCHSCNLLDDSALPFFILTSVLGILASSTVLFMLFRPLFRWQLCPGWPVLAQLAVGSALFSIVVPVLAPGLGSTRSSALCSLGYCVWYGSAFAQALLLGCHASLGHRLGAGQVPGLTLGLTVGIWGVAALLTLPVTLASGASGGLCTLIYSTELKALQATHTVACLAIFVLLPLGLFGAKGLKKALGMGPGPWMNILWAWFIFWWPHGVVLGLDFLVRSKLLLLSTCLAQQALDLLLNLAEALAILHCVATPLLLALFCHQATRTLLPSLPLPEGWSSHLDTLGSKS,"OrderedDict([('N-term', 54), ('TM1', 32), ('ICL1', 6), ('TM2', 30), ('ECL1', 5), ('TM3', 33), ('ICL2', 1), ('TM4', 27), ('ECL2', 14), ('TM5', 30), ('ICL3', 6), ('TM6', 31), ('ECL3', 5), ('TM7', 33), ('H8', 15), ('C-term', 14)])"
+    df = pd.DataFrame(columns=['N-term length'])
+    for i, row in chain_info.iterrows():
+        gpcr = row['GPCR']
+        # load the OrderedDict
+        domain_dict = eval(row['Domains'])
+        n_term_len = domain_dict['N-term']
+        # add to df
+        df.loc[gpcr, 'N-term length'] = n_term_len
+
+    return df
 
 
 def get_attributes():
     """ """
-    attributes = [
-        "agonist",
-        "agonist length",
-        "agonist selectivity",
-        "pKi",
-        "agonist MSA depth",
-    ]
 
     # only keep agonists
     classifier_df = load_classifier_df()
@@ -140,11 +179,14 @@ def get_attributes():
     # load attribute dfs
     rankings = load_rankings()
     seq_and_msa = get_len_and_msa()
+
     selectivity = get_selectivity_df()
     pki = get_pki_df()
+    gpcr_selectivity = get_gpcr_selectivity_df()
+    n_term_len = get_gpcr_n_term_len()
 
     gpcrs = classifier_df["Original Target"].unique()
-    correlation_df = pd.DataFrame(index=gpcrs, columns=attributes)
+    correlation_df = pd.DataFrame(index=gpcrs, columns=[])
     for gpcr in gpcrs:
         # get agonist
         agonist = classifier_df[classifier_df["Original Target"] == gpcr]
@@ -153,17 +195,16 @@ def get_attributes():
         correlation_df.loc[gpcr, "agonist"] = agonist_id
 
         # get agonist length
-        agonist_len = len(seq_and_msa[seq_and_msa["decoy"] == str(agonist_id)])
+        agonist_len = seq_and_msa[seq_and_msa["identifier"] == f"{gpcr}___{agonist_id}"]
+        assert len(agonist_len) == 1
+        agonist_len = agonist_len["agonist_length"].values[0]
         correlation_df.loc[gpcr, "agonist length"] = agonist_len
 
         # get msa depth
-        peptide_chain = 2
-        msa_rows = seq_and_msa[seq_and_msa["identifier"] == f"{gpcr}___{agonist_id}"]
-        msa_seq_lengths = msa_rows["msa_seq_lengths"].values
-        assert len(msa_seq_lengths) == 1
-        msa_seq_lengths = msa_seq_lengths[0]
-        msa_depth = get_msa_depth_from_seq_lengths(msa_seq_lengths, peptide_chain)
-        correlation_df.loc[gpcr, "agonist MSA depth"] = msa_depth
+        msa_depth = seq_and_msa[seq_and_msa["identifier"] == f"{gpcr}___{agonist_id}"]
+        assert len(msa_depth) == 1
+        msa_depth = msa_depth["msa_depth"].values[0]
+        correlation_df.loc[gpcr, "agonist msa depth"] = msa_depth
 
         # get selectivity
         selectivity_val = selectivity[selectivity["Ligand ID"] == agonist_id]
@@ -171,11 +212,21 @@ def get_attributes():
         selectivity_val = selectivity_val["number of targets"].values[0]
         correlation_df.loc[gpcr, "agonist selectivity"] = selectivity_val
 
+        # get gpcr selectivity
+        gpcr_selectivity_val = gpcr_selectivity[gpcr_selectivity["Target ID"] == gpcr]
+        assert len(gpcr_selectivity_val) == 1
+        gpcr_selectivity_val = gpcr_selectivity_val["number of peptides"].values[0]
+        correlation_df.loc[gpcr, "gpcr selectivity"] = gpcr_selectivity_val
+
         # get activity
         pki_val = pki[pki["gpcr"] == gpcr]
         assert len(pki_val) == 1
         pki_val = pki_val["mean_activity"].values[0]
         correlation_df.loc[gpcr, "pKi"] = pki_val
+        
+        # add n-term length of gpcr
+        n_term_len_val = n_term_len.loc[gpcr, 'N-term length']
+        correlation_df.loc[gpcr, "N-term length"] = n_term_len_val
 
     return correlation_df
 
@@ -197,6 +248,9 @@ def create_correlation_df(attributes, rankings):
         index=rankings["Model"].unique(), columns=unique_attributes
     )
 
+    plot_save_dir = script_dir / 'ranking_vs_peptide_characteristics'
+    os.makedirs(plot_save_dir, exist_ok=True)
+
     # for each model
     for model in rankings["Model"].unique():
         model_rankings = rankings[rankings["Model"] == model]
@@ -208,6 +262,31 @@ def create_correlation_df(attributes, rankings):
         for attribute in unique_attributes:
             model_attributes = [attributes.loc[gpcr, attribute] for gpcr in model_gpcrs]
             rho, p_val = spearmanr(model_ranks, model_attributes, nan_policy="omit")
+            
+            # save spearman rank correlation, p-value and sample count
+            plt_p = plot_save_dir / f"{model}_{attribute}.svg"
+            plt.figure()
+            sns.regplot(x=model_attributes,
+                        y=model_ranks, 
+                        scatter_kws={"alpha": 0.5},
+                        y_jitter=0.2,                    
+            )
+            plt.yticks(range(1 + max(model_ranks)))
+            plt.xlabel(attribute)
+            plt.ylabel("Rank")
+            plt.title(f"{model} vs {attribute}")
+            # add spearman correlation
+            plt.text(
+                0.5,
+                0.5,
+                f"rho = {rho:.2f}\np = {p_val:.2e}",
+                transform=plt.gca().transAxes,
+                verticalalignment="top",
+            )
+            plt.savefig(plt_p)
+            plt.savefig(plt_p.with_suffix(".png"))
+            plt.close()
+
             # count non-nan samples
             sample_count = len(model_ranks) - np.isnan(model_ranks).sum()
 
@@ -216,49 +295,134 @@ def create_correlation_df(attributes, rankings):
     return correlation_df
 
 
-def plot_correlation_heatmap(correlation_df):
+def get_pval_label(p_val):
+    if p_val < 0.001:
+        return "***"
+    elif p_val < 0.01:
+        return "**"
+    elif p_val < 0.05:
+        return "*"
+    else:
+        return ""
+
+def plot_correlation_heatmap(correlation_df, plot_p):
     script_dir = pathlib.Path(__file__).parent.absolute()
-    plot_path = script_dir / "peptide_correlation_characteristics.png"
-    fig, ax = plt.subplots(figsize=(10, 5))
+    plot_path = plot_p
+    fig, ax = plt.subplots(figsize=(6.7, 4))
 
-    rho = correlation_df.map(lambda x: x[0])
-    rho = rho.astype(float)
+    cols = correlation_df.columns
+    stats = ['rho', 'p_val', 'count']
+    
+    # Split the tuple values into separate columns for easier access
+    for col in cols:
+        for stat in stats:
+            correlation_df[col + "_" + stat] = correlation_df[col].apply(lambda x: x[stats.index(stat)])
+    
+    # Remove original tuple columns
+    correlation_df = correlation_df.drop(columns=cols)
+    
+    # Extract rho and p-value columns
+    rho = correlation_df[[col + "_rho" for col in cols]]
+    pvals = correlation_df[[col + "_p_val" for col in cols]]
 
-    p_vals = correlation_df.map(lambda x: x[1])
-    p_vals = p_vals.astype(float)
+    # Annotate heatmap with rho values and significance stars
+    annotations = rho.copy()
 
-    counts = correlation_df.map(lambda x: x[2])
-    counts = counts.astype(float)
-    print(counts)
+    for i in range(rho.shape[0]):  # rows
+        for j in range(rho.shape[1]):  # columns
+            rho_val = rho.iloc[i, j]
+            p_val = pvals.iloc[i, j]
+            star_label = get_pval_label(p_val)
+            # Annotate with rho value and p-value stars
+            full_label = f"{rho_val:.2f}{star_label}"
+            annotations.iloc[i, j] = full_label
+
+    # max and min corr
+    max_corr = rho.max().max()
+    min_corr = rho.min().min()
+    outer = max(abs(max_corr), abs(min_corr))
+
+    # order models in a logical way
+    model_order = ['AF2 (no templates)', 'AF2 LIS (no templates)', 'Peptriever']
+    other_models = [m for m in correlation_df.index if m not in model_order]
+    model_order.extend(other_models)
+    rho = rho.loc[model_order]
+    annotations = annotations.loc[model_order]    
+
+    # order attributes in a logical way
+    attribute_order = ['agonist length_rho', 'agonist msa depth_rho', 'agonist selectivity_rho',
+                       'pKi_rho', 'N-term length_rho', 'gpcr selectivity_rho']
+    other_attributes = [a for a in rho.columns if a not in attribute_order]
+    attribute_order.extend(other_attributes)
+    rho = rho[attribute_order]
+    annotations = annotations[attribute_order]
 
     sns.heatmap(
-        p_vals,
-        annot=True,
-        cmap="coolwarm_r",
+        rho,
+        cmap="coolwarm",
         ax=ax,
-        fmt=".3f",
+        annot=annotations,  # Now pass the formatted annotations
+        annot_kws={"size": 12},
+        xticklabels=True,
+        yticklabels=True,
+        fmt='', # disable format to use custom annotations without errors
+        vmin=-outer,
+        vmax=outer,
+        # format nicely for paper
+        square=True,
+        cbar=True,
+        # shrink cbar
+        cbar_kws={"shrink": 0.5, "label": "Spearman rank correlation"},
+        linewidths=0.5,
+        linecolor='gray',
     )
+    
     plt.title("Correlation between peptide characteristics and model rankings")
-
-    # rotate rows
+    # Rotate y-ticks for better readability
     plt.yticks(rotation=0)
+    plt.xticks(rotation=45)
     plt.tight_layout()
 
+    # Save the plot
     plt.savefig(plot_path)
+    plt.savefig(plot_path.with_suffix(".png"), dpi=600)
     plt.close()
 
 
-def main():
+def main(models_to_keep, plot_p):
     attributes = get_attributes()
     rankings = load_rankings()
 
+    # models to keep
     correlation_df = create_correlation_df(attributes, rankings)
     # to csv
     script_dir = pathlib.Path(__file__).parent.absolute()
     correlation_df.to_csv(script_dir / "peptide_correlation_characteristics.csv")
+    # keep only models to keep
+    if len(models_to_keep) > 0:
+        correlation_df = correlation_df.loc[models_to_keep]
 
-    plot_correlation_heatmap(correlation_df)
+    plot_correlation_heatmap(correlation_df, plot_p)
 
 
 if __name__ == "__main__":
-    main()
+    script_dir = pathlib.Path(__file__).parent.absolute()
+    sns.set_style("whitegrid")
+    sns.set_context("paper")
+    # helvetica font
+    plt.rcParams["font.family"] = "Helvetica"
+    # default font size is 10
+    plt.rcParams.update({"font.size": 10})
+    plt.rcParams.update({"axes.labelsize": 10})
+    plt.rcParams.update({"xtick.labelsize": 10})
+    plt.rcParams.update({"ytick.labelsize": 10})
+    plt.rcParams.update({"legend.fontsize": 10})
+    plt.rcParams.update({"legend.title_fontsize": 10})
+    plt.rcParams.update({"axes.titlesize": 10})
+
+
+    main(models_to_keep = ["AF2 (no templates)", "Peptriever", "AF2 LIS (no templates)"],
+         plot_p = script_dir / "peptide_correlation_characteristics.svg")
+    
+    main(models_to_keep=[],
+         plot_p=script_dir / "peptide_correlation_characteristics_all_models.svg")

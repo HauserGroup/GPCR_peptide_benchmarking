@@ -28,7 +28,7 @@ from colors import COLOR
 from plot_heatmap_combined import apply_first_pick_to_predictions
 
 
-def get_models_ria():
+def get_models_af2():
     """
     should be a list of tuples.
     ("name of model", pd.DataFrame)
@@ -79,7 +79,7 @@ def run_main():
     """ """
     
     script_dir = pathlib.Path(__file__).parent
-    models = get_models_ria()
+    models = get_models_af2()
 
     unique_models = list([m[0] for m in models])
     plot_p = script_dir / "enrichment.svg"
@@ -93,6 +93,7 @@ def run_main():
 
     # remove AF3 from models
     models = [m for m in models if m[0] != "AF3"]
+
     for model_name, pred_df in models:
         pred_df["gpcr"] = pred_df["identifier"].apply(lambda x: x.split("___")[0])
         pred_df["class"] = pred_df["gpcr"].apply(lambda x: gpcr_to_class[x])
@@ -142,23 +143,22 @@ def run_main():
     plot_df["decoy_retained"] = plot_df["decoy_count"] / (
         plot_df["pa_count"] + plot_df["decoy_count"]
     )
-
-    # # TEMPORARY: remove models if pa_retained is < 0.4 for keep_top_n = 1
-    # # remove models if pa_retained is < 0.4 for keep_top_n = 1
-    # models_to_remove = []
-    # for model_name in plot_df["model"].unique():
-    #     model_df = plot_df[plot_df["model"] == model_name]
-    #     if model_df[model_df["keep_top_n"] == 1]["pa_retained"].values[0] < 0.4:
-    #         models_to_remove.append(model_name)
-    # # remove models
-    # plot_df = plot_df[~plot_df["model"].isin(models_to_remove)]
-    # # ======================================================================
-
-
+    
+    # calculate area under curve for each
+    auc_dict = {}
+    for model_name in plot_df["model"].unique():
+        model_df = plot_df[plot_df["model"] == model_name]
+        auc_pa = model_df["pa_retained"].sum() / 11
+        auc_decoy = model_df["decoy_retained"].sum() / 11
+        auc_dict[model_name] = {"pa": auc_pa, "decoy": auc_decoy}
+    
     # plot
     sns.set_context("paper")
     sns.set_style("whitegrid") 
-    fig, ax = plt.subplots(figsize=(8, 8))
+    # two subplots, 1 for curve and 1 for legend
+    fig, axes = plt.subplots(1, 2, figsize=(8, 5))
+    ax = axes[0]
+
     # automatically use diverse colors and styles for the lineplot
     sns.lineplot(
         x="keep_top_n",
@@ -176,23 +176,21 @@ def run_main():
     )
 
     # add label to the left of x == 1
-    for model_name in plot_df["model"].unique():
-        model_df = plot_df[plot_df["model"] == model_name]
-        pa_retained = model_df[model_df["keep_top_n"] == 1]["pa_retained"].values[0]
-        ax.text(
-            1,
-            pa_retained,
-            model_name,
-            fontsize=6,
-            ha="right",
-            va="center",
-            color=COLOR.get(model_name, "black"),
-        )
+    # for model_name in plot_df["model"].unique():
+    #     model_df = plot_df[plot_df["model"] == model_name]
+    #     pa_retained = model_df[model_df["keep_top_n"] == 1]["pa_retained"].values[0]
+    #     ax.text(
+    #         1,
+    #         pa_retained,
+    #         model_name,
+    #         fontsize=6,
+    #         ha="right",
+    #         va="center",
+    #         color=COLOR.get(model_name, "black"),
+    #     )
 
-    plt.legend(title="Model", loc="lower right", fontsize=11, title_fontsize=12,
-               markerscale=1.5, ncol=2, 
-               # hover legend over plot
-                bbox_to_anchor=(1.05, 1), borderaxespad=0.)
+    # plt.legend(title="Model", loc="lower right", fontsize=11, title_fontsize=12,
+    #            markerscale=1.5, ncol=2, bbox_to_anchor=(1.5, 1), borderaxespad=0.)
 
     # plot dashed line at random performance
     random_performance_yvals = 1 / 11 * plot_df["keep_top_n"]
@@ -209,36 +207,41 @@ def run_main():
     )
 
     # save
+    # set active axis
+    plt.sca(ax)
     plt.xlim(0.8, 11.2)
     plt.ylim(0, 1.01)
     # grid with opacity
     plt.grid()
     plt.grid(axis="y", linestyle="--", alpha=0.5)
     plt.grid(axis="x", linestyle="--", alpha=0.5)
-    # reduce legend font size
-    # zoom
-    # plt.title("True agonist retention")
-    # plt.ylabel("Percent agonists retained")
-    # plt.xlabel("Number of samples chosen")
-    
-    plt.xticks(range(1, 12))
+    plt.xticks([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
-    plt.tight_layout()
 
     # sort legend on number of samples chosen
     handles, labels = ax.get_legend_handles_labels()
     plot_df = plot_df[plot_df["keep_top_n"] == 1]
-    labels = plot_df.sort_values("pa_retained")["model"].unique()
-    # reverse
-    labels = labels[::-1]
-    # fontsize of x and y labels
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
-
+    # add auc to labels
+    labels = [f"{l} (AUC: {auc_dict[l]['pa']:.2f})" for l in labels if l in auc_dict]
+ 
     # disable labels (add in illustrator)
-    plt.xlabel("")
-    plt.ylabel("")
-    plt.title("")
+    plt.xlabel("Top n peptides selected")
+    plt.ylabel("Agonists retained ratio")
+    plt.title("Performance of RoseTTAInterfaceAnalyzer\nmetrics on GPCR agonist prediction")
+
+    # remove legend from ax[0]
+    ax.get_legend().remove()
+
+    # plot legend on ax[1]
+    ax = axes[1]
+    plt.sca(ax)
+    ax.axis("off")
+    ax.legend(handles, labels, title="", loc="center", fontsize=11,
+              markerscale=1.5)
+    
+
+
+    plt.tight_layout()
 
     plt.savefig(plot_p)
     print(f"Saved plot to {plot_p}")

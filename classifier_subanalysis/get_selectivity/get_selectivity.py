@@ -207,7 +207,10 @@ def run_main():
     ligands_per_target = agonist_df.groupby("Target GPCRdb ID")["Ligand ID"].nunique()
     plot_p = plot_dir / f"{plot_base}_ranking_vs_gpcr_selectivity.png"
     plot_ranking_with_gpcr_selectivity(ligands_per_target, ranking_df, plot_p)
-
+    # save to .csv
+    ligands_per_target = ligands_per_target.rename("number of peptides")
+    ligands_per_target.to_csv(plot_dir / f"{plot_base}_ligands_per_target.csv")
+    
     # plot peptide selectivity and agonist rank
     "Rethink how to plot this. what is x, what is y?"
     # y = rank

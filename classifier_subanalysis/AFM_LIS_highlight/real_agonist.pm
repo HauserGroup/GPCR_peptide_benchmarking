@@ -24,7 +24,7 @@ show cartoon, 3700_4 and chain B
 bg_color white
 color grey80, chain B
 hide cartoon, chain B and resi 827-
-set_color decoy, (103, 133, 183)
+set_color decoy, (56, 96, 163)
 set_color real_agonist, (249, 170, 67)
 color real_agonist, 3700_4 and chain C
 color real_agonist, 3700_3 and chain C
