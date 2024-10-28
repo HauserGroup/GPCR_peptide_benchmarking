@@ -161,6 +161,14 @@ def parse_dataset(interaction_csv_path, grn_frequencies_path, mapping_file_path)
     interactions_df_subset = interactions_df[["pdb_code", "protein", "ligand_name", "class", "sequence_number", "display_generic_number", "generic_residue_number_a", "region"]].copy()
     interactions_df_subset = interactions_df_subset.drop_duplicates()
 
+    # Print number of unique pdbs
+    print("Number of unique PDBs: ", len(interactions_df["pdb_code"].unique()))
+    print("Number of unique receptors: ", len(interactions_df["protein"].unique()))
+
+    # Print nunmber of Class A and Class B interactions
+    class_df = interactions_df[["protein", "class"]].drop_duplicates()
+    print(class_df["class"].value_counts())
+
     # Count frequency table of generic residue numbers
     grn_frequencies = interactions_df_subset["generic_residue_number_a"].value_counts()
     grn_frequencies = pd.DataFrame(grn_frequencies)

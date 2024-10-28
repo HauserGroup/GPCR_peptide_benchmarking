@@ -136,14 +136,13 @@ sns.swarmplot(
     y='rmsd', 
     data=data,
     ax=ax, 
-    size = 3, 
+    size = 1.5, 
     alpha=0.6, 
     palette=colors.values(), 
     order = list(colors.keys())
 )
 for i, model in enumerate(list(colors.keys())):
     ax.get_children()[i].set_color(colors[model])
-
 
 # Add error bars
 for i, model in enumerate(list(colors.keys())):
@@ -163,7 +162,7 @@ for bar, model in zip(ax.patches, list(colors.keys())):
 
 # Set labels and title
 ax.set_xlabel('', fontsize=0)
-ax.set_ylabel('Receptor RMSD', fontproperties=font_prop_ylabels)
+ax.set_ylabel('Receptor RMSD (Å)', fontproperties=font_prop_ylabels)
 ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontproperties=font_prop_xlabels)
 ax.tick_params(axis="y", direction="in")
 plt.title('Receptor RMSD of predicted complexes', fontproperties=font_prop)
@@ -175,4 +174,4 @@ ax.xaxis.set_ticks_position('none')
 
 plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
-plt.savefig(f"{plot_dir}/receptor_rmsd.png", dpi=600)
+plt.savefig(f"{plot_dir}/receptor_rmsd.svg", dpi=600)

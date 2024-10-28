@@ -18,10 +18,6 @@ top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
 sys.path.append(top_level_dir)
 from colors import * 
 
-# Font path
-font_path = f'{repo_dir}/Aptos.ttf'
-font_prop = fm.FontProperties(fname=font_path)
-
 # Read in the grn frequencies
 grn_freq_path = f"{file_dir}/grn_frequencies.csv"
 grn_frequencies = pd.read_csv(grn_freq_path, index_col=0)
@@ -35,10 +31,10 @@ grn_subset = grn_frequencies[grn_frequencies["percentage"] > 10]
 # Make bar plot
 fig = plt.figure(figsize=(13, 5))
 plt.bar(grn_subset.index, grn_subset["percentage"], color=COLOR["Receptor"], width=0.7)
-plt.xlabel("Generic residue number", fontproperties=font_prop, fontsize=16)
-plt.ylabel("PDBs covered (%)", fontproperties=font_prop, fontsize=16)
-plt.title("Coverage of PDBs per generic residue number", fontproperties=font_prop, fontsize=16)
-plt.xticks(rotation=90, fontproperties=font_prop, fontsize=12)
+plt.xlabel("Generic residue number", fontsize=16)
+plt.ylabel("PDBs covered (%)", fontsize=16)
+plt.title("Coverage of PDBs per generic residue number", fontsize=16)
+plt.xticks(rotation=90, fontsize=12)
 plt.tight_layout()
 
 # Bold the x-axis labels if they appear in chosen_grns
