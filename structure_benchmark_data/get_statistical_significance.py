@@ -3,6 +3,7 @@ from scipy.stats import wilcoxon
 import itertools
 from statsmodels.stats.multitest import multipletests
 import os
+import numpy as np
 
 # Build the path to the pdb files
 try:
@@ -14,6 +15,14 @@ except NameError:
 repo_name = "GPRC_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
+
+def round_to_significant_digits(number, significant_digits=3):
+    if pd.isnull(number) or not isinstance(number, (int, float)):
+        return number
+    if number == 0:
+        return 0
+    else:
+        return round(number, significant_digits - int(np.floor(np.log10(abs(number)))) - 1)
 
 # Define a function to assign significance stars based on p-value
 def significance_stars(p):
@@ -75,6 +84,10 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
         results_df['P-value'] = results_df['P-value'].apply(lambda x: round(x, 10))
         results_df['Corrected P-value'] = results_df['Corrected P-value'].apply(lambda x: round(x, 10))
         results_df['Significance'] = results_df['Corrected P-value'].apply(significance_stars)
+
+        # Apply function to all numeric columns in the DataFrame
+        for col in results_df.columns:
+            results_df[col] = results_df[col].apply(lambda x: round_to_significant_digits(x, 4) if pd.to_numeric(x, errors='coerce') is not None else x)
 
         # Save the results to a CSV file
         results_df.to_csv(f'{repo_dir}/structure_benchmark_data/wilcoxon_results_{variable}.csv', index=False)

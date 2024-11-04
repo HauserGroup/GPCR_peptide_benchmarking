@@ -18,11 +18,6 @@ top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
 sys.path.append(top_level_dir)
 from colors import *
 
-# Count unique PDBs
-unique_receptors = interactions_df["protein"].nunique()
-print(f"Unique receptors: {unique_receptors}")
-print(interactions_df.columns)
-
 # Count unique GPCRs
 structures_per_gpcr = interactions_df.drop_duplicates(subset = ["protein", "class"], keep = "first")
 

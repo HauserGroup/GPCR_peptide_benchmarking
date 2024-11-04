@@ -19,11 +19,7 @@ top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
 sys.path.append(top_level_dir)
 from colors import * 
 
-# Font path
-font_path = f'{repo_dir}/Aptos.ttf'
-font_prop = fm.FontProperties(fname=font_path)
-
-def plot_piechart(df, column, output_path = "", title = "", fontprop = "", svg = False):
+def plot_piechart(df, column, output_path = "", title = "", svg = False):
 
     # Make a pie chart of df column
     x = df[column].value_counts()
@@ -43,12 +39,8 @@ def plot_piechart(df, column, output_path = "", title = "", fontprop = "", svg =
 
     # Make a pie chart without labels but add legend
     plt.pie(x, labels = labels)
-    plt.legend(labels = x.index, loc="center left", bbox_to_anchor=(1.1, 0, 0.5, 1), prop=fontprop)
-    plt.title(title, fontsize = 20, fontweight = 'bold', fontproperties=fontprop)
-
-    # Update font of the pie chart labels
-    for text in plt.gca().texts:
-        text.set_fontproperties(fontprop)
+    plt.legend(labels = x.index, loc="center left", bbox_to_anchor=(1.1, 0, 0.5, 1))
+    plt.title(title, fontsize = 20, fontweight = 'bold')
         
     if output_path != "":
         if svg:
@@ -64,9 +56,9 @@ def plot_piechart(df, column, output_path = "", title = "", fontprop = "", svg =
 interactions_df = pd.read_csv(interaction_csv_path)
 
 # Plot the interaction types for all generic residue positions
-plot_piechart(interactions_df, "interaction_type", output_path=f'{plot_dir}/interaction_types.png', title = "Interaction types of interacting generic residue positions", fontprop = font_prop)
+plot_piechart(interactions_df, "interaction_type", output_path=f'{plot_dir}/interaction_types.png', title = "Interaction types of interacting generic residue positions")
 
 # Plot the interaction types for the chosen generic residue numbers
 chosen_grns, _, _ = get_chosen_grns(f"{file_dir}/grn_frequencies.csv", interaction_csv_path)
 interactions_chosen_grns = interactions_df[interactions_df["generic_residue_number_a"].isin(chosen_grns)]
-plot_piechart(interactions_chosen_grns, "interaction_type", output_path=f"{plot_dir}/interaction_types_chosen_grns.png", title = "Interaction types of the chosen generic residue numbers", fontprop = font_prop)
+plot_piechart(interactions_chosen_grns, "interaction_type", output_path=f"{plot_dir}/interaction_types_chosen_grns.png", title = "Interaction types of the chosen generic residue numbers")

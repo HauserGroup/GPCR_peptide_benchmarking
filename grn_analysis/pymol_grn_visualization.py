@@ -188,10 +188,6 @@ top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
 sys.path.append(top_level_dir)
 from colors import * 
 
-# Font path
-font_path = f'{repo_dir}/Aptos.ttf'
-font_prop = fm.FontProperties(fname=font_path)
-
 interactions_df = pd.read_csv(interaction_csv_path)
 chosen_grns, _, _ = get_chosen_grns(grn_freq_path, interaction_csv_path)
 mapping_file_path = f"{file_dir}/mapping_gpcrdbb.txt"
@@ -221,7 +217,7 @@ for pdb_code, grns in grns_per_pdb.items():
         best_pdb = pdb_code
         max_count = count
 
-pdb_code = best_pdb
+pdb_code = "7W53"
 pdb_path = f"{repo_dir}/structure_benchmark_data/cleaned_pdbs/{pdb_code}_AB.pdb"
 interacting_grns = get_interacting_grns(pdb_code, mapping_file_path)
 

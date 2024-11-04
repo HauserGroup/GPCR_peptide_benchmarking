@@ -18,10 +18,6 @@ top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
 sys.path.append(top_level_dir)
 from colors import * 
 
-# Font path
-font_path = f'{repo_dir}/Aptos.ttf'
-font_prop = fm.FontProperties(fname=font_path)
-
 def get_chosen_grns(grn_freq_path, interaction_csv_path):
 
     # List to store the PDBs that are covered by the generic residue numbers
@@ -85,15 +81,15 @@ labels = chosen_grns_labels
 y_pos = np.arange(len(labels))
 
 ax.barh(y_pos, pdbs_covered_p, align='center', color = COLOR["Receptor"])
-ax.set_yticks(y_pos, labels=labels, size = 16, weight = "bold", fontproperties=font_prop)
+ax.set_yticks(y_pos, labels=labels, size = 16, weight = "bold")
 ax.invert_yaxis() 
 
 # Display percentage on top of each bar
 for i, v in enumerate(pdbs_covered_p):
-    ax.text(v - 10, i, str(round(v, 2)) + "%", color='white', fontweight='bold', size = 14, fontproperties=font_prop)
+    ax.text(v - 10, i, str(round(v, 2)) + "%", color='white', fontweight='bold', size = 14)
 
-ax.set_xlabel('Percentage (%)', fontproperties=font_prop, size = 16)
-ax.set_title("Percentage of PDBs covered by the generic residue numbers", size = 20, fontproperties=font_prop)
+ax.set_xlabel('Percentage (%)', size = 16)
+ax.set_title("Percentage of PDBs covered by the generic residue numbers", size = 20)
 ax.set_xlim(70,100)
 
 plt.yticks(fontsize = 12)
@@ -102,4 +98,10 @@ plt.tick_params(axis="x",direction="in")
 plt.tick_params(axis="y",length=0)
 plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
+
+# Remove the plot frame lines
+ax.spines["top"].set_visible(False)
+ax.spines["right"].set_visible(False)
+ax.spines["left"].set_visible(False)
+
 plt.savefig(f"{plot_dir}/pdbs_covered.svg", bbox_inches='tight', dpi = 300)

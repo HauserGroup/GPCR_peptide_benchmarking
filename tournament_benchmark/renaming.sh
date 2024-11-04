@@ -25,9 +25,9 @@ for DIR in "$PARENT_DIR"/*/; do
     FOLDER_NAME=$(basename "$DIR")
 
     # Check if the folder contains "_human___"
-    if [[ "$FOLDER_NAME" == *_human___* ]]; then
+    if [[ "$FOLDER_NAME" == *_tournament* ]]; then
         # Rename the folder by replacing everything after "_human___" with "_one_to_one"
-        NEW_NAME=$(echo "$FOLDER_NAME" | sed 's/_human___.*/_one_to_one/')
+        NEW_NAME=$(echo "$FOLDER_NAME" | sed 's/_tournament.*/_one_to_four/')
 
         # Perform the renaming
         mv "$DIR" "$PARENT_DIR/$NEW_NAME"
