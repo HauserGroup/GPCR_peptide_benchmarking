@@ -118,7 +118,18 @@ def add_legend(plot_df, models, ax, bins, bin_width, new_color):
     ax[-1].spines["bottom"].set_visible(False)
     ax[-1].spines["left"].set_visible(False)
 
-    
+
+def get_all_plot_df():
+    script_dir = pathlib.Path(__file__).parent
+    models = get_models(script_dir / "models")
+    ground_truth = get_ground_truth_df()
+    gpcrs = ground_truth["Target ID"].unique()
+    gpcr_to_class_dict = {g: get_gpcr_class(g) for g in gpcrs}
+    agonists = get_principal_agonist_identifiers(ground_truth)
+    all_plot_df =[get_plot_df([(model_name, model_df)], agonists, gpcr_to_class_dict) for model_name, model_df in models]
+    all_plot_df = pd.concat(all_plot_df)
+    all_plot_df["Class"] = all_plot_df["GPCR"].apply(lambda x: gpcr_to_class_dict[x])
+    return all_plot_df
 
 def run_main(plot_p, models_to_keep):
     """ """
