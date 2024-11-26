@@ -154,7 +154,7 @@ def get_structure_list(species = "Homo sapiens"):
     structures = [structure for structure in structures if structure["species"] == species]
     return structures
 
-def parse_dataset(filepath, outfile):
+def parse_dataset(filepath, outdir, outfile):
     # Get receptors that have peptide complexes with more recent structures
     df = pd.read_csv(filepath)
     df = df[df["has_peptide_complex_before_cutoff"] == False]
@@ -334,26 +334,26 @@ def parse_dataset(filepath, outfile):
     # Save the benchmark set to a CSV file
     benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
     benchmark_set.reset_index(drop=True, inplace=True)
-    benchmark_set.to_csv(outfile, index=False)
+    benchmark_set.to_csv(f"{outdir}/{outfile}", index=False)
 
     # Save fastas to separate folders
-    os.makedirs("fastas", exist_ok=True)
-    os.makedirs("fastas/receptors", exist_ok=True)
-    os.makedirs("fastas/ligands", exist_ok=True)
-    os.makedirs("fastas/pairs", exist_ok=True)
-    os.makedirs("pdbs", exist_ok=True)
+    os.makedirs(f"{outdir}/fastas", exist_ok=True)
+    os.makedirs(f"{outdir}/fastas/receptors", exist_ok=True)
+    os.makedirs(f"{outdir}/fastas/ligands", exist_ok=True)
+    os.makedirs(f"{outdir}/fastas/pairs", exist_ok=True)
+    os.makedirs(f"{outdir}/pdbs", exist_ok=True)
 
     for index, row in benchmark_set.iterrows():
-        with open(f"fastas/receptors/{row['pdb']}_receptor.fasta", "w") as f:
+        with open(f"{outdir}/fastas/receptors/{row['pdb']}_receptor.fasta", "w") as f:
             f.write(f">{row['pdb']}_receptor\n{row['receptor_pdb_seq']}")
-        with open(f"fastas/ligands/{row['pdb']}_ligand.fasta", "w") as f:
+        with open(f"{outdir}/fastas/ligands/{row['pdb']}_ligand.fasta", "w") as f:
             f.write(f">{row['pdb']}_ligand\n{row['ligand_pdb_seq']}")
-        with open(f"fastas/pairs/{row['pdb']}.fasta", "w") as f:
+        with open(f"{outdir}/fastas/pairs/{row['pdb']}.fasta", "w") as f:
             f.write(f">{row['pdb']}_receptor\n{row['receptor_pdb_seq']}\n")
             f.write(f">{row['pdb']}_ligand\n{row['ligand_pdb_seq']}\n")
         
         # Dowload PDB files
-        download_pdb(row["pdb"], "pdbs")
+        download_pdb(row["pdb"], f"{outdir}/pdbs")
 
 if __name__ == "__main__":
     file_dir = os.path.dirname(__file__)
@@ -361,5 +361,6 @@ if __name__ == "__main__":
     index = file_dir.find(repo_name)
     repo_dir = file_dir[:index + len(repo_name)]
     filepath = f"{repo_dir}/classifier_benchmark_data/output/3f_known_structures_summary_2021-09-30.csv"
-    outfile = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30.csv"
-    parse_dataset(filepath, outfile)
+    outfile = "3f_known_structures_benchmark_2021-09-30.csv"
+    outdir = f"{repo_dir}/structure_benchmark_data"
+    parse_dataset(filepath, outdir, outfile)
