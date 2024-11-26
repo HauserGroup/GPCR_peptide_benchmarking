@@ -21,6 +21,9 @@ COLOR = {
     "AF2 RIA sc (no templates)": "#008FD7",
 
     "Peptriever": "#9E005D",
+
+    "ColabFold (no MSAs)": "#5b616b",
+    "ColabFold (no MSAs) LIS": "#5b616b",
 }
 
 # add markers to the rescoring tools (scatterplot). Default = 'o'
@@ -66,6 +69,10 @@ MARKER = {
     'AF2 LIS (no templates) 1m' : LIS_MARKER,
 
     "Peptriever": BASE_MARKER,
+
+    # ColabFold
+    "ColabFold (no MSAs)": BASE_MARKER,
+    "ColabFold (no MSAs) LIS": LIS_MARKER,
 }
 
 
@@ -88,4 +95,7 @@ STYLE = {
 
     "Peptriever": DEFAULT_STYLE,
 
+    # ColabFold
+    "ColabFold (no MSAs)": DEFAULT_STYLE,
+    "ColabFold (no MSAs) LIS": RESCORING_STYLE,
 }

@@ -117,10 +117,11 @@ def add_legend(plot_df, models, ax, bins, bin_width, last_index=3):
     )
 
 
-def unseen_vs_seen():
+def unseen_vs_seen_boxplot(models_to_keep, plot_p):
     # load predictions
     script_dir = pathlib.Path(__file__).parent
     models = get_models(script_dir / "models")
+    models = [(model_name, model_df) for model_name, model_df in models if model_name in models_to_keep]
 
     # load agonists
     ground_truth = get_ground_truth_df()
@@ -138,13 +139,12 @@ def unseen_vs_seen():
             gpcr_is_unseen[g] = "Seen"
 
     # plot details
-    plot_p = script_dir / "plots/class_seen_vs_unseen.svg"
     fig, ax = plt.subplots(
         1,
-        4,
-        figsize=(6 * 3, 3),
+        3,
+        figsize=(4, 3),
         # do not share y-axis, as F is much smaller
-        sharey=False,
+        sharey=True,
     )
     # add whitespace
     plt.subplots_adjust(wspace=0.5)
@@ -175,10 +175,11 @@ def unseen_vs_seen():
         # boxplots with jitter for the rankings, with rank of y-axis
         sns.boxplot(
             data=plot_df,
-            x="Class",
+            x="unseen",
+            order=["Seen", "Unseen"],
             y="AgonistRank",
             palette=new_color,
-            hue="unseen",
+            # hue="Class",
             ax=ax[plot_index],
             # mean line
             meanline=True,
@@ -187,26 +188,98 @@ def unseen_vs_seen():
             # mean color = black
             meanprops={"color": "black", "linewidth": 1},
             showfliers=False,
-            legend=False,
             hue_order=["Seen", "Unseen"],
         )
         # plot jitter
         sns.stripplot(
             data=plot_df,
-            x="Class",
+            x="unseen",
+            order=["Seen", "Unseen"],
             y="AgonistRank",
             ax=ax[plot_index],
             palette=new_color,
-            hue="unseen",
-            dodge=True,
+            # hue="Class",
+            dodge=False,
             # order of the legend
             hue_order=["Seen", "Unseen"],
             s=5,
             alpha=0.8,
+            linewidth=0.5,
         )
-    plt.tight_layout()
-    plt.savefig(plot_p, dpi=300)
+        ax[plot_index].set_xlabel("")
+        if plot_index == 0:
+            ax[plot_index].set_ylabel("Ranking of agonist")
+        else:
+            ax[plot_index].set_ylabel("")
 
+    plt.tight_layout()
+    plt.savefig(plot_p)
+    plt.savefig(plot_p.with_suffix(".png"))
+    plt.close()
+
+
+def unseen_vs_seen_swarmplot(models_to_keep, plot_p):
+      # load predictions
+    script_dir = pathlib.Path(__file__).parent
+    models = get_models(script_dir / "models")
+    models = [(model_name, model_df) for model_name, model_df in models if model_name in models_to_keep]
+
+    # load agonists
+    ground_truth = get_ground_truth_df()
+    gpcrs = ground_truth["Target ID"].unique()
+    gpcr_to_class_dict = {g: get_gpcr_class(g) for g in gpcrs}
+    agonists = get_principal_agonist_identifiers(ground_truth)
+
+    unseen_gpcrs = pd.read_csv(script_dir / "gpcrs_no_complex_before_2021-09-30.txt")
+    unseen_gpcrs = unseen_gpcrs.values.flatten()
+    gpcr_is_unseen = dict()
+    for g in gpcrs:
+        if g in unseen_gpcrs:
+            gpcr_is_unseen[g] = "Unseen"
+        else:
+            gpcr_is_unseen[g] = "Seen"
+
+    # plot details
+    sns.set_context("paper")
+    sns.set_style("whitegrid")
+    plt.figure(figsize=(3.5, 3))
+    # add whitespace
+    plt.subplots_adjust(wspace=0.5)
+
+    gpcr_classes = ["Class A (Rhodopsin)", "Class B1 (Secretin)", "Class F (Frizzled)"]
+    # rename
+    gpcr_renamed = {k: k.split(" (")[0] for k in gpcr_classes}
+
+    all_plot_df = [get_plot_df([(model_name, model_df)], agonists, gpcr_to_class_dict) for model_name, model_df in models]
+    plot_df = pd.concat(all_plot_df)
+    plot_df["unseen"] = plot_df["GPCR"].apply(lambda x: gpcr_is_unseen[x])
+    plot_df = plot_df[plot_df["Class"].isin(gpcr_classes)]
+    plot_df['Class'] = plot_df['Class'].apply(lambda x: gpcr_renamed[x])
+    plt.grid(axis='y', alpha=0.5)
+    # add error bars
+    sns.barplot(data=plot_df, x="Model", y="AgonistRank", hue="unseen", ci="sd", 
+                capsize=0.1, errwidth=0.5, alpha=0.0,
+    )
+    # add small amount of noise to agonistrank to visualize
+    plot_df["AgonistRank"] = plot_df["AgonistRank"] + np.random.uniform(-0.1, 0.1, size=len(plot_df))
+    # only keep class if in gpcr_classes
+    sns.swarmplot(data=plot_df, x="Model",
+                   y="AgonistRank", 
+                   hue="unseen", 
+                  size=1.2,
+                  dodge=True,
+                    palette=["gray", "green"],
+                  )
+    plt.yticks(range(1, 12))
+
+    plt.tight_layout()
+    plt.savefig(plot_p)
+    plt.savefig(plot_p.with_suffix(".png"))
+    plt.close()
 
 if __name__ == "__main__":
-    unseen_vs_seen()
+    script_dir = pathlib.Path(__file__).parent
+    unseen_vs_seen_boxplot(models_to_keep=["AF2 (no templates)", "AF2 LIS (no templates)", "Peptriever"],
+                   plot_p=script_dir / "plots/class_seen_vs_unseen.svg")
+    unseen_vs_seen_swarmplot(models_to_keep=["AF2 (no templates)", "AF2 LIS (no templates)", "Peptriever"],
+                     plot_p=script_dir / "plots/class_seen_vs_unseen_swarmplot.svg")

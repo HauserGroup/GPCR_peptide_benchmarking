@@ -119,7 +119,11 @@ def run_main(plot_p,
     sns.set_context("paper")
     sns.set_style("whitegrid") 
     fig, ax = plt.subplots(figsize=(3, 3))
-
+    # grid with opacity
+    plt.grid()
+    plt.grid(axis="y", linestyle="--", alpha=0.5)
+    plt.grid(axis="x", linestyle="--", alpha=0.5)
+    
     # add marker to plot df so we can sort on marker and model, for legend
     plot_df['marker'] = plot_df['model'].apply(lambda x: MARKER[x])
     plot_df['color'] = plot_df['model'].apply(lambda x: COLOR[x])
@@ -231,7 +235,7 @@ def run_main(plot_p,
 
     # also save as png
     plot_png = plot_p.with_suffix(".png")
-    plt.savefig(plot_png)
+    plt.savefig(plot_png, dpi=300)
     plt.close()
     print(f"Saved plot to {plot_png}")
 

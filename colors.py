@@ -57,6 +57,8 @@ COLOR = {
     "AF3": "#061F4A",
     "Chai-1": "#855e40",
     "Chai-1 (no MSAs)": "#b89881",
+    "ColabFold (no MSAs)": "#5b616b",
+
     # models (no structure)
     "Peptriever": "#9E005D",
     "D-SCRIPT2": "#aeb0b5",

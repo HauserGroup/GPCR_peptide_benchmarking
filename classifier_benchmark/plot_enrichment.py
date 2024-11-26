@@ -182,6 +182,7 @@ def run_main():
     plt.title("")
 
     plt.savefig(plot_p)
+    plt.savefig(plot_p.with_suffix(".png"), dpi=300)
     print(f"Saved plot to {plot_p}")
 
 
