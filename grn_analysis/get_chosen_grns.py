@@ -34,6 +34,9 @@ def get_chosen_grns(grn_freq_path, interaction_csv_path):
     # Read in the interactions data
     interactions_df = pd.read_csv(interaction_csv_path)
 
+    # Print unique number of generic_residue_number_a in the interactions_df
+    print("Number of unique generic_residue_number_a in the interactions_df: ", len(interactions_df["generic_residue_number_a"].unique()))
+
     # Get the generic residues required to cover all receptor-ligand interactions
     for generic_residue_number in grn_frequencies.index:
         grn_subset = interactions_df[interactions_df["generic_residue_number_a"] == generic_residue_number]
