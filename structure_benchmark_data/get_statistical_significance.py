@@ -5,14 +5,8 @@ from statsmodels.stats.multitest import multipletests
 import os
 import numpy as np
 
-# Build the path to the pdb files
-try:
-    file_dir = os.path.dirname(__file__)
-except NameError:
-    # Fallback for environments where __file__ is not defined
-    file_dir = os.getcwd()
-
-repo_name = "GPRC_peptide_benchmarking"
+file_dir = os.path.dirname(__file__)
+repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
 
@@ -24,7 +18,6 @@ def round_to_significant_digits(number, significant_digits=3):
     else:
         return round(number, significant_digits - int(np.floor(np.log10(abs(number)))) - 1)
 
-# Define a function to assign significance stars based on p-value
 def significance_stars(p):
     if p < 0.0001:
         return '****'

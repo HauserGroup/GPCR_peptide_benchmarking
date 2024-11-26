@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.font_manager as fm
 
-# Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
-
 repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]

@@ -42,8 +42,8 @@ set ray_shadows, 0
 
 set_color experimental_color, [0.976, 0.667, 0.263]
 set_color AF2, [0.067, 0.318, 0.522]
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7XOW_AB.pdb, 7XOW_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF2/7XOW.pdb, 7XOW_AF2
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7XOW_AB.pdb, 7XOW_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF2/7XOW.pdb, 7XOW_AF2
 align 7XOW_AF2, 7XOW_experimental
 color grey70, chain A and 7XOW_AF2
 color white, chain A and 7XOW_experimental
@@ -57,8 +57,8 @@ set cartoon_oval_width, 0.7, 7XOW_exp_ligand
 set cartoon_oval_width, 0.7, 7XOW_AF2_ligand
 set cartoon_loop_radius, 0.7, 7XOW_exp_ligand
 set cartoon_loop_radius, 0.7, 7XOW_AF2_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF2/8DWG.pdb, 8DWG_AF2
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF2/8DWG.pdb, 8DWG_AF2
 align 8DWG_experimental, 7XOW_experimental 
 align 8DWG_AF2, 8DWG_experimental
 color grey70, chain A and 8DWG_AF2

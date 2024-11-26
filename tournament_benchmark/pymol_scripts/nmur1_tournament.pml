@@ -51,7 +51,7 @@ set_color Dissimilar4, [0.600, 0.137, 0.106]
 
 
 
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/tournament_benchmark/one_to_ten/nmur1_one_to_ten/nmur1_one_to_ten.pdb, nmur1_tournament
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/tournament_benchmark/one_to_ten/nmur1_one_to_ten/nmur1_one_to_ten.pdb, nmur1_tournament
 color white, nmur1_tournament and chain B
 color PrincipalAgonist, nmur1_tournament and chain C
 color Similar0, nmur1_tournament and chain F

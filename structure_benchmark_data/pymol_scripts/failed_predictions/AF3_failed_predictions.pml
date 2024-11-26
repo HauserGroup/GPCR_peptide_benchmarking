@@ -42,8 +42,8 @@ set ray_shadows, 0
 
 set_color experimental_color, [0.976, 0.667, 0.263]
 set_color AF3, [0.024, 0.122, 0.290]
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7WQ4_AB.pdb, 7WQ4_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF3/7WQ4.pdb, 7WQ4_AF3
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7WQ4_AB.pdb, 7WQ4_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7WQ4.pdb, 7WQ4_AF3
 align 7WQ4_AF3, 7WQ4_experimental
 color grey70, chain A and 7WQ4_AF3
 color white, chain A and 7WQ4_experimental
@@ -57,8 +57,8 @@ set cartoon_oval_width, 0.7, 7WQ4_exp_ligand
 set cartoon_oval_width, 0.7, 7WQ4_AF3_ligand
 set cartoon_loop_radius, 0.7, 7WQ4_exp_ligand
 set cartoon_loop_radius, 0.7, 7WQ4_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF3/8DWG.pdb, 8DWG_AF3
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/8DWG.pdb, 8DWG_AF3
 align 8DWG_experimental, 7WQ4_experimental 
 align 8DWG_AF3, 8DWG_experimental
 color grey70, chain A and 8DWG_AF3
@@ -73,8 +73,8 @@ set cartoon_oval_width, 0.7, 8DWG_exp_ligand
 set cartoon_oval_width, 0.7, 8DWG_AF3_ligand
 set cartoon_loop_radius, 0.7, 8DWG_exp_ligand
 set cartoon_loop_radius, 0.7, 8DWG_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7P00_AB.pdb, 7P00_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF3/7P00.pdb, 7P00_AF3
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7P00_AB.pdb, 7P00_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7P00.pdb, 7P00_AF3
 align 7P00_experimental, 7WQ4_experimental 
 align 7P00_AF3, 7P00_experimental
 color grey70, chain A and 7P00_AF3
@@ -89,8 +89,8 @@ set cartoon_oval_width, 0.7, 7P00_exp_ligand
 set cartoon_oval_width, 0.7, 7P00_AF3_ligand
 set cartoon_loop_radius, 0.7, 7P00_exp_ligand
 set cartoon_loop_radius, 0.7, 7P00_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W56_AB.pdb, 7W56_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF3/7W56.pdb, 7W56_AF3
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W56_AB.pdb, 7W56_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7W56.pdb, 7W56_AF3
 align 7W56_experimental, 7WQ4_experimental 
 align 7W56_AF3, 7W56_experimental
 color grey70, chain A and 7W56_AF3
@@ -105,8 +105,8 @@ set cartoon_oval_width, 0.7, 7W56_exp_ligand
 set cartoon_oval_width, 0.7, 7W56_AF3_ligand
 set cartoon_loop_radius, 0.7, 7W56_exp_ligand
 set cartoon_loop_radius, 0.7, 7W56_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7RYC_AB.pdb, 7RYC_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF3/7RYC.pdb, 7RYC_AF3
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7RYC_AB.pdb, 7RYC_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7RYC.pdb, 7RYC_AF3
 align 7RYC_experimental, 7WQ4_experimental 
 align 7RYC_AF3, 7RYC_experimental
 color grey70, chain A and 7RYC_AF3

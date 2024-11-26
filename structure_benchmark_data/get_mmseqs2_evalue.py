@@ -5,13 +5,13 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy import stats
 import numpy as np
-from sklearn.metrics import r2_score
 
-# Get the top-level directory
-top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(top_level_dir)
+file_dir = os.path.dirname(__file__)
+repo_name = "GPCR_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
+sys.path.append(repo_dir)
 from colors import *
-
 
 def get_closest_training_structures(input_path):
     # List files in the input directory
@@ -193,10 +193,11 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", 
     plt.savefig(output_path, dpi=600)
     plt.close()
 
-
 if __name__ == "__main__":
     # Get the file directory
     file_dir = os.path.dirname(__file__)
+    known_structs = pd.read_csv(f"{file_dir}/3f_known_structures.csv")
+    pdb_to_protein = dict(zip(known_structs["pdb_code"], known_structs["protein"]))
 
     # Input paths to the search results
     rfaa_input_path = f"{file_dir}/mmseqs2_results/RFAA/search_results"
@@ -204,10 +205,12 @@ if __name__ == "__main__":
 
     # Get the closest training structures
     af_training_struct = get_closest_training_structures(af_input_path)
+    af_training_struct["gpcr"] = af_training_struct["pdb"].map(pdb_to_protein)
     af_training_struct.to_csv(
         f"{file_dir}/mmseqs2_results/mmseq2_af_training_structures.csv", index=False
     )
     rfaa_training_struct = get_closest_training_structures(rfaa_input_path)
+    rfaa_training_struct["gpcr"] = rfaa_training_struct["pdb"].map(pdb_to_protein)
     rfaa_training_struct.to_csv(
         f"{file_dir}/mmseqs2_results/mmseq2_rfaa_training_structures.csv", index=False
     )

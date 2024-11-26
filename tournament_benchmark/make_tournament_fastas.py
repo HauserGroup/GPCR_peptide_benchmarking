@@ -1,14 +1,19 @@
 import os 
-import sys
 import pandas as pd
 import requests
 
-# Build the path to the pdb files
-file_dir = os.path.dirname(__file__)
-folder_name = file_dir.split('/')[-1]
-repo_dir = file_dir.replace(f'/{folder_name}', '')
-plot_dir = f'{file_dir}/plots'
+"""
+Script to create fasta files for the tournament setup. Fasta files contain an increasing
+number of ligands for each receptor, where the ligands are either similar or dissimilar.
+"""
 
+# Get the directory of the current file and build the path to the repository directory
+file_dir = os.path.dirname(__file__)
+repo_name = "GPCR_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
+
+# Receptors with wrong sequence in UniProt
 receptors_with_wrong_seq = [
     "mchr1_human", 
     "ednrb_human", 
@@ -37,6 +42,7 @@ receptors_with_wrong_seq = [
     "lgr4_human"
 ]
 
+# Sequence of GtP ligand 856
 seq_856 = "QHHGVTKCNITCSKMTSKIPVALLIHYQQNQASCGKRAIILETRQHRLFCADPKEQWVKDAMQHLDRQAAALTRN"
 
 def get_receptor_sequence(uniprot_id):
@@ -112,7 +118,7 @@ def get_uniprot_id(receptor_id):
 
 # Ranks for tournament setup
 ranks = {
-    "one_to_one": {"Similar": [10.0], "Dissimilar": [10.0]},
+    "one_to_zero": {"Similar": [10.0], "Dissimilar": [10.0]},
     "one_to_two": {"Similar": [0.0], "Dissimilar": [4.0]},
     "one_to_four": {"Similar": [0.0, 4.0], "Dissimilar": [0.0, 4.0]},
     "one_to_eight": {"Similar": [0.0, 1,0, 3.0, 4.0], "Dissimilar": [0.0, 1.0, 3.0, 4.0]},
@@ -120,15 +126,12 @@ ranks = {
 }
 
 for rank in ranks:
-
+    print(f"Creating fasta files for {rank} setup")
     decoy_df = pd.read_csv(f"{repo_dir}/classifier_benchmark_data/output/6_interactions_with_decoys.csv")
     dissimilar_ranks = ranks[rank]["Dissimilar"]
     similar_ranks = ranks[rank]["Similar"]
-
     fasta_dir = f'{file_dir}/fastas/{rank}_fastas'
     os.makedirs(fasta_dir, exist_ok = True)
-
-    print(f"Creating fasta files for {rank} setup")
 
     # Keep rows where Decoy type is Similar and Decoy Rank is in similar_ranks OR Decoy type is Dissimilar and Decoy Rank is in dissimilar_ranks
     decoy_df = decoy_df[(decoy_df["Decoy Type"] == "Similar") & (decoy_df["Decoy Rank"].isin(similar_ranks)) | (decoy_df["Decoy Type"] == "Dissimilar") & (decoy_df["Decoy Rank"].isin(dissimilar_ranks)) | (decoy_df["Decoy Rank"].isnull())]

@@ -4,7 +4,6 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
-import matplotlib.font_manager as fm
 
 def rename_chains_in_pdb(input_pdb, output_pdb):
     # Open the input PDB file for reading
@@ -27,7 +26,6 @@ def rename_chains_in_pdb(input_pdb, output_pdb):
                 # Write the (potentially modified) line to the output file
                 outfile.write(line)
 
-# Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
 repo_name = "GPCR_peptide_benchmarking"
@@ -49,15 +47,10 @@ data = pd.read_csv(dockq_path)
 af2_data = data[data['model'] == 'AF2']
 af2_data = af2_data.sort_values(by='DockQ')
 best_pdb = af2_data.iloc[-1]['pdb']
-med_pdb = af2_data.iloc[len(af2_data) // 2]['pdb']
 worst_pdb = af2_data.iloc[0]['pdb']
 
-print(f"Best AF2 model: {best_pdb}")
-print(f"Median AF2 model: {med_pdb}")
-print(f"Worst AF2 model: {worst_pdb}")
-
 # Fix Chai models to have AB suffix and change chain B to A and C to B
-for model in [worst_pdb, med_pdb, best_pdb]:
+for model in [worst_pdb, best_pdb]:
     for chai_model in ["Chai-1", "Chai-1_no_MSAs"]:
         if "no_MSAs" in chai_model:
             model += "_no_MSAs"
@@ -172,6 +165,7 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"create {pdb}_chai_ligand, {pdb}_chai and chain B\n"
     script += f"create {pdb}_chai_no_msas_ligand, {pdb}_chai_no_msas and chain B\n"
 
+    # Show ligand as cartoon
     script += f"show cartoon, {pdb}_exp_ligand\n"
     script += f"show cartoon, {pdb}_rfaa_ligand\n"
     script += f"show cartoon, {pdb}_rfaa_nt_ligand\n"
@@ -189,7 +183,6 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"set cartoon_oval_width, {loop_radius}, {pdb}_rfaa_ligand\n"
     script += f"set cartoon_oval_width, {loop_radius}, {pdb}_rfaa_nt_ligand\n"
     script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af3_ligand\n"
-
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_exp_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af2_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af2_nt_ligand\n"
@@ -202,18 +195,14 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     # Set grid slots for specific structures
     script += f"set grid_slot, 1, {pdb}_experimental\n"
     script += f"set grid_slot, 1, {pdb}_exp_ligand\n"
-
     script += f"set grid_slot, 2, {pdb}_rfaa\n"
     script += f"set grid_slot, 2, {pdb}_rfaa_no_templates\n"
     script += f"set grid_slot, 2, {pdb}_rfaa_ligand\n"
     script += f"set grid_slot, 2, {pdb}_rfaa_nt_ligand\n"
-
     script += f"set grid_slot, 3, {pdb}_chai\n"
     script += f"set grid_slot, 3, {pdb}_chai_no_msas\n"
     script += f"set grid_slot, 3, {pdb}_chai_ligand\n"
     script += f"set grid_slot, 3, {pdb}_chai_no_msas_ligand\n"
-
-
     script += f"set grid_slot, 4, {pdb}_af2\n"
     script += f"set grid_slot, 4, {pdb}_af2_no_templates\n"
     script += f"set grid_slot, 4, {pdb}_af3\n"
@@ -221,6 +210,7 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"set grid_slot, 4, {pdb}_af2_nt_ligand\n"
     script += f"set grid_slot, 4, {pdb}_af3_ligand\n"
 
+    # Center the view on the experimental structure
     script += f"center {pdb}_experimental\n"
     script += f"zoom\n"
 
@@ -231,65 +221,51 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     with open(script_path, 'w') as f:
         f.write(script)
 
-
+# Generate pymol scripts for the best and worst models
 visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, worst_pdb, COLOR)
-visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, med_pdb, COLOR)
 visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, best_pdb, COLOR)
 
-colors_to_plot = ["Agonist", "AF2", "AF3", "RF-AA", "RF-AA (no templates)", "AF2 (no templates)", "Chai-1", "Chai-1 (no MSAs)"]
-
 # Create a list of legend entries
+colors_to_plot = ["Agonist", "AF2", "AF3", "RF-AA", "RF-AA (no templates)", "AF2 (no templates)", "Chai-1", "Chai-1 (no MSAs)"]
 legend_entries = [mpatches.Patch(color=color, label=model) for model, color in COLOR.items() if model in colors_to_plot]
-
-# Rename Agonist to Experimental
 legend_entries[0] = mpatches.Patch(color=COLOR["Agonist"], label="Experimental")
 
 # Create a figure and a legend
-fig, ax = plt.subplots(figsize=(2, 1.5))  # Adjust the size as needed
+fig, ax = plt.subplots(figsize=(2, 1.5))
 legend = ax.legend(handles=legend_entries, loc='center')
 
 # Increase the size of the legend
 plt.setp(legend.get_texts())
 legend_frame = legend.get_frame()
-legend_frame.set_linewidth(0)  # Remove the border
-
-# Hide the axes
+legend_frame.set_linewidth(0)
 ax.axis('off')
-
-# Adjust the layout to fit the legend size
 fig.tight_layout(pad=0)
 
-# Save the legend as a PNG file
+# Save the legend as an .svg file
 plt.rcParams['svg.fonttype'] = 'none'
 plt.savefig(f'{script_dir}/legend.svg', dpi=600)
 
 columns = ["model", "pdb","DockQ", "irms", "Lrms", "fnat", "fnonnat"]
 models_to_check = ["AF2", "AF2_no_templates","AF3", "RFAA", "RFAA_no_templates", "Chai-1", "Chai-1_no_MSAs"]
 data = data[data["model"].isin(models_to_check)][columns]
-# Rename RFAA_no_templates to RF-AA (without templates)
 data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA (no templates)")
 data["model"] = data["model"].replace("RFAA", "RF-AA")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2 (no templates)")
 data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1 (no MSAs)")
 
 # Get only the best and worst models
-data = data[data["pdb"].isin([best_pdb, med_pdb, worst_pdb])]
+data = data[data["pdb"].isin([best_pdb, worst_pdb])]
 data = data.round(2)
 data.columns = ["Model", "PDB", "DockQ", "iRMS", "lRMS", "Fnat", "Fnonnat"]
-
 model_order = ["AF2", "AF2 (no templates)","AF3", "RF-AA", "RF-AA (no templates)", "Chai-1", "Chai-1 (no MSAs)"]
 
 # Convert the PDB and Model columns to categorical types with the specified order
-data['PDB'] = pd.Categorical(data['PDB'], categories=[worst_pdb, med_pdb, best_pdb], ordered=True)
+data['PDB'] = pd.Categorical(data['PDB'], categories=[worst_pdb, best_pdb], ordered=True)
 data['Model'] = pd.Categorical(data['Model'], categories=model_order, ordered=True)
 
 # Sort the DataFrame based on the ordered categorical columns
+# and drop iRMS, lRMS, Fnat and Fnonnat columns
 data = data.sort_values(by=['PDB', 'Model'])
-
-save_path = f"{script_dir}/DockQ_worst_to_best.csv"
-data.to_csv(save_path, index=False)
-
-# Drop iRMS, lRMS, Fnat and Fnonnat columns
 data = data.drop(columns=["iRMS", "lRMS", "Fnat", "Fnonnat"])
 
 # Reformat the data so that each model has a column for each PDB dockq scores

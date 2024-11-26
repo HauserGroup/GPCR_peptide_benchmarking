@@ -5,11 +5,6 @@ from get_chosen_grns import get_chosen_grns
 import requests
 import re
 
-# Get the top-level directory
-top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(top_level_dir)
-from colors import * 
-
 def get_pymol_string(residue_numbers):
     """
     Function to get a string that can be used in PyMOL to select residues
@@ -90,9 +85,9 @@ def make_pymol_script(pdb_path, ligand_PDB_chain, receptor_PDB_chain, generic_re
 
     # Show stick for binding_site_selection
     script += f"show sticks, binding_site_{pdb_code}\n"
-
     script += "deselect \n"
 
+    # Create a new object for the ligand and visualize it as cartoon
     script += f"create {pdb_code}_ligand, {selection_name} and chain {ligand_PDB_chain}\n"
     script += f"hide cartoon, {ligand_name}\n"
     script += f"show cartoon, {pdb_code}_ligand\n"
@@ -102,10 +97,8 @@ def make_pymol_script(pdb_path, ligand_PDB_chain, receptor_PDB_chain, generic_re
     script += f"set cartoon_oval_width, {loop_radius}, {pdb_code}_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb_code}_ligand\n"
 
-    # Center
+    # Center and zoom
     script += f"center {selection_name}\n"
-
-    # Zoom out
     script += f"zoom\n"
 
     return script
@@ -135,7 +128,6 @@ def map_gpcrdb_b_to_a(mapping_file_path):
     gpcrdb_a_to_b_mapping = pd.DataFrame(gpcrdb_a_to_b_mapping)
     gpcrdb_a_to_b_mapping.columns = ["gpcrdb_a", "gpcrdb_b"]
 
-    # Convert to dictionary 
     return dict(zip(gpcrdb_a_to_b_mapping["gpcrdb_b"], gpcrdb_a_to_b_mapping["gpcrdb_a"]))
 
 def convert_gpcrdb_class_b_to_a(receptor_grn, mapping_dict):
@@ -172,17 +164,15 @@ def get_interacting_grns(pdb_code, mapping_file_path):
 
     return grn_interactions
 
-# Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
-folder_name = file_dir.split('/')[-1]
-repo_dir = file_dir.replace(f'/{folder_name}', '')
+repo_name = "GPCR_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
 plot_dir = f'{file_dir}/plots'
 interaction_csv_path = f'{file_dir}/interactions.csv'
 grn_freq_path = f'{file_dir}/grn_frequencies.csv'
 
-# Get the top-level directory
-top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
-sys.path.append(top_level_dir)
+sys.path.append(repo_dir)
 from colors import * 
 
 interactions_df = pd.read_csv(interaction_csv_path)
@@ -199,13 +189,11 @@ for index, row in interactions_df.iterrows():
 
 # Get the pdb codes included in the structural benchmark
 structural_benchmark_pdbs = pd.read_csv(f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv")["pdb"].tolist()
-print("structural_benchmark_pdbs: ", structural_benchmark_pdbs) 
-print("Number of structural benchmark pdbs: ", len(structural_benchmark_pdbs))
+
 # Loop through the dictionary and check if a pdb contains all chosen GRNs
 pdb_codes = []
 max_count = 0
 for pdb_code, grns in grns_per_pdb.items():
-    # Count how many GRNs are in the chosen GRNs
     count = 0
     for grn in grns:
         if grn in chosen_grns:
@@ -214,6 +202,7 @@ for pdb_code, grns in grns_per_pdb.items():
         best_pdb = pdb_code
         max_count = count
 
+# Visualizing the interactions between the receptor and the ligand for 7W53
 pdb_code = "7W53"
 pdb_path = f"{repo_dir}/structure_benchmark_data/cleaned_pdbs/{pdb_code}_AB.pdb"
 interacting_grns = get_interacting_grns(pdb_code, mapping_file_path)
@@ -221,7 +210,6 @@ interacting_grns = get_interacting_grns(pdb_code, mapping_file_path)
 # Loop through interacting GRNs and remove the ones that are not in chosen GRNs
 removed_grns = []
 for grn in interacting_grns:
-    # Clean up the GRN
     receptor_grn = re.sub(r'\.\d+', '', grn)
     if len(receptor_grn.split("x")[-1]) == 3:
         receptor_grn = receptor_grn[:-1]
@@ -230,17 +218,16 @@ for grn in interacting_grns:
         removed_grns.append(grn)
 for grn in removed_grns:
     interacting_grns.pop(grn)
-    print(f"Removed {grn}")
 
+# Make a PyMOL script to visualize the interactions
 print("pdb_code: ", pdb_code)  
 print("interacting_grns: ", interacting_grns)
 print("chosen_grns: ", chosen_grns)
 config_path = f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt"
-output_path = f"{file_dir}/pymol_scripts/{pdb_code}_grn_interactions.pml"
+output_path = f"{file_dir}/plots/{pdb_code}_grn_interactions.pml"
 os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
 pymol_script = "reinit\n"
 pymol_script += make_pymol_script(pdb_path, "B", "A", interacting_grns.values(), COLOR, config_path)
-
 with open(output_path, "w") as f:
     f.write(pymol_script)

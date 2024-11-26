@@ -6,14 +6,12 @@ import matplotlib.font_manager as fm
 import scipy.stats as stats
 import sys
 
-# Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
-plot_dir = f"{file_dir}/plots"
-
 repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
+plot_dir = f"{repo_dir}/structure_benchmark_data/plots"
 sys.path.append(repo_dir)
 from colors import * 
 

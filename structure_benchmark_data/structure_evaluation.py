@@ -1,14 +1,10 @@
 # Script to score the models using DockQ script
 import pandas as pd
-import glob
 import os
-import time
-import subprocess
 import ast
 from Bio.PDB import PDBParser, PDBIO, Select, PDBList
 from pathlib import Path
 from DockQ.DockQ import load_PDB, run_on_all_native_interfaces, run_on_chains
-
 from Bio.PDB import PDBParser, Superimposer, Select
 
 def calculate_rmsd(pdb_file_1, pdb_file_2, chain_id_1, chain_id_2):
@@ -23,8 +19,8 @@ def calculate_rmsd(pdb_file_1, pdb_file_2, chain_id_1, chain_id_2):
     structure_2 = parser.get_structure("protein2", pdb_file_2)
 
     # Select the specified chains from each structure
-    chain_1 = structure_1[0][chain_id_1]  # Model 0, Chain ID A
-    chain_2 = structure_2[0][chain_id_2]  # Model 0, Chain ID A
+    chain_1 = structure_1[0][chain_id_1]
+    chain_2 = structure_2[0][chain_id_2]
 
     # Extract the CA atoms for superimposition
     atoms_1 = [atom for atom in chain_1.get_atoms() if atom.get_id() == "CA"]
@@ -38,10 +34,7 @@ def calculate_rmsd(pdb_file_1, pdb_file_2, chain_id_1, chain_id_2):
     super_imposer = Superimposer()
     super_imposer.set_atoms(atoms_1, atoms_2)
     super_imposer.apply(structure_2.get_atoms())
-
-    # RMSD
     return super_imposer.rms
-
 
 def list_missing_residues(pdb_filename):
     """

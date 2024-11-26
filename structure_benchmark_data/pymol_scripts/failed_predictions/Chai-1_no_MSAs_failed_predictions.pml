@@ -42,8 +42,8 @@ set ray_shadows, 0
 
 set_color experimental_color, [0.976, 0.667, 0.263]
 set_color Chai-1 (no MSAs), [0.722, 0.596, 0.506]
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7SK4_AB.pdb, 7SK4_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7SK4_no_MSAs.pdb, 7SK4_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7SK4_AB.pdb, 7SK4_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7SK4_no_MSAs.pdb, 7SK4_Chai-1_no_MSAs
 align 7SK4_Chai-1_no_MSAs, 7SK4_experimental
 color grey70, chain A and 7SK4_Chai-1_no_MSAs
 color white, chain A and 7SK4_experimental
@@ -57,8 +57,8 @@ set cartoon_oval_width, 0.7, 7SK4_exp_ligand
 set cartoon_oval_width, 0.7, 7SK4_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 7SK4_exp_ligand
 set cartoon_loop_radius, 0.7, 7SK4_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8GY7_AB.pdb, 8GY7_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/8GY7_no_MSAs.pdb, 8GY7_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8GY7_AB.pdb, 8GY7_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/8GY7_no_MSAs.pdb, 8GY7_Chai-1_no_MSAs
 align 8GY7_experimental, 7SK4_experimental 
 align 8GY7_Chai-1_no_MSAs, 8GY7_experimental
 color grey70, chain A and 8GY7_Chai-1_no_MSAs
@@ -73,8 +73,8 @@ set cartoon_oval_width, 0.7, 8GY7_exp_ligand
 set cartoon_oval_width, 0.7, 8GY7_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 8GY7_exp_ligand
 set cartoon_loop_radius, 0.7, 8GY7_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7WQ4_AB.pdb, 7WQ4_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7WQ4_no_MSAs.pdb, 7WQ4_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7WQ4_AB.pdb, 7WQ4_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7WQ4_no_MSAs.pdb, 7WQ4_Chai-1_no_MSAs
 align 7WQ4_experimental, 7SK4_experimental 
 align 7WQ4_Chai-1_no_MSAs, 7WQ4_experimental
 color grey70, chain A and 7WQ4_Chai-1_no_MSAs
@@ -89,8 +89,8 @@ set cartoon_oval_width, 0.7, 7WQ4_exp_ligand
 set cartoon_oval_width, 0.7, 7WQ4_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 7WQ4_exp_ligand
 set cartoon_loop_radius, 0.7, 7WQ4_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/8DWG_no_MSAs.pdb, 8DWG_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/8DWG_no_MSAs.pdb, 8DWG_Chai-1_no_MSAs
 align 8DWG_experimental, 7SK4_experimental 
 align 8DWG_Chai-1_no_MSAs, 8DWG_experimental
 color grey70, chain A and 8DWG_Chai-1_no_MSAs
@@ -105,8 +105,8 @@ set cartoon_oval_width, 0.7, 8DWG_exp_ligand
 set cartoon_oval_width, 0.7, 8DWG_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 8DWG_exp_ligand
 set cartoon_loop_radius, 0.7, 8DWG_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W56_AB.pdb, 7W56_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W56_no_MSAs.pdb, 7W56_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W56_AB.pdb, 7W56_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W56_no_MSAs.pdb, 7W56_Chai-1_no_MSAs
 align 7W56_experimental, 7SK4_experimental 
 align 7W56_Chai-1_no_MSAs, 7W56_experimental
 color grey70, chain A and 7W56_Chai-1_no_MSAs
@@ -121,8 +121,8 @@ set cartoon_oval_width, 0.7, 7W56_exp_ligand
 set cartoon_oval_width, 0.7, 7W56_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 7W56_exp_ligand
 set cartoon_loop_radius, 0.7, 7W56_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W53_AB.pdb, 7W53_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W53_no_MSAs.pdb, 7W53_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W53_AB.pdb, 7W53_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W53_no_MSAs.pdb, 7W53_Chai-1_no_MSAs
 align 7W53_experimental, 7SK4_experimental 
 align 7W53_Chai-1_no_MSAs, 7W53_experimental
 color grey70, chain A and 7W53_Chai-1_no_MSAs
@@ -137,8 +137,8 @@ set cartoon_oval_width, 0.7, 7W53_exp_ligand
 set cartoon_oval_width, 0.7, 7W53_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 7W53_exp_ligand
 set cartoon_loop_radius, 0.7, 7W53_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W55_AB.pdb, 7W55_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W55_no_MSAs.pdb, 7W55_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W55_AB.pdb, 7W55_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W55_no_MSAs.pdb, 7W55_Chai-1_no_MSAs
 align 7W55_experimental, 7SK4_experimental 
 align 7W55_Chai-1_no_MSAs, 7W55_experimental
 color grey70, chain A and 7W55_Chai-1_no_MSAs
@@ -153,8 +153,8 @@ set cartoon_oval_width, 0.7, 7W55_exp_ligand
 set cartoon_oval_width, 0.7, 7W55_Chai-1_no_MSAs_ligand
 set cartoon_loop_radius, 0.7, 7W55_exp_ligand
 set cartoon_loop_radius, 0.7, 7W55_Chai-1_no_MSAs_ligand
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W57_AB.pdb, 7W57_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W57_no_MSAs.pdb, 7W57_Chai-1_no_MSAs
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W57_AB.pdb, 7W57_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/renamed_chains/7W57_no_MSAs.pdb, 7W57_Chai-1_no_MSAs
 align 7W57_experimental, 7SK4_experimental 
 align 7W57_Chai-1_no_MSAs, 7W57_experimental
 color grey70, chain A and 7W57_Chai-1_no_MSAs

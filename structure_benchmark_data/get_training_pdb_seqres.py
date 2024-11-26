@@ -1,6 +1,13 @@
 import requests
 import json
 
+# Script to find PDB codes for structures used to train RoseTTAFold and AlphaFold 2 + 3.
+# Assumes that the file "pdb_seqres.txt" is in the same directory as this script. 
+# This file contains the sequence records for all PDB structures. The script will filter
+# uses model specific date and resolution to filter the PDB codes according to the models' training
+# criteria. The filtered sequences are written to "rfaa_training_seqres.txt" and "alphafold_training_seqres.txt".
+# These two files were used to search for the closest training structures using MMseqs2.
+
 def get_pdb_codes(date, resolution):
     query =  {
         "query": {
@@ -74,11 +81,11 @@ def filter_pdb_seqres(seqres_path, pdb_codes, output_path):
                 print(f"{c}/{end_n} processed.")
 
 # RoseTTAFold
-date = "2020-04-30"  # Specify the date here
+date = "2020-04-30"
 pdb_codes = get_pdb_codes(date, 4.5)
 filter_pdb_seqres("pdb_seqres.txt", pdb_codes, "rfaa_training_seqres.txt")
 
 # AlphaFold 2 + 3
-date = "2021-09-30"  # Specify the date here
+date = "2021-09-30"
 pdb_codes = get_pdb_codes(date, 9.0)
 filter_pdb_seqres("pdb_seqres.txt", pdb_codes, "alphafold_training_seqres.txt")

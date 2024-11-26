@@ -178,8 +178,6 @@ def parse_dataset(interaction_csv_path, grn_frequencies_path, mapping_file_path)
 
 if __name__ == "__main__":
     file_dir = os.path.dirname(__file__)
-    folder_name = file_dir.split('/')[-1]
-    repo_dir = file_dir.replace(f'/{folder_name}', '')
     interaction_csv_path = f'{file_dir}/interactions.csv'
     grn_frequencies_path = f'{file_dir}/grn_frequencies.csv'
     mapping_file_path = f'{file_dir}/mapping_gpcrdbb.txt'

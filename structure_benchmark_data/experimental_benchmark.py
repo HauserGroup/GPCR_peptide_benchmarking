@@ -71,7 +71,6 @@ def sequence_similarity(seq1, seq2):
     from Bio import pairwise2
     """Calculate the sequence similarity by finding the best alignment and considering the number of identical matches."""
     alignments = pairwise2.align.globalxx(seq1, seq2)
-    # Best alignment is taken as the first alignment returned by Biopython, which has the highest score
     best_alignment = alignments[0]
     max_length = max(len(seq1), len(seq2))
     similarity = best_alignment.score / max_length
@@ -155,9 +154,8 @@ def get_structure_list(species = "Homo sapiens"):
     structures = [structure for structure in structures if structure["species"] == species]
     return structures
 
-def parse_dataset(filepath):
+def parse_dataset(filepath, outfile):
     # Get receptors that have peptide complexes with more recent structures
-    filepath = "3f_known_structures_summary_2021-09-30.csv"
     df = pd.read_csv(filepath)
     df = df[df["has_peptide_complex_before_cutoff"] == False]
     df = df[df["has_peptide_complex"] == True]
@@ -272,12 +270,14 @@ def parse_dataset(filepath):
     # - 8I2G has two ligands in one complex.
     # - 7X0X has been marked obsolete
     # - 7VUZ, 7VUY, and 7VV3: ligand chain missing
+    # - 7SK7: contains small molecule ligand
     benchmark_set = benchmark_set[benchmark_set["pdb"] != "7XBX"]
     benchmark_set = benchmark_set[benchmark_set["pdb"] != "8I2G"]
     benchmark_set = benchmark_set[benchmark_set["pdb"] != "7XOX"]
     benchmark_set = benchmark_set[benchmark_set["pdb"] != "7VUZ"]
     benchmark_set = benchmark_set[benchmark_set["pdb"] != "7VUY"]
     benchmark_set = benchmark_set[benchmark_set["pdb"] != "7VV3"]
+    benchmark_set = benchmark_set[benchmark_set["pdb"] != "7SK7"]
 
     # Drop rows where ligand_chain and receptor_chain are the same
     benchmark_set = benchmark_set[benchmark_set["ligand_chain"] != benchmark_set["receptor_chain"]]
@@ -334,7 +334,7 @@ def parse_dataset(filepath):
     # Save the benchmark set to a CSV file
     benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
     benchmark_set.reset_index(drop=True, inplace=True)
-    benchmark_set.to_csv("3f_known_structures_benchmark_c.csv", index=False)
+    benchmark_set.to_csv(outfile, index=False)
 
     # Save fastas to separate folders
     os.makedirs("fastas", exist_ok=True)
@@ -356,4 +356,10 @@ def parse_dataset(filepath):
         download_pdb(row["pdb"], "pdbs")
 
 if __name__ == "__main__":
-    parse_dataset("3f_known_structures_summary_2021-09-30.csv")
+    file_dir = os.path.dirname(__file__)
+    repo_name = "GPCR_peptide_benchmarking"
+    index = file_dir.find(repo_name)
+    repo_dir = file_dir[:index + len(repo_name)]
+    filepath = f"{repo_dir}/classifier_benchmark_data/output/3f_known_structures_summary_2021-09-30.csv"
+    outfile = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30.csv"
+    parse_dataset(filepath, outfile)
