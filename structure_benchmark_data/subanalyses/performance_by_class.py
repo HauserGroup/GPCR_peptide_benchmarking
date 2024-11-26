@@ -9,7 +9,7 @@ import matplotlib.font_manager as fm
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
 
-repo_name = "GPRC_peptide_benchmarking"
+repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
 
@@ -59,10 +59,6 @@ for gpcr_class in full_data['class'].unique():
     data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
     data = data.reset_index(drop=True)
 
-    # Specify the path to the Aptos font file
-    font_path = f'{repo_dir}/Aptos.ttf'  
-    font_prop = fm.FontProperties(fname=font_path)
-
     # Creating a swarm plot
     sns.swarmplot(x='model', y='DockQ', data=data, ax=ax, size = 3, alpha=0.6, palette=colors.values(), order = list(colors.keys()))
 
@@ -86,19 +82,19 @@ for gpcr_class in full_data['class'].unique():
     # Add text annotations using axes fraction coordinates
     text_size = 12
     padding = 0.05
-    ax.text(0.02, 0.23-padding, 'Incorrect (DockQ < 0.23)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
-    ax.text(0.02, 0.49-padding, 'Acceptable (0.23 ≤ DockQ < 0.49)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
-    ax.text(0.02, 0.80-padding, 'Medium (0.49 ≤ DockQ < 0.80)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
-    ax.text(0.02, 1.0-padding, 'High (DockQ ≥ 0.80)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
+    ax.text(0.02, 0.23-padding, 'Incorrect (DockQ < 0.23)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
+    ax.text(0.02, 0.49-padding, 'Acceptable (0.23 ≤ DockQ < 0.49)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
+    ax.text(0.02, 0.80-padding, 'Medium (0.49 ≤ DockQ < 0.80)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
+    ax.text(0.02, 1.0-padding, 'High (DockQ ≥ 0.80)', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
 
     # Set y-axis limit
     ax.set_ylim(0, 1)
 
     # Set labels and title
     ax.set_xlabel('', fontsize=0)
-    ax.set_ylabel('DockQ Score', fontsize=14, fontproperties=font_prop)
-    ax.set_xticklabels(list(colors.keys()), rotation=0, ha="center", fontsize=12, fontproperties=font_prop)
-    ax.set_title(gpcr_class, fontsize=18, fontproperties=font_prop)
+    ax.set_ylabel('DockQ Score', fontsize=14)
+    ax.set_xticklabels(list(colors.keys()), rotation=0, ha="center", fontsize=12)
+    ax.set_title(gpcr_class, fontsize=18)
     ax.tick_params(axis="y",direction="in")
 
     plt.tight_layout()

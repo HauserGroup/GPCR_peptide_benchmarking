@@ -17,10 +17,6 @@ top_level_dir = os.path.abspath(os.path.join(file_dir, '..'))
 sys.path.append(top_level_dir)
 from colors import * 
 
-# Font path
-font_path = f'{repo_dir}/Aptos.ttf'
-font_prop = fm.FontProperties(fname=font_path)
-
 # Dict of regions
 regions = {
     "1" : "TM1",
@@ -60,10 +56,10 @@ y = list(region_frequencies_dict.values())
 # Make barplot
 fig = plt.figure(figsize = (10, 5))
 plt.bar(x, y, color = COLOR["Receptor"], width = 0.4)
-plt.xlabel("Domain", fontproperties=font_prop, fontsize=16)
-plt.ylabel("Count", fontproperties=font_prop, fontsize=16)
-plt.title("Number of interacting residues per receptor domain", fontsize = 20, fontproperties=font_prop)
-plt.xticks(fontproperties=font_prop, fontsize = 12)
+plt.xlabel("Domain", fontsize=16)
+plt.ylabel("Count", fontsize=16)
+plt.title("Number of interacting residues per receptor domain", fontsize = 20)
+plt.xticks(fontsize = 12)
 plt.tick_params(axis="x",direction="in", length=0)
 plt.tick_params(axis="y",direction="in")
 plt.ylim(0, max(y) + 10)
@@ -116,14 +112,14 @@ y = list(region_frequencies_dict.values())
 fig = plt.figure(figsize = (10, 5))
 plt.bar(x_all, y_all, color =COLOR["Receptor"], width = 0.4, label = "All interactions")
 plt.bar(x, y, color =COLOR["Ligand"], width = 0.4, label = "Chosen GRNs")
-plt.xlabel("Domain", fontproperties=font_prop, fontsize=16)
-plt.ylabel("Count", fontproperties=font_prop, fontsize=16)
-plt.title("Number of interacting residues per receptor domain", fontsize = 20, fontproperties=font_prop)
-plt.xticks(fontproperties=font_prop, fontsize = 12)
+plt.xlabel("Domain", fontsize=16)
+plt.ylabel("Count", fontsize=16)
+plt.title("Number of interacting residues per receptor domain", fontsize = 20)
+plt.xticks(fontsize = 12)
 plt.tick_params(axis="x",direction="in", length=0)
 plt.tick_params(axis="y",direction="in")
 plt.ylim(0, max(y_all) + 10)
-plt.legend(loc='upper left', prop=fm.FontProperties(fname=font_path, size=16), frameon=False)
+plt.legend(loc='upper left', prop=fm.FontProperties(size=16), frameon=False)
 plt.rcParams['svg.fonttype'] = 'none'
 plt.gca().spines['top'].set_visible(False)
 plt.gca().spines['right'].set_visible(False)

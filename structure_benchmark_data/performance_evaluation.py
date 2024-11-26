@@ -9,7 +9,7 @@ import matplotlib.font_manager as fm
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
 
-repo_name = "GPRC_peptide_benchmarking"
+repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
 
@@ -58,12 +58,6 @@ colors = {
 data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
 data = data.reset_index(drop=True)
 
-# Specify the path to the Aptos font file
-font_path = f'{repo_dir}/Aptos.ttf' 
-font_prop = fm.FontProperties(fname=font_path, size = 14)
-font_prop_xlabels = fm.FontProperties(fname=font_path, size=14)
-font_prop_ylabels = fm.FontProperties(fname=font_path, size=14)
-
 # DockQ plot
 # Creating a swarm plot
 fig, ax = plt.subplots(figsize=(8, 6))
@@ -97,10 +91,10 @@ ax.axhline(0.80, color='grey', linestyle='-', alpha = 0.5, linewidth=0.5)
 # Add text annotations using axes fraction coordinates
 text_size = 12
 padding = 0.1
-ax.text(0.02, 0.23-padding, 'Incorrect\nDockQ < 0.23', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
-ax.text(0.02, 0.49-padding, 'Acceptable\n0.23 ≤ DockQ < 0.49', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
-ax.text(0.02, 0.80-padding, 'Medium\n0.49 ≤ DockQ < 0.80', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
-ax.text(0.02, 1.0-padding, 'High\nDockQ ≥ 0.80', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5, fontproperties=font_prop)
+ax.text(0.02, 0.23-padding, 'Incorrect\nDockQ < 0.23', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
+ax.text(0.02, 0.49-padding, 'Acceptable\n0.23 ≤ DockQ < 0.49', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
+ax.text(0.02, 0.80-padding, 'Medium\n0.49 ≤ DockQ < 0.80', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
+ax.text(0.02, 1.0-padding, 'High\nDockQ ≥ 0.80', color='black', fontsize=text_size, transform=ax.transAxes, alpha = 0.5)
 
 # Set y-axis limit and remove x-axis ticks
 ax.set_ylim(0, 1)
@@ -108,8 +102,8 @@ ax.xaxis.set_ticks_position('none')
 
 # Set labels and title
 ax.set_xlabel('', fontsize=0)
-ax.set_ylabel('DockQ Score', fontproperties=font_prop_ylabels)
-ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontproperties=font_prop_xlabels)
+ax.set_ylabel('DockQ Score')
+ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center")
 ax.tick_params(axis="y",direction="in")
 
 plt.rcParams['svg.fonttype'] = 'none'
@@ -122,12 +116,6 @@ plt.close()
 means = data.groupby('model')['rmsd'].mean()
 sems = data.groupby('model')['rmsd'].sem()
 
-# Specify the path to the Aptos font file
-font_path = f'{repo_dir}/Aptos.ttf' 
-font_prop = fm.FontProperties(fname=font_path, size = 18)
-font_prop_xlabels = fm.FontProperties(fname=font_path, size=18)
-font_prop_ylabels = fm.FontProperties(fname=font_path, size=18)
-
 # Creating a bar plot
 fig, ax = plt.subplots(figsize=(8, 6))
 
@@ -136,7 +124,7 @@ sns.swarmplot(
     y='rmsd', 
     data=data,
     ax=ax, 
-    size = 1.5, 
+    size = 3.0, 
     alpha=0.6, 
     palette=colors.values(), 
     order = list(colors.keys())
@@ -162,10 +150,10 @@ for bar, model in zip(ax.patches, list(colors.keys())):
 
 # Set labels and title
 ax.set_xlabel('', fontsize=0)
-ax.set_ylabel('Receptor RMSD (Å)', fontproperties=font_prop_ylabels)
-ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontproperties=font_prop_xlabels)
+ax.set_ylabel('Receptor RMSD (Å)', fontsize=18)
+ax.set_xticklabels(list(colors.keys()), rotation=90, ha="center", fontsize=18)
 ax.tick_params(axis="y", direction="in")
-plt.title('Receptor RMSD of predicted complexes', fontproperties=font_prop)
+plt.title('Receptor RMSD of predicted complexes', fontsize=20)
 
 ax.set_ylim(0, max(data['rmsd'])/2)
 

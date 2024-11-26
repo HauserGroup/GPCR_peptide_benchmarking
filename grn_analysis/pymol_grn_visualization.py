@@ -1,8 +1,5 @@
 import os 
 import pandas as pd
-import matplotlib.font_manager as fm
-import numpy as np
-import matplotlib.pyplot as plt
 import sys
 from get_chosen_grns import get_chosen_grns
 import requests

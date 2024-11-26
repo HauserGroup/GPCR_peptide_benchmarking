@@ -1,1 +1,1 @@
-#GPRC Peptide Benchmarking
+#GPCR Peptide Benchmarking

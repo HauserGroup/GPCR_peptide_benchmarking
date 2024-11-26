@@ -49,26 +49,26 @@ set grid_mode, 1
 
 
 
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7VFX_AB.pdb, 7VFX_experimental
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF2/7VFX.pdb, 7VFX_af2
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF2_no_templates/7VFX.pdb, 7VFX_af2_no_templates
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/AF3/7VFX.pdb, 7VFX_af3
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7VFX_AB.pdb, 7VFX_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF2/7VFX.pdb, 7VFX_af2
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF2_no_templates/7VFX.pdb, 7VFX_af2_no_templates
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7VFX.pdb, 7VFX_af3
 color 7VFX_af2_color, 7VFX_af2 and chain B
 color 7VFX_af2_nt_color, 7VFX_af2_no_templates and chain B
 color 7VFX_af3_color, 7VFX_af3 and chain B
 
 
 
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/RFAA_chain/7VFX.pdb, 7VFX_rfaa
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/RFAA_chain_no_templates/7VFX_no_templates.pdb, 7VFX_rfaa_no_templates
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/RFAA_chain/7VFX.pdb, 7VFX_rfaa
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/RFAA_chain_no_templates/7VFX_no_templates.pdb, 7VFX_rfaa_no_templates
 color white, chain A
 color 7VFX_rfaa_color, 7VFX_rfaa and chain B
 color 7VFX_rfaa_nt_color, 7VFX_rfaa_no_templates and chain B
 
 
 
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1/7VFX_AB.pdb, 7VFX_chai
-load /Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/7VFX_no_MSAs_AB.pdb, 7VFX_chai_no_msas
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1/7VFX_AB.pdb, 7VFX_chai
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/Chai-1_no_MSAs/7VFX_no_MSAs_AB.pdb, 7VFX_chai_no_msas
 color white, chain A
 color 7VFX_chai_color, 7VFX_chai and chain B
 color 7VFX_chai_no_msas_color, 7VFX_chai_no_msas and chain B

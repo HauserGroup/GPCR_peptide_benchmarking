@@ -355,6 +355,5 @@ def parse_dataset(filepath):
         # Dowload PDB files
         download_pdb(row["pdb"], "pdbs")
 
-
 if __name__ == "__main__":
     parse_dataset("3f_known_structures_summary_2021-09-30.csv")

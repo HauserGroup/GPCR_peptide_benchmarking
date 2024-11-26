@@ -27,9 +27,13 @@ def rename_chains_in_pdb(input_pdb, output_pdb):
                 # Write the (potentially modified) line to the output file
                 outfile.write(line)
 
+# Build the path to the pdb files
+file_dir = os.path.dirname(__file__)
+folder_name = file_dir.split('/')[-1]
+repo_name = "GPCR_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
 
-# Get the top-level directory
-repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '../..'))
 sys.path.append(repo_dir)
 from colors import * 
 
@@ -228,15 +232,11 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
         f.write(script)
 
 
-visualize_af_rfaa_pdb("/Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, worst_pdb, COLOR)
-visualize_af_rfaa_pdb("/Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, med_pdb, COLOR)
-visualize_af_rfaa_pdb("/Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, best_pdb, COLOR)
+visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, worst_pdb, COLOR)
+visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, med_pdb, COLOR)
+visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, best_pdb, COLOR)
 
 colors_to_plot = ["Agonist", "AF2", "AF3", "RF-AA", "RF-AA (no templates)", "AF2 (no templates)", "Chai-1", "Chai-1 (no MSAs)"]
-
-# Specify the path to the Aptos font file
-font_path = f'{repo_dir}/Aptos.ttf'  
-font_prop = fm.FontProperties(fname=font_path)
 
 # Create a list of legend entries
 legend_entries = [mpatches.Patch(color=color, label=model) for model, color in COLOR.items() if model in colors_to_plot]
@@ -246,10 +246,10 @@ legend_entries[0] = mpatches.Patch(color=COLOR["Agonist"], label="Experimental")
 
 # Create a figure and a legend
 fig, ax = plt.subplots(figsize=(2, 1.5))  # Adjust the size as needed
-legend = ax.legend(handles=legend_entries, loc='center', prop=font_prop)
+legend = ax.legend(handles=legend_entries, loc='center')
 
 # Increase the size of the legend
-plt.setp(legend.get_texts(), fontproperties=font_prop)
+plt.setp(legend.get_texts())
 legend_frame = legend.get_frame()
 legend_frame.set_linewidth(0)  # Remove the border
 

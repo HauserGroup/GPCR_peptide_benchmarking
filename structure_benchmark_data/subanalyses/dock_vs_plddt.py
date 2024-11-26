@@ -12,7 +12,7 @@ import torch
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
 
-repo_name = "GPRC_peptide_benchmarking"
+repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
 
@@ -97,10 +97,6 @@ def scatter_plot(model, dockq_path, repo_dir):
         os.makedirs(plot_path)
     output_path = os.path.join(plot_path, f"{model}_{x}_vs_{y}.svg")
 
-    # Specify the path to the Aptos font file
-    font_path = f'{repo_dir}/Aptos.ttf'  
-    font_prop = fm.FontProperties(fname=font_path)
-
     # Calculate the linear regression line and 95% confidence interval
     slope, intercept = np.polyfit(data[x], data[y], 1)
     y_model = np.polyval([slope, intercept], data[x])
@@ -128,25 +124,24 @@ def scatter_plot(model, dockq_path, repo_dir):
     sc = ax.scatter(x=data[x], y=data[y], s=15)
     ax.plot(x_line, y_line, color = COLOR["Receptor"])
     ax.fill_between(x_line, y_line + ci, y_line - ci, color = COLOR["Receptor"], label = '95% confidence interval', alpha = 0.1)
-    ax.text(3.5, 0.85, 'y = ' + str(np.round(intercept, 2)) + ' + ' + str(np.round(slope,2)) + 'x\n' + 'r$^2$ = ' + str(np.round(r2,3)) + '\nMSE = ' + str(np.round(MSE,3)), font_properties=font_prop, fontsize=12)
+    ax.text(3.5, 0.85, 'y = ' + str(np.round(intercept, 2)) + ' + ' + str(np.round(slope,2)) + 'x\n' + 'r$^2$ = ' + str(np.round(r2,3)) + '\nMSE = ' + str(np.round(MSE,3)), fontsize=12)
 
     # Update fonts and labels
-    plt.xlabel(x, fontproperties=font_prop, fontsize=14)
-    plt.ylabel(y, fontproperties=font_prop, fontsize=14)
+    plt.xlabel(x, fontsize=14)
+    plt.ylabel(y, fontsize=14)
 
     # Update fonts and labels
-    plt.xlabel(x, fontproperties=font_prop, fontsize=14)
-    plt.ylabel(y, fontproperties=font_prop, fontsize=14)
+    plt.xlabel(x, fontsize=14)
+    plt.ylabel(y, fontsize=14)
 
     # Modify the title
     model_title = model.split("_")[0]
     if "no_templates" in model:
         model_title += " (no templates)"
-    plt.title(f"{model_title}", fontproperties=font_prop, fontsize=16)
+    plt.title(f"{model_title}", fontsize=16)
 
     # Set the font properties for the ticks
     for label in (ax.get_xticklabels() + ax.get_yticklabels()):
-        label.set_fontproperties(font_prop)
         label.set_fontsize(12)
 
     # Modift ticks and set axis limits

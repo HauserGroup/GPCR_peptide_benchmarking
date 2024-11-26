@@ -3,18 +3,13 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import matplotlib.font_manager as fm
-import numpy as np
-from scipy import stats
-import matplotlib.pyplot as plt
-import seaborn as sns
 from scipy.stats import spearmanr
 
 # Build the path to the pdb files
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
 
-repo_name = "GPRC_peptide_benchmarking"
+repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
 
@@ -57,7 +52,7 @@ gpcr_class_data = pd.read_csv(gpcr_class_path)
 # Merge DockQ data with GPCR class data
 data = data.merge(gpcr_class_data, on='pdb')
 
-principal_agonists_path = "/Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking/classifier_benchmark_data/output/6_interactions_with_decoys.csv"
+principal_agonists_path = f"{repo_dir}/classifier_benchmark_data/output/6_interactions_with_decoys.csv"
 principal_agonists = pd.read_csv(principal_agonists_path)
 principal_agonists = principal_agonists[principal_agonists["Decoy Type"] == "Principal Agonist"]
 
@@ -78,12 +73,6 @@ data = data.merge(principal_agonists, on='receptor')
 data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA (no templates)")
 data["model"] = data["model"].replace("RFAA", "RF-AA")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2 (no templates)")
-
-#af2_data = data[data["model"] == "AF2"].copy()
-#af2_data["model"].replace("AF2", "AF2 LIS", inplace=True)
-
-# Append the new data to the original dataframe
-#data = pd.concat([data, af2_data])
 data.reset_index(drop=True, inplace=True)
 rows_to_keep = []
 
@@ -107,7 +96,6 @@ for index, row in data.iterrows():
             print(f"Classifier ligand: {seq2}")
             print("")
 
-
 # Drop rows
 data = data.loc[rows_to_keep].copy()
 
@@ -129,11 +117,6 @@ data = data.merge(ranking_data, on=["receptor", "model"])
 # Merge the two dataframes
 data.to_csv(f"{file_dir}/classifier_dockq.csv")
 
-# Font path
-# Specify the path to the Aptos font file
-font_path = f'{repo_dir}/Aptos.ttf'  
-font_prop = fm.FontProperties(fname=font_path)
-
 # Extract unique models and create a color palette
 unique_models = data['model'].unique()
 palette = sns.color_palette("husl", len(unique_models))
@@ -144,7 +127,7 @@ color_mapping = {
     "RF-AA (no templates)": COLOR["RF-AA (no templates)"],
     "AF2": COLOR["AF2"],
     "AF2 (no templates)": COLOR["AF2 (no templates)"],
-    "AF2 LIS": COLOR["AF2-LIS"],
+    "AF2 LIS": COLOR["AF2 LIS"],
 }
 
 receptors_after = data["receptor"].unique()
@@ -168,19 +151,16 @@ sns.lmplot(
 )
 
 plt.rcParams['svg.fonttype'] = 'none'
-plt.xlabel('Classifier Rank', fontsize=14, fontproperties=font_prop)
-plt.ylabel('DockQ Score', fontsize=14, fontproperties=font_prop)
-plt.title('DockQ Score vs Classifier Rank', fontsize=16, fontproperties=font_prop)
-#plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), prop=fm.FontProperties(fname=font_path, size=13), frameon=False, markerscale=2)
-plt.legend(loc='upper right', prop=font_prop, frameon=False, markerscale=2)
+plt.xlabel('Classifier Rank', fontsize=14)
+plt.ylabel('DockQ Score', fontsize=14)
+plt.title('DockQ Score vs Classifier Rank', fontsize=16)
+plt.legend(loc='upper right', frameon=False, markerscale=2)
 plt.tick_params(axis='both', which='both', direction='in')
 plt.xticks(range(1, 11))
 plt.axhline(y=0, color='black', linewidth=0.5, alpha=0.5, linestyle = "--")
 plt.ylim(-0.025, 1)
 plt.gca().spines['top'].set_visible(True)
 plt.gca().spines['right'].set_visible(True)
-plt.xticks(fontproperties=font_prop)
-plt.yticks(fontproperties=font_prop)
 plt.tight_layout()
 plt.savefig(f"{plot_dir}/dockq_vs_classifier_ranking.svg")
 

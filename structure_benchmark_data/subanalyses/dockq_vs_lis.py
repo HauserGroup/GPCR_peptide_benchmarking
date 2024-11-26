@@ -1,47 +1,35 @@
-# Script to visualize the correlation between DockQ and LIS scores for the benchmark dataset
-#
-# Usage: python dockq_vs_lis.py
-#
-
 import os 
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib.font_manager as fm
+import scipy.stats as stats
 import sys
 
-# Get the top-level directory
-top_level_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-sys.path.append(top_level_dir)
-from colors import *
+# Build the path to the pdb files
+file_dir = os.path.dirname(__file__)
+folder_name = file_dir.split('/')[-1]
+plot_dir = f"{file_dir}/plots"
 
+repo_name = "GPCR_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
+sys.path.append(repo_dir)
+from colors import * 
 
 if __name__ == "__main__":
-    # Get the file directory
-    file_dir = os.path.dirname(__file__)
-    plot_dir = f"{file_dir}/plots"
-    repo_dir = file_dir.split("GPRC_peptide_benchmarking")[0] + "GPRC_peptide_benchmarking"
-
-    # Path to the DockQ results file
-    dockq_path = f"{file_dir}/DockQ_results.csv"
+    # Read in DockQ data
+    dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
     dockq_df = pd.read_csv(dockq_path)
-
-    # Keep only AF2 and AF3 models
     dockq_df = dockq_df[dockq_df["model"].isin(["AF2", "AF3", "AF2_no_templates"])]
-
-    # Rename model to model_name
     dockq_df.rename(columns = {"model": "MODEL_NAME"}, inplace = True)
-    # Make column names uppercase
     dockq_df.columns = dockq_df.columns.str.upper()
 
     # Load AF LIS data
-    af2_lis_df = pd.read_csv(f"{file_dir}/AF_LIS_results/AF2_LIS_results.csv", sep = ",")
-    af3_lis_df = pd.read_csv(f"{file_dir}/AF_LIS_results/AF3_LIS_results.csv", sep = ",")
-
+    af2_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/AF_LIS_results/AF2_LIS_results.csv", sep = ",")
+    af3_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/AF_LIS_results/AF3_LIS_results.csv", sep = ",")
     af3_lis_df["pdb"] = [i.split("_")[-1].upper() for i in af3_lis_df["folder_name"]]
     af2_lis_df["pdb"] = [i.split("/")[-1].upper() for i in af2_lis_df["saved folder"]]
-
-    # For af2, make a new column from saved folder if it contains "no_templates"
     af2_lis_df["MODEL_NAME"] = af2_lis_df["saved folder"].apply(lambda x: "AF2_no_templates" if "no_templates" in x else "AF2")
     af3_lis_df["MODEL_NAME"] = "AF3"
 
@@ -56,16 +44,12 @@ if __name__ == "__main__":
     af2_lis_df.drop(columns = ["PROTEIN_1", "PROTEIN_2", "PKL", "RECYCLE", "MODEL", "CONFIDENCE", "PTM", "PLDDT", "SAVED FOLDER"], inplace = True)
     af3_lis_df.drop(columns = ["PROTEIN_1", "PROTEIN_2", "MODEL_NUMBER", "CLIS", "CLIA", "CLIR", "LIR", "FOLDER_NAME"], inplace = True)
 
-    # Concatenate the two dataframes
+    # Concatenate the two dataframes and keep only the highest lis score for each model
     lis_df = pd.concat([af2_lis_df, af3_lis_df])
-
-    # Keep only the highest lis score for each model
     lis_df = lis_df.groupby(["PDB", "MODEL_NAME"]).max().reset_index()
 
     # Merge lis_df with dockq_df
     lis_dockq_df = pd.merge(dockq_df, lis_df, on = ["PDB", "MODEL_NAME"], how = "inner")
-
-    # Rename AF2_no_templates to AF2 (no templates)
     lis_dockq_df["MODEL_NAME"] = lis_dockq_df["MODEL_NAME"].replace("AF2_no_templates", "AF2 (no templates)")
 
     # Prepare the data for plotting
@@ -73,7 +57,7 @@ if __name__ == "__main__":
     y = lis_dockq_df['DOCKQ']
     model_names = lis_dockq_df['MODEL_NAME']
 
-    # Create a larger figure for better visibility
+    # Create a figure
     fig, ax = plt.subplots(figsize=(7, 5))
 
     # Custom color and marker mapping for each model
@@ -88,12 +72,6 @@ if __name__ == "__main__":
         'AF2 (no templates)': 's',  # Square
         'AF3': '^'  # Triangle
     }
-
-    # Specify the path to the Aptos font file
-    font_path = f'{repo_dir}/Aptos.ttf'
-    font_prop_labels = fm.FontProperties(fname=font_path, size=14)
-    font_prop_legend = fm.FontProperties(fname=font_path, size=16)
-    font_prop_legend_title = fm.FontProperties(fname=font_path, size=0)
 
     # Plot each model separately with its own color and shape
     for model in custom_color_mapping.keys():
@@ -122,8 +100,8 @@ if __name__ == "__main__":
     ax.grid(color='gray', linestyle='-', linewidth=0.25)
 
     # Add labels and title using the font properties object
-    ax.set_xlabel('AFM-LIS', fontproperties=font_prop_labels)
-    ax.set_ylabel('DockQ score', fontproperties=font_prop_labels)
+    ax.set_xlabel('AFM-LIS', fontsize = 14)
+    ax.set_ylabel('DockQ score', fontsize = 14)
 
     # Set x and y limits and edit ticks
     plt.xlim(0, 1)
@@ -135,7 +113,7 @@ if __name__ == "__main__":
     legend = ax.legend(
         title="Model", 
         facecolor="white", 
-        prop=font_prop_legend, 
+        fontsize=16, 
         framealpha=1, 
         loc = "lower right", 
         handletextpad=0.0, 
@@ -143,7 +121,7 @@ if __name__ == "__main__":
         borderpad = 0.1,
         labelspacing = 0.2
     )
-    legend.get_title().set_fontproperties(font_prop_legend_title)
+    legend.get_title().set_fontproperties(fm.FontProperties(size=0))
     frame = legend.get_frame()
     frame.set_linewidth(0.25)  
 
@@ -153,12 +131,10 @@ if __name__ == "__main__":
     plt.savefig(f"{plot_dir}/DockQ_vs_LIS.svg", dpi=600)
 
     # Loop through each model and calculate the Pearson correlation between LIS and DockQ
-    import scipy.stats as stats
     for model in lis_dockq_df["MODEL_NAME"].unique():
         model_data = lis_dockq_df[lis_dockq_df['MODEL_NAME'] == model]
         correlation, p_value = stats.pearsonr(model_data['LIS'], model_data['DOCKQ'])
         print(f"Model: {model}")
-        # Print degrees of freedom
         print(f"Degrees of freedom: {len(model_data) - 2}")
         print(f"Pearson correlation: {correlation}")
         print(f"P-value: {p_value}")
