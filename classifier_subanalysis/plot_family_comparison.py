@@ -14,6 +14,7 @@ from parse_predictions import (
     get_ground_truth_df,
     get_ground_truth_values,
     get_gpcr_class,
+    get_gpcr_family,
 )
 import sys
 
@@ -141,35 +142,30 @@ def run_main(plot_p, models_to_keep):
     ground_truth = get_ground_truth_df()
     gpcrs = ground_truth["Target ID"].unique()
     gpcr_to_class_dict = {g: get_gpcr_class(g) for g in gpcrs}
+    gpcr_to_family_dict = {g: get_gpcr_family(g) for g in gpcrs}
 
     agonists = get_principal_agonist_identifiers(ground_truth)
     # create figure
-    plt.figure(figsize=(5, 3))
-    gpcr_classes = ["Class A (Rhodopsin)", "Class B1 (Secretin)", "Class F (Frizzled)"]
-    # rename
-    gpcr_renamed = {k: k.split(" (")[0] for k in gpcr_classes}
+    plt.figure(figsize=(20, 4))
     # keep only the models we want to plot
     models = [(model_name, model_df) for model_name, model_df in models if model_name in models_to_keep]
 
     all_plot_df =[get_plot_df([(model_name, model_df)], agonists, gpcr_to_class_dict) for model_name, model_df in models]
     all_plot_df = pd.concat(all_plot_df)
-    # add class
-    all_plot_df["Class"] = all_plot_df["GPCR"].apply(lambda x: gpcr_to_class_dict[x])
-    # drop other GPCRs
-    all_plot_df = all_plot_df[all_plot_df["Class"].isin(gpcr_classes)]
-   
-    all_plot_df['Model_class'] = all_plot_df['Model'] + ' ' + all_plot_df['Class']
-    
-    # add a little noise to rank so it's still visible
-    all_plot_df["AgonistRank"] = all_plot_df["AgonistRank"] + np.random.uniform(-0.1, 0.1, size=len(all_plot_df))
+    # add family
+    all_plot_df["family"] = all_plot_df["GPCR"].apply(lambda x: gpcr_to_family_dict[x])
+    # take first word for family
+    all_plot_df["family"] = all_plot_df["family"].apply(lambda x: x.split()[0])
 
-  
+    family_value_counts = all_plot_df["family"].value_counts()
+    all_plot_df['Model_family'] = all_plot_df['Model'] + ' ' + all_plot_df['family']
+    # add a little noise to rank so it's still visible
+    all_plot_df["AgonistRankJitter"] = all_plot_df["AgonistRank"] + np.random.uniform(-0.1, 0.1, size=len(all_plot_df))
     # also add the stdev
     sns.barplot(data=all_plot_df, 
-                y="AgonistRank", 
-                x="Model_class", 
-                hue="Class",
-                palette=COLOR,
+                y="AgonistRankJitter", 
+                x="Model_family", 
+                hue="family",
                 ci="sd",
                 capsize=0.2,
                 errwidth=1.0,
@@ -181,15 +177,11 @@ def run_main(plot_p, models_to_keep):
                 # no legend
                 # set errorbar opacity
                 )
-    # print mean ranking per class
-    print(all_plot_df.groupby(["Class"])["AgonistRank"].mean())
-
     # swarmplot, hue=class
     sns.swarmplot(data=all_plot_df, 
-                  y="AgonistRank", 
-                  x="Model_class", 
-                  hue="Class",
-                  palette=COLOR,
+                  y="AgonistRankJitter", 
+                  x="Model_family", 
+                hue="family",
                   size=1.2,
                   alpha=1.0,
                   dodge=False,
@@ -205,93 +197,32 @@ def run_main(plot_p, models_to_keep):
     plt.grid(alpha=0.5, 
              # no vertical lines
                 axis="y")
-    
+    # rotate xlabels
+    plt.xticks(rotation=90)
     plt.tight_layout()
+    # show 0.2 more of bottom
+    plt.subplots_adjust(bottom=0.2)
     plt.savefig(plot_p)
     plt.savefig(plot_p.with_suffix(".png"), dpi=600)
     plt.close()
 
+    # lastly, print mean rank per family
+    mean_rank_df = pd.DataFrame(columns=["Model", "Family", "MeanRank", "Samples"])
+    for family in family_value_counts.index:
+        for model in models_to_keep:
+            model_df = all_plot_df[(all_plot_df["Model"] == model)]
+            model_family_df = model_df[model_df["family"] == family]
+            mean_rank = model_family_df["AgonistRank"].mean()
+            samples = len(model_family_df)
+            mean_rank_df = mean_rank_df.append({"Model": model, "Family": family, "MeanRank": mean_rank,
+                                                "Samples":samples}, ignore_index=True)
 
-def run_main_barplot(plot_p, models_to_keep):
-    """ """
-    # load predictions
-    script_dir = pathlib.Path(__file__).parent
-    models = get_models(script_dir / "models")
+    # sort on rank
+    mean_rank_df = mean_rank_df.sort_values(["Model", "MeanRank"])
+    print(mean_rank_df)
 
-    # load agonists
-    ground_truth = get_ground_truth_df()
-    gpcrs = ground_truth["Target ID"].unique()
-    gpcr_to_class_dict = {g: get_gpcr_class(g) for g in gpcrs}
-
-    agonists = get_principal_agonist_identifiers(ground_truth)
-    # create figure
-    plt.figure(figsize=(5, 2.5))
-    gpcr_classes = ["Class A (Rhodopsin)", "Class B1 (Secretin)", "Class F (Frizzled)"]
-    # rename
-    gpcr_renamed = {k: k.split(" (")[0] for k in gpcr_classes}
-    # keep only the models we want to plot
-    models = [(model_name, model_df) for model_name, model_df in models if model_name in models_to_keep]
-
-    all_plot_df =[get_plot_df([(model_name, model_df)], agonists, gpcr_to_class_dict) for model_name, model_df in models]
-    all_plot_df = pd.concat(all_plot_df)
-    # add class
-    all_plot_df["Class"] = all_plot_df["GPCR"].apply(lambda x: gpcr_to_class_dict[x])
-    # drop other GPCRs
-    all_plot_df = all_plot_df[all_plot_df["Class"].isin(gpcr_classes)]
-   
-    all_plot_df['Model_class'] = all_plot_df['Model'] + ' ' + all_plot_df['Class']
-    
-    # add a little noise to rank so it's still visible
-    all_plot_df["AgonistRank"] = all_plot_df["AgonistRank"] + np.random.uniform(-0.1, 0.1, size=len(all_plot_df))
-
-  
-    # also add the stdev
-    sns.barplot(data=all_plot_df, 
-                y="AgonistRank", 
-                x="Model_class", 
-                hue="Class",
-                palette=COLOR,
-                ci="sd",
-                capsize=0.3,
-                errwidth=1.0,
-                # make errorbar color transparent
-                errcolor='black',
-                alpha=1.0,
-                # centralize
-                dodge=False,
-                # add mean marker
-                estimator=np.mean,
-                # add marker for mean
-                )
-    # Overlay custom markers for the mean values
-    means = all_plot_df.groupby(['Model_class', 'Class'])['AgonistRank'].mean().reset_index()
-    for index, row in means.iterrows():
-        plt.scatter(
-            x=row['Model_class'], 
-            y=row['AgonistRank'], 
-            color='black',  # Marker color
-            zorder=10,  # Place it on top of bars
-            label='',
-        )
-
-    # print mean ranking per class
-    print(all_plot_df.groupby(["Class"])["AgonistRank"].mean())
-
-    plt.legend(fontsize=8)
-    plt.yticks(range(1, 12))
-    plt.ylim(0,11)
-    # set grid opacity
-    plt.grid(alpha=0.5, 
-             # no vertical lines
-                axis="y")
-    plt.tight_layout()
-    plt.savefig(plot_p)
-    plt.savefig(plot_p.with_suffix(".png"), dpi=600)
-    plt.close()
-
-    # save df
-    all_plot_df.to_csv(plot_p.with_suffix(".csv"), index=False)
-    print("Saved plot df to", plot_p.with_suffix(".csv"))
+    all_ranks = all_plot_df["AgonistRank"].values
+    print(f"Mean rank: {np.mean(all_ranks)}")
 
 
 if __name__ == "__main__":
@@ -301,9 +232,6 @@ if __name__ == "__main__":
     sns.set_palette("colorblind")
     # set default fontsize to 10
     plt.rcParams.update({"font.size": 10})
-    run_main(plot_p = script_dir / "plots/class_comparisons.svg",
-             models_to_keep=["Peptriever", "AF2 (no templates)", "AF2 LIS (no templates)"])
-
-    run_main_barplot(plot_p = script_dir / "plots/class_comparisons_barplot.svg",
-                models_to_keep=["Peptriever", "AF2 (no templates)", "AF2 LIS (no templates)"])
-    
+    run_main(plot_p = script_dir / "plots/family_comparisons.svg",
+             # models_to_keep=["Peptriever", "AF2 (no templates)", "AF2 LIS (no templates)"])
+            models_to_keep=["AF2 (no templates)"])

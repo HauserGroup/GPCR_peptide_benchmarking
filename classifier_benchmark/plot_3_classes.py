@@ -58,6 +58,23 @@ def get_rankings_from_df(df, agonists):
     return rankings
 
 
+def get_top_ranked_name_for_GPCR(pred_df, gpcr):
+    ""
+    pred_df = pred_df[pred_df["Target ID"] == gpcr]
+    pred_df = pred_df.sort_values("InteractionProbability", ascending=False)
+    identifier = pred_df.iloc[0]["identifier"]
+    return identifier.rpartition("___")[2]
+
+
+def get_principal_agonist_name(ground_truth, gpcr):
+    ""
+    agonists = get_principal_agonist_identifiers(ground_truth)
+    for a in agonists:
+        if gpcr in a:
+            return a.rpartition("___")[2]
+    return None
+
+
 def get_plot_df(gpcr_class, models, agonists, gpcr_to_class_dict):
     """
     gpcr_class: str, which GPCR classes to return
@@ -65,6 +82,7 @@ def get_plot_df(gpcr_class, models, agonists, gpcr_to_class_dict):
     agonists: list of agonist identifiers
     gpcr_to_class_dict: dict, mapping gpcr to class
     """
+    ground_truth = get_ground_truth_df()
     # plot df will store all rankings per model
     plot_df = pd.DataFrame(columns=["Model", "GPCR", "AgonistRank"])
     for model_name, pred_df in models:
@@ -81,6 +99,12 @@ def get_plot_df(gpcr_class, models, agonists, gpcr_to_class_dict):
                 "GPCR": list(rankings.keys()),
                 "AgonistRank": list(rankings.values()),
             }
+        )
+        rankings_df["TopRankedName"] = rankings_df["GPCR"].apply(
+            lambda x: get_top_ranked_name_for_GPCR(pred_df, x)
+        )
+        rankings_df["PrincipalAgonist"] = rankings_df["GPCR"].apply(
+            lambda x: get_principal_agonist_name(ground_truth, x)
         )
         plot_df = pd.concat([plot_df, rankings_df])
 

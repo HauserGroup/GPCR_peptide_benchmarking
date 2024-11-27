@@ -271,11 +271,114 @@ def unseen_vs_seen_swarmplot(models_to_keep, plot_p):
                     palette=["gray", "green"],
                   )
     plt.yticks(range(1, 12))
-
     plt.tight_layout()
     plt.savefig(plot_p)
     plt.savefig(plot_p.with_suffix(".png"))
     plt.close()
+
+    # print mean rank per model
+    print(plot_df.groupby(["Model", "unseen"])["AgonistRank"].mean())
+
+    # report rank difference between seen and unseen for each model
+    for model_name in models_to_keep:
+        model_df = plot_df[plot_df["Model"] == model_name]
+        seen_rank = model_df[model_df["unseen"] == "Seen"]["AgonistRank"]
+        unseen_rank = model_df[model_df["unseen"] == "Unseen"]["AgonistRank"]
+        diff = seen_rank.mean() - unseen_rank.mean()
+        print(f"Model {model_name}: {seen_rank.mean()} vs {unseen_rank.mean()} (diff: {diff})")
+
+
+def unseen_vs_seen_barplot(models_to_keep, 
+                           plot_p):
+    
+     # load predictions
+    script_dir = pathlib.Path(__file__).parent
+    models = get_models(script_dir / "models")
+    models = [(model_name, model_df) for model_name, model_df in models if model_name in models_to_keep]
+
+    # load agonists
+    ground_truth = get_ground_truth_df()
+    gpcrs = ground_truth["Target ID"].unique()
+    gpcr_to_class_dict = {g: get_gpcr_class(g) for g in gpcrs}
+    agonists = get_principal_agonist_identifiers(ground_truth)
+
+    unseen_gpcrs = pd.read_csv(script_dir / "gpcrs_no_complex_before_2021-09-30.txt")
+    unseen_gpcrs = unseen_gpcrs.values.flatten()
+    gpcr_is_unseen = dict()
+    for g in gpcrs:
+        if g in unseen_gpcrs:
+            gpcr_is_unseen[g] = "Unseen"
+        else:
+            gpcr_is_unseen[g] = "Seen"
+
+    # plot details
+    sns.set_context("paper")
+    sns.set_style("whitegrid")
+    plt.figure(figsize=(3, 2.5))
+    # add whitespace
+    plt.subplots_adjust(wspace=0.5)
+
+    gpcr_classes = ["Class A (Rhodopsin)", "Class B1 (Secretin)", "Class F (Frizzled)"]
+    # rename
+    gpcr_renamed = {k: k.split(" (")[0] for k in gpcr_classes}
+
+    all_plot_df = [get_plot_df([(model_name, model_df)], agonists, gpcr_to_class_dict) for model_name, model_df in models]
+    plot_df = pd.concat(all_plot_df)
+    plot_df["unseen"] = plot_df["GPCR"].apply(lambda x: gpcr_is_unseen[x])
+    plot_df = plot_df[plot_df["Class"].isin(gpcr_classes)]
+    plot_df['Class'] = plot_df['Class'].apply(lambda x: gpcr_renamed[x])
+    plt.grid(axis='y', alpha=0.5)
+    # add model+class
+    # add error bars
+    ax = sns.barplot(data=plot_df,
+                x="Model",
+                y="AgonistRank",
+                hue="unseen",
+                ci="sd",
+                capsize=0.3,
+                errwidth=1.0,
+                # make errorbar color transparent
+                errcolor='black',
+                alpha=1.0,
+                # centralize
+                dodge=True,
+                # add mean marker
+                estimator=np.mean,
+                # colors
+                palette=["gray", "green"],
+                # add mean dot
+                )
+    # add markers for the mean of both seen and unseen
+    for i, model_name in enumerate(models_to_keep):
+        # get mean rank for seen and unseen
+        mean_rank = plot_df[plot_df["Model"] == model_name].groupby("unseen")["AgonistRank"].mean()
+        # add mean marker
+        ax.plot([i-0.2, i+0.2], mean_rank, 'o', color='black', markersize=5)
+
+    plt.ylim(0, 11)
+    # ytick in range
+    plt.yticks(range(1, 12))
+    # report rank difference between seen and unseen for each model
+    for model_name in models_to_keep:
+        model_df = plot_df[plot_df["Model"] == model_name]
+        seen_rank = model_df[model_df["unseen"] == "Seen"]["AgonistRank"]
+        unseen_rank = model_df[model_df["unseen"] == "Unseen"]["AgonistRank"]
+        diff = seen_rank.mean() - unseen_rank.mean()
+        print(f"Model {model_name}: {seen_rank.mean()} vs {unseen_rank.mean()} (diff: {diff})")
+    
+    # legend without title
+    ax.legend(title=None)
+
+    plt.tight_layout()
+    plt.savefig(plot_p)
+    plt.savefig(plot_p.with_suffix(".png"), dpi=300)
+    plt.close()
+
+    # to df 
+    plot_df.to_csv(script_dir / "plots/class_seen_unseen.csv", index=False)
+
+
+
 
 if __name__ == "__main__":
     script_dir = pathlib.Path(__file__).parent
@@ -283,3 +386,5 @@ if __name__ == "__main__":
                    plot_p=script_dir / "plots/class_seen_vs_unseen.svg")
     unseen_vs_seen_swarmplot(models_to_keep=["AF2 (no templates)", "AF2 LIS (no templates)", "Peptriever"],
                      plot_p=script_dir / "plots/class_seen_vs_unseen_swarmplot.svg")
+    unseen_vs_seen_barplot(models_to_keep=["AF2 (no templates)", "AF2 LIS (no templates)", "Peptriever"],
+                        plot_p=script_dir / "plots/class_seen_vs_unseen_barplot.svg")

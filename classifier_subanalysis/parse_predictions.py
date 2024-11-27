@@ -73,3 +73,16 @@ def get_gpcr_class(gpcr_id):
     # get the class
     gpcr_class = df.loc[df["gpcr"] == gpcr_id, "receptor_class"].values
     return gpcr_class[0]
+
+
+def get_gpcr_family(gpcr_id):
+    """
+    5ht1a_human -> Serotonin
+    """
+    # directory of this file
+    file_dir = pathlib.Path(__file__).parent
+    # path to the GPCR class file
+    class_csv = file_dir / "gpcr_list_human.csv"
+    df = pd.read_csv(class_csv)
+    gpcr_family = df.loc[df["gpcr"] == gpcr_id, "receptor_family"].values
+    return gpcr_family[0]

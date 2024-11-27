@@ -39,7 +39,7 @@ def main(
     Create the plots
     """
     # settings
-    bin_count = 10
+    bin_count = 20
     # data
     decoy_p = pathlib.Path(decoy_p)
     decoy_df = pd.read_csv(decoy_p)
@@ -66,7 +66,10 @@ def main(
     print(len(decoy_df))
 
     # set xlim
-    fig, ax = plt.subplots(figsize=(8, 6))
+    fig, ax = plt.subplots(figsize=(5, 5))
+    sns.set_style("whitegrid")
+    sns.set_context("paper")
+
     sns.histplot(
         decoy_df,
         x="Target Similarity to Original Target",
@@ -81,11 +84,12 @@ def main(
         # binwidth=bin_size,
         bins=bin_count,
         binrange=(0, 100),
+        kde=True,
     )
 
     plt.xlim(-0.3, 100)
     # set y min to 0
-    plt.ylim(0, 100)
+    plt.ylim(0, 50)
     # plt.ylim(0, 100)
 
     # dashed line for 30
@@ -97,20 +101,14 @@ def main(
         alpha=0.5,
     )
     # remove the percent ylabel
-    plt.ylabel("")
-    plt.xlabel("")
-    # increase all fonts by percentage
-    increase_perc = 125
+    plt.ylabel("Percent", fontsize=10)
+    plt.xlabel("Binding pocket similarity to original receptor (%)",
+                fontsize=10)
+
 
     # title
-    plt.title("Pocket similarity")
-    for item in (
-        [ax.title, ax.xaxis.label, ax.yaxis.label]
-        + ax.get_xticklabels()
-        + ax.get_yticklabels()
-    ):
-        item.set_fontsize(item.get_fontsize() * increase_perc / 100)
-
+    plt.title("Decoy peptides, similarity to original receptor",
+              fontsize=12, fontweight='bold')
     # add a legend
     legend_values = ["Similar", "Dissimilar", "Principal Agonist"]
     plt.legend(
@@ -127,9 +125,18 @@ def main(
     )
     # grid, with opacity
     plt.grid(alpha=0.5)
+    # set xticks font size to 9
+    plt.xticks(fontsize=10)
+    plt.yticks(fontsize=10)
     # same for xticks
     plt.tight_layout()
     plt.savefig(out_p, bbox_inches="tight", dpi=300)
+
+    # print average similarity for both types
+    print("Average similarity for similar decoys:",
+          decoy_df[decoy_df["Decoy Type"] == "Similar"]["Target Similarity to Original Target"].mean())
+    print("Average similarity for dissimilar decoys:",
+          decoy_df[decoy_df["Decoy Type"] == "Dissimilar"]["Target Similarity to Original Target"].mean())
 
 
 if __name__ == "__main__":

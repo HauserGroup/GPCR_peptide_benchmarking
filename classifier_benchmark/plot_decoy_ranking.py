@@ -94,6 +94,8 @@ def plot_decoy_rankings(
     add_names=False,
     title="",
     show_legend=True,
+    print_order=False,
+    model_name="",
 ):
     gpcrs = predictions_df[gpcr_col].unique()
     ground_truth = get_ground_truth_df()
@@ -120,6 +122,10 @@ def plot_decoy_rankings(
             peptide_names.append(row["identifier"])
             colors.append(color)
             labels.append(rank_label)
+            if print_order:
+                print(
+                    f"{model_name},{gpcr},{rank_label},{iptm},{row['identifier'].rpartition('___')[2]}"
+                )
 
     # plot scatter
     plt.figure(figsize=(1, 5))
@@ -258,9 +264,9 @@ def run_main():
         identifier_to_type[row["identifier"]] = row["Decoy Type"]
 
     for model_name, pred_df in models:
-        # if model_name not in ["AF2 (no templates)", "AF2 LIS (no templates)"]:
-        #     continue
-        print(f"Processing {model_name}")
+        if model_name not in ["AF2 (no templates)", "AF2 LIS (no templates)"]:
+             continue
+        # print(f"Processing {model_name}")
 
         plot_p = script_dir / f"plots/{model_name}_decoy_ranking.svg"
         pred_df["Decoy Rank"] = pred_df["identifier"].apply(
@@ -290,15 +296,17 @@ def run_main():
             # if unique_target_plot_p.exists():
             #     continue
 
-            print(f"Plotting {unique_target}")
+            # print(f"Plotting {unique_target}")
             plot_decoy_rankings(
                 pred_df[pred_df["Target ID"] == unique_target],
                 "InteractionProbability",
                 unique_target_plot_p,
                 get_color_mapping(),
-                add_names=False,
+                add_names=True,
                 title="",
-                show_legend=True,
+                show_legend=False,
+                print_order=True,
+                model_name=model_name,
             )
 
 

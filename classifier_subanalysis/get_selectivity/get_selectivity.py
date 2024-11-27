@@ -24,24 +24,29 @@ from correlation import get_spearman_correlation
 def plot_targets_per_ligand(agonist_df, plot_dir, plot_base):
     # targets per ligand
     targets_per_ligand = agonist_df.groupby("Ligand ID")["Target ID"].nunique()
+    plt.figure(figsize=(4, 4))
     sns.histplot(targets_per_ligand, discrete=True)
     plt.xlabel("Number of GPCRs")
     plt.ylabel("Number of Ligands")
     plt.xticks(range(max(targets_per_ligand) + 1))
-    plt.grid()
-    plt.savefig(plot_dir / f"{plot_base}_targets_per_ligand.png")
+    plt.title("Number of GPCRs per ligand")
+    plt.grid(axis="y", alpha=0.5)
+    plt.savefig(plot_dir / f"{plot_base}_targets_per_ligand.png", dpi=300)
     plt.close()
 
 
 def plot_ligands_per_target(agonist_df, plot_dir, plot_base):
     # ligands per target
+    plt.figure(figsize=(4, 4))
+
     ligands_per_target = agonist_df.groupby("Target ID")["Ligand ID"].nunique()
     sns.histplot(ligands_per_target, discrete=True)
     plt.xlabel("Number of Ligands")
     plt.ylabel("Number of GPCRs")
     plt.xticks(range(max(ligands_per_target) + 1))
-    plt.grid()
-    plt.savefig(plot_dir / f"{plot_base}_ligands_per_target.png")
+    plt.grid(axis="y", alpha=0.5)
+    plt.title("Number of ligands per GPCR")
+    plt.savefig(plot_dir / f"{plot_base}_ligands_per_target.png", dpi=300)
     plt.close()
 
 
@@ -194,7 +199,7 @@ def run_main():
     plot_dir = script_dir
     plot_base = "selectivity"
     # ranking performance
-    ranking_p = script_dir.parent / "agonist_rankings.csv"
+    ranking_p = script_dir.parent.parent / "classifier_benchmark/agonist_rankings.csv"
     ranking_df = pd.read_csv(ranking_p)
 
     # targets per ligand
@@ -230,4 +235,6 @@ def run_main():
 
 
 if __name__ == "__main__":
+    sns.set_style("whitegrid")
+    sns.set_context("paper")
     run_main()

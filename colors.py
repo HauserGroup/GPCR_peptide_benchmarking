@@ -89,6 +89,8 @@ COLOR = {
     "AF2 LIS (no templates)": "#008FD7",
     'AF2 LIS (no templates) 1m' :  "#008FD7",
     "AF2 RIA energy (no templates)": "#008FD7",
+    "ColabFold (no MSAs)": "#5b616b",
+    "ColabFold (no MSAs) LIS": "#5b616b",
     'AF2 RIA energy': "#008FD7",
     "AF2 RIA sc (no templates)": "#008FD7",
     'AF2 RIA sc': "#008FD7",

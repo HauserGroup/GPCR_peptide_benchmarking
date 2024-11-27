@@ -27,7 +27,7 @@ def mannwhitneyu_is_greater(ranks0, ranks1):
     return statistic, p
 
 
-def main():
+def class_main():
     df = get_all_plot_df()
     # per model do test if class A > class B
     a = 'Class A (Rhodopsin)'
@@ -42,11 +42,33 @@ def main():
         ranks_a = ranks_a.to_list()
         ranks_b = df[(df["Model"] == model) & (df["Class"] == b)]["AgonistRank"]
         ranks_b = ranks_b.to_list()
+        
         statistic, p = mannwhitneyu_is_greater(ranks_a, ranks_b)
         print(f"{model},{statistic},{p}")
 
 
+def unseen_main():
+    script_dir = pathlib.Path(__file__).parent.absolute()
+    df = script_dir / 'plots/class_seen_unseen.csv'
+    df = pd.read_csv(df)
+
+
+    models = df["Model"].unique()
+    print("Model,Statistic,p-value (Unseen > Seen)")
+    for model in models:
+        ranks_unseen = df[(df["Model"] == model) & (df["unseen"] == 'Unseen')]["AgonistRank"]
+        ranks_unseen = ranks_unseen.to_list()
+        ranks_seen = df[(df["Model"] == model) & (df["unseen"] == 'Seen')]["AgonistRank"]
+        ranks_seen = ranks_seen.to_list()
+
+        statistic, p = mannwhitneyu_is_greater(ranks_unseen, ranks_seen)
+        print(f"{model},{statistic},{p}")
+
+
+
 if __name__ == "__main__":
-    main()
+    class_main()
+    unseen_main()
+    
 
     

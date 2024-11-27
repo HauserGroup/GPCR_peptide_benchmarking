@@ -21,6 +21,7 @@ def run_main():
     # replace "(" with "\n("
     ground_truth["Class"] = ground_truth["Class"].str.replace("(", "\n(")
     class_counts = ground_truth["Class"].value_counts()
+    ground_truth.to_csv("ground_truth_with_class.csv")
     # plt figure size 10, 5
     fig, ax = plt.subplots(figsize=(4, 3))
     # sns barplot
@@ -29,6 +30,7 @@ def run_main():
     for i, count in enumerate(class_counts.values):
         ax.text(i, count, str(count), ha="center", va="bottom")
 
+    # if other, print
     ax.set_title("GPCR classes")
     plt.tight_layout()
     plt.xlabel("")
@@ -36,6 +38,7 @@ def run_main():
     ax.set_ylim(0, 120)
     # shrink on height because of empty x label
     plt.subplots_adjust(bottom=0.2)
+    plt.show()
     plt.savefig(plot_p, dpi=300)
 
 
