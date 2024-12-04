@@ -341,6 +341,7 @@ def parse_dataset(filepath, outdir, outfile):
     os.makedirs(f"{outdir}/fastas/receptors", exist_ok=True)
     os.makedirs(f"{outdir}/fastas/ligands", exist_ok=True)
     os.makedirs(f"{outdir}/fastas/pairs", exist_ok=True)
+    os.makedirs(f"{outdir}/fastas/boltz_fastas", exist_ok=True)
     os.makedirs(f"{outdir}/pdbs", exist_ok=True)
 
     for index, row in benchmark_set.iterrows():
@@ -351,7 +352,9 @@ def parse_dataset(filepath, outdir, outfile):
         with open(f"{outdir}/fastas/pairs/{row['pdb']}.fasta", "w") as f:
             f.write(f">{row['pdb']}_receptor\n{row['receptor_pdb_seq']}\n")
             f.write(f">{row['pdb']}_ligand\n{row['ligand_pdb_seq']}\n")
-        
+        with open(f"{outdir}/fastas/boltz_fastas/{row['pdb']}.fasta", "w") as f:
+            f.write(f">A|protein\n{row['receptor_pdb_seq']}\n")
+            f.write(f">B|protein\n{row['ligand_pdb_seq']}\n")        
         # Dowload PDB files
         download_pdb(row["pdb"], f"{outdir}/pdbs")
 
