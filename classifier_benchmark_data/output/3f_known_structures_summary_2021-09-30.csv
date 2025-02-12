@@ -1,52 +1,52 @@
 Target GPCRdb ID,family,has_peptide_complex_before_cutoff,has_peptide_complex,Peptide complex PDBs before,Peptide complex PDBs after
-c3ar_human,Complement peptide receptors,False,True,,"[('8HK2', '2023-05-10'), ('8IA8', '2023-05-24')]"
-c5ar1_human,Complement peptide receptors,False,True,,"[('7Y66', '2023-03-01'), ('7Y67', '2023-03-01'), ('7Y65', '2023-03-01'), ('7Y64', '2023-03-01'), ('8HK5', '2023-05-10')]"
+c3ar_human,Complement peptide receptors,False,True,,"[('8HK2', '2023-05-10'), ('8IA8', '2023-05-24'), ('8I95', '2023-10-18'), ('8I9A', '2023-10-18'), ('8I9L', '2023-10-18'), ('8J6D', '2023-10-18')]"
+c5ar1_human,Complement peptide receptors,True,True,"[('6C1Q', '2018-05-30'), ('6C1R', '2018-05-30')]","[('7Y65', '2023-03-01'), ('7Y66', '2023-03-01'), ('7Y67', '2023-03-01'), ('7Y64', '2023-03-01'), ('8HK5', '2023-05-10'), ('8IA2', '2023-10-18'), ('8JZZ', '2023-10-18')]"
 c5ar2_human,Complement peptide receptors,False,False,,
-agtr1_human,Angiotensin receptors,True,True,"[('6DO1', '2019-01-30'), ('6OS0', '2020-02-19'), ('6OS1', '2020-02-19'), ('6OS2', '2020-02-19')]","[('7F6G', '2023-03-29')]"
+agtr1_human,Angiotensin receptors,True,True,"[('6DO1', '2019-01-30'), ('6OS0', '2020-02-19'), ('6OS1', '2020-02-19'), ('6OS2', '2020-02-19')]","[('7F6G', '2023-03-29'), ('8TH4', '2024-05-22'), ('8TH3', '2024-05-22')]"
 agtr2_human,Angiotensin receptors,True,True,"[('5XJM', '2018-07-11'), ('6JOD', '2020-01-15'), ('7C6A', '2020-07-29')]",
-apj_human,Apelin receptors,True,True,"[('5VBL', '2017-05-31'), ('6KNM', '2020-01-29')]","[('7W0N', '2022-07-27'), ('7W0O', '2022-07-27'), ('7W0P', '2022-07-27')]"
+apj_human,Apelin receptors,True,True,"[('5VBL', '2017-05-31'), ('6KNM', '2020-01-29')]","[('7W0N', '2022-07-27'), ('7W0O', '2022-07-27'), ('7W0P', '2022-07-27'), ('8XZF', '2024-03-20'), ('8XZG', '2024-03-27'), ('8XZH', '2024-03-20'), ('8XZJ', '2024-03-20')]"
 nmbr_human,Bombesin receptors,False,True,,"[('8H0P', '2023-08-09')]"
 grpr_human,Bombesin receptors,False,True,,"[('7W3Z', '2023-02-22'), ('7W40', '2023-02-22'), ('8H0Q', '2023-08-09')]"
 bkrb1_human,Bradykinin receptors,False,True,,"[('7EIB', '2021-10-13')]"
-bkrb2_human,Bradykinin receptors,False,True,,"[('7F2O', '2021-10-13'), ('7F6H', '2022-01-05'), ('7F6I', '2022-01-05')]"
-calcr_human,Calcitonin receptors,False,True,,"[('7TYF', '2022-03-23'), ('7TYH', '2022-03-23'), ('7TYI', '2022-03-30'), ('7TYL', '2022-03-23'), ('7TYO', '2022-03-23'), ('7TYX', '2022-03-30'), ('7TZF', '2022-03-23'), ('8F0J', '2023-08-02'), ('8F0K', '2023-08-02'), ('8F2A', '2023-08-02'), ('8F2B', '2023-08-02')]"
+bkrb2_human,Bradykinin receptors,False,True,,"[('7F2O', '2021-10-13'), ('7F6I', '2022-01-05'), ('7F6H', '2022-01-05')]"
+calcr_human,Calcitonin receptors,False,True,,"[('7TYF', '2022-03-23'), ('7TYH', '2022-03-23'), ('7TYI', '2022-03-30'), ('7TYL', '2022-03-23'), ('7TYO', '2022-03-23'), ('7TYX', '2022-03-30'), ('7TZF', '2022-03-23'), ('8F0J', '2023-08-02'), ('8F0K', '2023-08-02'), ('8F2A', '2023-08-02'), ('8F2B', '2023-08-02'), ('9AUC', '2024-04-24')]"
 calrl_human,Calcitonin receptors,True,True,"[('6E3Y', '2018-09-19'), ('6UUN', '2020-03-25'), ('6UUS', '2020-04-01'), ('6UVA', '2020-04-01'), ('7KNU', '2021-02-24')]",
 ccr1_human,Chemokine receptors,False,True,,"[('7VL9', '2022-03-23'), ('7VLA', '2022-03-23')]"
 ccr2_human,Chemokine receptors,False,True,,"[('7XA3', '2022-08-24')]"
 ccr3_human,Chemokine receptors,False,False,,
 ccr4_human,Chemokine receptors,False,False,,
-ccr5_human,Chemokine receptors,True,True,"[('7O7F', '2021-06-30'), ('7F1Q', '2021-07-14'), ('7F1R', '2021-07-14'), ('7F1T', '2021-07-14')]",
+ccr5_human,Chemokine receptors,True,True,"[('5UIW', '2017-06-28'), ('6MEO', '2018-12-12'), ('6MET', '2018-12-12'), ('7O7F', '2021-06-30'), ('7F1Q', '2021-07-14'), ('7F1R', '2021-07-14'), ('7F1T', '2021-07-14')]",
 ccr6_human,Chemokine receptors,True,True,"[('6WWZ', '2020-06-24')]",
 ccr7_human,Chemokine receptors,False,False,,
-ccr8_human,Chemokine receptors,False,False,,
+ccr8_human,Chemokine receptors,False,True,,"[('8TLM', '2023-12-20'), ('8U1U', '2023-12-20')]"
 ccr9_human,Chemokine receptors,False,False,,
 ccr10_human,Chemokine receptors,False,False,,
 cxcr1_human,Chemokine receptors,False,True,,"[('8IC0', '2023-07-19')]"
 cxcr2_human,Chemokine receptors,True,True,"[('6LFM', '2020-09-02'), ('6LFO', '2020-09-02')]",
-cxcr3_human,Chemokine receptors,False,False,,
-cxcr4_human,Chemokine receptors,False,False,,
+cxcr3_human,Chemokine receptors,False,True,,"[('8HNK', '2023-11-29')]"
+cxcr4_human,Chemokine receptors,True,True,"[('3OE0', '2010-10-27'), ('4RWS', '2015-02-11')]","[('8U4O', '2024-03-13'), ('8U4Q', '2024-03-13'), ('8U4R', '2024-03-13'), ('8U4S', '2024-03-13'), ('8U4T', '2024-03-13'), ('8K3Z', '2024-07-17')]"
 cxcr5_human,Chemokine receptors,False,False,,
 cxcr6_human,Chemokine receptors,False,False,,
 cx3c1_human,Chemokine receptors,False,True,,"[('7XBX', '2022-07-13')]"
 xcr1_human,Chemokine receptors,False,False,,
-cckar_human,Cholecystokinin receptors,True,True,"[('7MBX', '2021-05-26'), ('7MBY', '2021-05-26'), ('7EZH', '2021-08-25'), ('7EZK', '2021-08-25'), ('7EZM', '2021-08-25')]","[('7F8X', '2021-12-29'), ('7XOU', '2022-07-20')]"
-gasr_human,Cholecystokinin receptors,False,True,,"[('7F8V', '2021-10-13'), ('7F8W', '2021-10-13'), ('7XOW', '2022-07-20'), ('7XOX', '2022-07-20')]"
-cml1_human,Chemerin receptor,False,True,,"[('7YKD', '2023-04-19')]"
+cckar_human,Cholecystokinin receptors,True,True,"[('7MBX', '2021-05-26'), ('7MBY', '2021-05-26'), ('7EZH', '2021-08-25'), ('7EZK', '2021-08-25'), ('7EZM', '2021-08-25')]","[('7F8X', '2021-12-29'), ('7XOU', '2022-07-20'), ('9BKJ', '2024-05-22'), ('9BKK', '2024-05-22')]"
+gasr_human,Cholecystokinin receptors,False,True,,"[('7F8W', '2021-10-13'), ('7F8V', '2021-10-13'), ('7XOW', '2022-07-20'), ('7XOX', '2022-07-20'), ('8IA7', '2023-12-06')]"
+cml1_human,Chemerin receptor,False,True,,"[('7YKD', '2023-04-19'), ('8SG1', '2023-11-01')]"
 ackr3_human,Chemokine receptors,False,True,,"[('7SK3', '2022-07-27'), ('7SK4', '2022-07-27'), ('7SK5', '2022-07-27'), ('7SK6', '2022-07-27'), ('7SK7', '2022-07-27'), ('7SK8', '2022-07-27')]"
-cml2_human,Chemerin receptor,False,False,,
+cml2_human,Chemerin receptor,False,True,,"[('8XGM', '2024-08-21'), ('8JJP', '2024-08-21')]"
 gpr37_human,Class A orphans,False,False,,
 g37l1_human,Class A orphans,False,False,,
 gpr39_human,Class A orphans,False,False,,
 gpr75_human,Class A orphans,False,False,,
-lgr4_human,Class A orphans,False,False,,
+lgr4_human,Class A orphans,False,True,,"[('8WVU', '2024-10-30'), ('8WVX', '2024-10-30'), ('8WVY', '2024-10-30')]"
 lgr5_human,Class A orphans,False,False,,
 lgr6_human,Class A orphans,False,False,,
-mrgx1_human,Class A orphans,False,True,,"[('8DWC', '2022-11-02'), ('8DWG', '2022-11-02')]"
-mrgx2_human,Class A orphans,False,True,,"[('7S8M', '2021-11-17'), ('7S8L', '2021-11-17'), ('7VDL', '2021-12-01'), ('7VDM', '2021-12-01'), ('7VUY', '2021-12-01'), ('7VUZ', '2021-12-01'), ('7VV0', '2021-12-01'), ('7VV3', '2021-12-01'), ('7VV4', '2021-12-01')]"
+mrgx1_human,Class A orphans,False,True,,"[('8DWC', '2022-11-02'), ('8DWG', '2022-11-02'), ('8JGB', '2024-01-10'), ('8JGF', '2024-01-10'), ('8JGG', '2024-01-10')]"
+mrgx2_human,Class A orphans,False,True,,"[('7S8L', '2021-11-17'), ('7S8M', '2021-11-17'), ('7VDL', '2021-12-01'), ('7VDM', '2021-12-01'), ('7VUY', '2021-12-01'), ('7VUZ', '2021-12-01'), ('7VV0', '2021-12-01'), ('7VV3', '2021-12-01'), ('7VV4', '2021-12-01')]"
 crfr1_human,Corticotropin-releasing factor receptors,True,True,"[('6P9X', '2020-02-05'), ('6PB0', '2020-02-12')]",
 crfr2_human,Corticotropin-releasing factor receptors,True,True,"[('6PB1', '2020-02-12')]","[('7TRY', '2022-11-09'), ('7TS0', '2022-11-09')]"
-ednra_human,Endothelin receptors,False,True,,"[('8HCQ', '2023-03-22')]"
-ednrb_human,Endothelin receptors,True,True,"[('5GLH', '2016-09-07'), ('6IGK', '2018-11-21'), ('6IGL', '2018-11-21'), ('6K1Q', '2019-07-17'), ('6LRY', '2020-02-12')]","[('8HBD', '2023-03-22'), ('8HCX', '2023-03-22'), ('8IY5', '2023-08-16'), ('8IY6', '2023-08-16')]"
+ednra_human,Endothelin receptors,False,True,,"[('8HCQ', '2023-03-22'), ('8XVI', '2024-08-28')]"
+ednrb_human,Endothelin receptors,True,True,"[('5GLH', '2016-09-07'), ('6IGK', '2018-11-21'), ('6IGL', '2018-11-21'), ('6K1Q', '2019-07-17'), ('6LRY', '2020-02-12')]","[('8HBD', '2023-03-22'), ('8HCX', '2023-03-22'), ('8IY5', '2023-08-16'), ('8IY6', '2023-08-16'), ('8XGR', '2024-04-03'), ('8XVE', '2024-08-28'), ('8XVH', '2024-08-28'), ('8XWP', '2024-10-02'), ('8XWQ', '2024-10-02'), ('8ZRT', '2024-10-02')]"
 fpr1_human,Formylpeptide receptors,False,True,,"[('7T6T', '2022-03-30'), ('7WVU', '2022-04-13'), ('7EUO', '2022-05-25'), ('7VFX', '2022-09-21')]"
 fpr2_human,Formylpeptide receptors,True,True,"[('6OMM', '2020-02-26'), ('6LW5', '2020-03-25')]","[('7T6U', '2022-03-30'), ('7T6V', '2022-03-30'), ('7WVV', '2022-04-13'), ('7WVW', '2022-04-13'), ('7WVX', '2022-04-13'), ('7WVY', '2022-04-13')]"
 fpr3_human,Formylpeptide receptors,False,False,,
@@ -58,22 +58,22 @@ galr2_human,Galanin receptors,False,True,,"[('7WQ4', '2022-04-20'), ('7XJK', '20
 galr3_human,Galanin receptors,False,False,,
 ghsr_human,Ghrelin receptors,True,True,"[('7F9Y', '2021-08-18'), ('7F9Z', '2021-08-18')]","[('7NA7', '2021-12-15'), ('7W2Z', '2022-01-19')]"
 ghrhr_human,Glucagon receptor family,True,True,"[('7CZ5', '2020-11-18')]","[('7V9M', '2021-10-20')]"
-gipr_human,Glucagon receptor family,False,True,,"[('7FIN', '2022-02-23'), ('7FIY', '2022-03-02'), ('7VAB', '2022-03-02'), ('7RA3', '2022-04-13'), ('7RBT', '2022-04-13')]"
-glp1r_human,Glucagon receptor family,True,True,"[('5NX2', '2017-06-14'), ('6B3J', '2018-02-21'), ('6VCB', '2020-07-22'), ('6X18', '2020-09-09'), ('7DUQ', '2021-07-14'), ('7KI0', '2021-08-04'), ('7KI1', '2021-08-04')]","[('7RTB', '2021-10-06'), ('7S1M', '2022-01-05'), ('7S3I', '2022-01-05'), ('7LLL', '2022-01-12'), ('7LLY', '2022-01-12'), ('7FIM', '2022-03-02'), ('7VBI', '2022-03-02'), ('7RGP', '2022-04-13'), ('7VBH', '2022-04-06')]"
+gipr_human,Glucagon receptor family,False,True,,"[('7FIN', '2022-02-23'), ('7FIY', '2022-03-02'), ('7VAB', '2022-03-02'), ('7RA3', '2022-04-13'), ('7RBT', '2022-04-13'), ('8YW4', '2024-09-18')]"
+glp1r_human,Glucagon receptor family,True,True,"[('5NX2', '2017-06-14'), ('6B3J', '2018-02-21'), ('6VCB', '2020-07-22'), ('6X18', '2020-09-09'), ('7DUQ', '2021-07-14'), ('7KI0', '2021-08-04'), ('7KI1', '2021-08-04')]","[('7RTB', '2021-10-06'), ('7S1M', '2022-01-05'), ('7S3I', '2022-01-05'), ('7LLL', '2022-01-12'), ('7LLY', '2022-01-12'), ('7FIM', '2022-03-02'), ('7VBI', '2022-03-02'), ('7RGP', '2022-04-13'), ('7VBH', '2022-04-06'), ('8JIP', '2023-09-06'), ('8JIR', '2023-09-06'), ('8JIS', '2023-11-08'), ('8YW3', '2024-09-18')]"
 glp2r_human,Glucagon receptor family,True,True,"[('7D68', '2020-12-16')]",
-glr_human,Glucagon receptor family,True,True,"[('5YQZ', '2018-01-17'), ('6LMK', '2020-04-01'), ('6LML', '2020-04-01'), ('6WHC', '2020-05-27'), ('6WPW', '2020-08-12')]","[('7V35', '2022-03-02'), ('8FU6', '2023-04-12'), ('8JRV', '2023-08-16')]"
+glr_human,Glucagon receptor family,True,True,"[('4L6R', '2013-07-24'), ('5YQZ', '2018-01-17'), ('6LMK', '2020-04-01'), ('6LML', '2020-04-01'), ('6WHC', '2020-05-27'), ('6WPW', '2020-08-12')]","[('7V35', '2022-03-02'), ('8FU6', '2023-04-12'), ('8JRV', '2023-08-16'), ('8JIQ', '2023-09-13'), ('8JIT', '2023-09-06'), ('8JIU', '2023-09-13'), ('8YW5', '2024-08-07')]"
 sctr_human,Glucagon receptor family,True,True,"[('6WI9', '2020-08-12'), ('6WZG', '2020-08-12'), ('7D3S', '2020-11-04')]",
 fshr_human,Glycoprotein hormone receptors,False,True,,"[('8I2G', '2023-03-29')]"
 gnrhr_human,Gonadotrophin-releasing hormone receptors,False,False,,
 hrh4_human,Histamine receptors,False,False,,
-kissr_human,Kisspeptin receptors,False,False,,
-mchr1_human,Melanin-concentrating hormone,False,False,,
-mchr2_human,Melanin-concentrating hormone,False,False,,
-mshr_human,Melanocortin receptors,True,True,"[('7F4D', '2021-09-08'), ('7F4F', '2021-09-08'), ('7F4H', '2021-09-08'), ('7F4I', '2021-09-08')]",
+kissr_human,Kisspeptin receptors,False,True,,"[('8ZJE', '2024-07-03'), ('8ZJD', '2024-07-03'), ('8XGO', '2024-10-30'), ('8XGS', '2024-10-30'), ('8XGU', '2024-10-30')]"
+mchr1_human,Melanin-concentrating hormone,False,True,,"[('8WSS', '2024-06-19')]"
+mchr2_human,Melanin-concentrating hormone,False,True,,"[('8WST', '2024-06-19')]"
+mshr_human,Melanocortin receptors,True,True,"[('7F4H', '2021-09-08'), ('7F4D', '2021-09-08'), ('7F4F', '2021-09-08'), ('7F4I', '2021-09-08')]",
 acthr_human,Melanocortin receptors,False,True,,"[('8GY7', '2023-01-11')]"
-mc3r_human,Melanocortin receptors,False,False,,
-mc4r_human,Melanocortin receptors,True,True,"[('7AUE', '2021-04-28')]","[('7F53', '2021-11-03'), ('7F54', '2021-11-03'), ('7F55', '2021-11-03'), ('7PIU', '2021-11-17'), ('7PIV', '2021-11-17')]"
-mc5r_human,Melanocortin receptors,False,False,,
+mc3r_human,Melanocortin receptors,False,True,,"[('8IOC', '2023-09-20')]"
+mc4r_human,Melanocortin receptors,True,True,"[('6W25', '2020-04-29'), ('7AUE', '2021-04-28')]","[('7F53', '2021-11-03'), ('7F54', '2021-11-03'), ('7F55', '2021-11-03'), ('7PIU', '2021-11-17'), ('7PIV', '2021-11-17'), ('8QJ2', '2024-09-25'), ('8WKY', '2024-08-07'), ('8WKZ', '2024-08-07')]"
+mc5r_human,Melanocortin receptors,False,True,,"[('8IOD', '2023-09-20'), ('8INR', '2023-09-20')]"
 mtlr_human,Motilin receptors,False,True,,"[('8IBV', '2023-04-12')]"
 nmur1_human,Neuromedin U receptors,False,True,,"[('7W53', '2022-04-20'), ('7W56', '2022-04-20')]"
 nmur2_human,Neuromedin U receptors,False,True,,"[('7W55', '2022-04-20'), ('7W57', '2022-04-20'), ('7XK8', '2023-02-22')]"
@@ -82,37 +82,37 @@ npff2_human,Neuropeptide FF/neuropeptide AF receptors,False,False,,
 npsr1_human,Neuropeptide S receptors,False,False,,
 npbw1_human,Neuropeptide W/neuropeptide B receptors,False,False,,
 npbw2_human,Neuropeptide W/neuropeptide B receptors,False,False,,
-npy1r_human,Neuropeptide Y receptors,False,True,,"[('7VGX', '2022-02-23'), ('7X9A', '2022-05-18')]"
-npy2r_human,Neuropeptide Y receptors,False,True,,"[('7X9B', '2022-05-18'), ('7YON', '2023-03-22'), ('7YOO', '2023-03-22')]"
+npy1r_human,Neuropeptide Y receptors,False,True,,"[('7VGX', '2022-02-23'), ('7X9A', '2022-05-18'), ('8K6M', '2024-07-31'), ('8K6O', '2024-07-31')]"
+npy2r_human,Neuropeptide Y receptors,False,True,,"[('7X9B', '2022-05-18'), ('7YON', '2023-03-22'), ('7YOO', '2023-03-22'), ('8K6N', '2024-07-31')]"
 npy4r_human,Neuropeptide Y receptors,False,True,,"[('7X9C', '2022-05-18')]"
 npy5r_human,Neuropeptide Y receptors,False,False,,
 ntr1_human,Neurotensin receptors,True,True,"[('6OS9', '2019-07-10'), ('6OSA', '2019-07-10'), ('6PWC', '2019-12-04'), ('6UP7', '2020-02-26')]","[('8JPB', '2023-08-09'), ('8JPC', '2023-08-09'), ('8JPF', '2023-08-09')]"
 ntr2_human,Neurotensin receptors,False,False,,
 ackr2_human,Chemokine receptors,False,False,,
 ackr4_human,Chemokine receptors,False,False,,
-ackr1_human,Chemokine receptors,False,False,,
-oprd_human,Opioid receptors,True,True,"[('6PT2', '2019-12-11')]","[('8F7S', '2022-12-14')]"
-oprk_human,Opioid receptors,False,True,,"[('8F7W', '2022-12-14'), ('7Y1F', '2023-05-24')]"
-oprm_human,Opioid receptors,False,True,,"[('8F7Q', '2022-12-14'), ('8EFQ', '2022-11-09'), ('8F7R', '2022-12-14')]"
+ackr1_human,Chemokine receptors,False,True,,"[('8JPS', '2024-07-31')]"
+oprd_human,Opioid receptors,True,True,"[('4RWA', '2015-01-14'), ('4RWD', '2015-01-14'), ('6PT2', '2019-12-11')]","[('8F7S', '2022-12-14')]"
+oprk_human,Opioid receptors,False,True,,"[('8F7W', '2022-12-14'), ('7Y1F', '2023-05-24'), ('8FEG', '2023-12-06')]"
+oprm_human,Opioid receptors,False,True,,"[('8EFQ', '2022-11-09'), ('8F7Q', '2022-12-14'), ('8F7R', '2022-12-14'), ('8K9K', '2024-05-29'), ('8K9L', '2024-05-29')]"
 oprx_human,Opioid receptors,False,True,,"[('8F7X', '2022-12-14')]"
 ox1r_human,Orexin receptors,False,False,,
 ox2r_human,Orexin receptors,True,True,"[('7L1U', '2021-02-10')]",
-pth1r_human,Parathyroid hormone receptors,True,True,"[('6FJ3', '2018-11-21'), ('6NBF', '2019-04-17'), ('6NBH', '2019-04-17'), ('6NBI', '2019-04-17')]","[('7VVJ', '2022-08-03'), ('7VVK', '2022-08-03'), ('7VVL', '2022-08-03'), ('7VVM', '2022-08-03'), ('7VVN', '2022-08-03'), ('7VVO', '2022-08-03'), ('8HA0', '2022-12-21'), ('8HAF', '2022-12-21'), ('8HAO', '2022-12-21'), ('8FLQ', '2023-04-26'), ('8FLT', '2023-04-26'), ('8FLU', '2023-04-26'), ('8FLR', '2023-04-26'), ('7Y36', '2023-07-05')]"
+pth1r_human,Parathyroid hormone receptors,True,True,"[('6FJ3', '2018-11-21'), ('6NBF', '2019-04-17'), ('6NBH', '2019-04-17'), ('6NBI', '2019-04-17')]","[('7VVJ', '2022-08-03'), ('7VVK', '2022-08-03'), ('7VVL', '2022-08-03'), ('7VVM', '2022-08-03'), ('7VVN', '2022-08-03'), ('7VVO', '2022-08-03'), ('8HA0', '2022-12-21'), ('8HAF', '2022-12-21'), ('8HAO', '2022-12-21'), ('8FLQ', '2023-04-26'), ('8FLT', '2023-04-26'), ('8FLU', '2023-04-26'), ('8FLR', '2023-04-26'), ('7Y36', '2023-07-05'), ('9JR2', '2024-10-16'), ('9JR3', '2024-10-16')]"
 pth2r_human,Parathyroid hormone receptors,True,True,"[('7F16', '2021-08-18')]",
-qrfpr_human,Peptide P518 receptors,False,False,,
+qrfpr_human,Peptide P518 receptors,False,True,,"[('8WZ2', '2024-06-19'), ('8ZH8', '2024-07-03')]"
 pkr1_human,Prokineticin receptors,False,False,,
 pkr2_human,Prokineticin receptors,False,False,,
-prlhr_human,Prolactin-releasing peptide receptors,False,False,,
+prlhr_human,Prolactin-releasing peptide receptors,False,True,,"[('8ZPS', '2024-09-25'), ('8ZPT', '2024-09-25')]"
 par4_human,Proteinase-activated receptors,False,False,,
 rl3r1_human,Relaxin family peptide receptors,False,False,,
-ssr1_human,Somatostatin receptors,False,False,,
-ssr2_human,Somatostatin receptors,False,True,,"[('7T10', '2022-03-09'), ('7T11', '2022-03-09'), ('7WIC', '2022-06-01'), ('7WJ5', '2022-07-13'), ('7XAT', '2022-08-31'), ('7XAU', '2022-08-31'), ('7XAV', '2022-08-31'), ('7XMR', '2022-08-03'), ('7Y24', '2022-10-19'), ('7Y26', '2022-10-19'), ('7Y27', '2022-10-19'), ('7YAE', '2023-04-19')]"
-ssr3_human,Somatostatin receptors,False,False,,
+ssr1_human,Somatostatin receptors,False,True,,"[('8XIP', '2024-07-03')]"
+ssr2_human,Somatostatin receptors,False,True,,"[('7T11', '2022-03-09'), ('7T10', '2022-03-09'), ('7WIC', '2022-06-01'), ('7WJ5', '2022-07-13'), ('7XAT', '2022-08-31'), ('7XAU', '2022-08-31'), ('7XAV', '2022-08-31'), ('7XMR', '2022-08-03'), ('7XNA', '2022-08-03'), ('7Y24', '2022-10-19'), ('7Y26', '2022-10-19'), ('7Y27', '2022-10-19'), ('7YAE', '2023-04-19')]"
+ssr3_human,Somatostatin receptors,False,True,,"[('8XIQ', '2024-07-03'), ('8XIR', '2024-07-03')]"
 ssr4_human,Somatostatin receptors,False,True,,"[('7XMS', '2022-08-03')]"
-ssr5_human,Somatostatin receptors,False,False,,
-nk1r_human,Tachykinin receptors,False,True,,"[('7RMG', '2021-11-03'), ('7RMH', '2021-11-03'), ('7RMI', '2021-11-03'), ('7P00', '2021-12-15'), ('7P02', '2021-12-15')]"
+ssr5_human,Somatostatin receptors,False,True,,"[('8X8N', '2024-06-12'), ('8X8L', '2024-06-12'), ('8ZBE', '2024-07-10'), ('8ZCJ', '2024-07-10')]"
+nk1r_human,Tachykinin receptors,False,True,,"[('7RMG', '2021-11-03'), ('7RMH', '2021-11-03'), ('7RMI', '2021-11-03'), ('7P00', '2021-12-15'), ('7P02', '2021-12-15'), ('8U26', '2023-11-15')]"
 nk2r_human,Tachykinin receptors,False,True,,"[('7XWO', '2023-05-31')]"
-nk3r_human,Tachykinin receptors,False,False,,
+nk3r_human,Tachykinin receptors,False,True,,"[('8JBF', '2024-02-28'), ('8JBG', '2024-02-07'), ('8JBH', '2024-02-07')]"
 trfr_human,Thyrotropin-releasing hormone receptors,False,True,,"[('7WKD', '2022-06-15'), ('7X1U', '2022-08-31'), ('7XW9', '2022-12-28')]"
 ur2r_human,Urotensin receptors,False,False,,
 v1ar_human,Vasopressin and oxytocin receptors,False,False,,
