@@ -37,7 +37,7 @@ for index, row in decoy_df.iterrows():
     receptor_dict["sequences"].append({"protein": {"id": "A", "sequence": gpcr_sequence}})
     receptor_dict["modelSeeds"] = [1]
     receptor_dict["dialect"] = "alphafold3"
-    receptor_dict["version"] = 2
+    receptor_dict["version"] = 1
     if not os.path.exists(f"{repo_dir}/classifier_benchmark/models/AF3/classifier_jsons/receptors/{receptor_dict['name']}.json"):
         with open(f"{repo_dir}/classifier_benchmark/models/AF3/classifier_jsons/receptors/{receptor_dict['name']}.json", "w") as f:
             json.dump(receptor_dict, f, indent=2)
@@ -49,7 +49,7 @@ for index, row in decoy_df.iterrows():
     peptide_dict["sequences"].append({"protein": {"id": "B", "sequence": ligand_sequence}})
     peptide_dict["modelSeeds"] = [1]
     peptide_dict["dialect"] = "alphafold3"
-    peptide_dict["version"] = 2
+    peptide_dict["version"] = 1
     if not os.path.exists(f"{repo_dir}/classifier_benchmark/models/AF3/classifier_jsons/peptides/{peptide_dict['name']}.json"):
         with open(f"{repo_dir}/classifier_benchmark/models/AF3/classifier_jsons/peptides/{peptide_dict['name']}.json", "w") as f:
             json.dump(peptide_dict, f, indent=2)
