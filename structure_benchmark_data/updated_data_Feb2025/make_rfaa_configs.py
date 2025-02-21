@@ -34,6 +34,9 @@ if __name__ == "__main__":
     # Make directory for output yamls
     os.makedirs(f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/RFAA_configs/", exist_ok=True)
 
+    # Path to git repo on cluster
+    ilf_path = "/projects/ilfgrid/people/pqh443/Git_projects/GPCR_peptide_benchmarking"
+
     # Loop over the dataframe and make the complex jsons
     for index, row in structural_benchmark_df.iterrows():
         
@@ -43,8 +46,8 @@ if __name__ == "__main__":
         output_yaml = f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/RFAA_configs/{job_name}.yaml"
         loader_params = {"n_templ": 4}
         protein_inputs = {
-            "A": {"fasta_file": f"/projects/ilfgrid/people/pqh443/Git_projects/structure_benchmark_data/updated_data_Feb2025/fastas/receptors/{row['pdb']}_receptor.fasta"},
-            "B": {"fasta_file": f"/projects/ilfgrid/people/pqh443/Git_projects/structure_benchmark_data/updated_data_Feb2025/fastas/ligands/{row['pdb']}_ligand.fasta"}
+            "A": {"fasta_file": f"{ilf_path}/structure_benchmark_data/updated_data_Feb2025/fastas/receptors/{row['pdb']}_receptor.fasta"},
+            "B": {"fasta_file": f"{ilf_path}/structure_benchmark_data/updated_data_Feb2025/fastas/ligands/{row['pdb']}_ligand.fasta"}
         }
         create_yaml(job_name, output_path, loader_params, protein_inputs, output_yaml)
 
@@ -54,7 +57,7 @@ if __name__ == "__main__":
         output_yaml = f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/RFAA_configs/{job_name}.yaml"
         loader_params = {"n_templ": 0}
         protein_inputs = {
-            "A": {"fasta_file": f"/projects/ilfgrid/people/pqh443/Git_projects/structure_benchmark_data/updated_data_Feb2025/fastas/receptors/{row['pdb']}_receptor.fasta"},
-            "B": {"fasta_file": f"/projects/ilfgrid/people/pqh443/Git_projects/structure_benchmark_data/updated_data_Feb2025/fastas/ligands/{row['pdb']}_ligand.fasta"}
+            "A": {"fasta_file": f"{ilf_path}/structure_benchmark_data/updated_data_Feb2025/fastas/receptors/{row['pdb']}_receptor.fasta"},
+            "B": {"fasta_file": f"{ilf_path}/structure_benchmark_data/updated_data_Feb2025/fastas/ligands/{row['pdb']}_ligand.fasta"}
         }
         create_yaml(job_name, output_path, loader_params, protein_inputs, output_yaml)
