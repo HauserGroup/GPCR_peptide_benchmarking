@@ -303,6 +303,19 @@ benchmark_set = benchmark_set[benchmark_set["pdb"] != "7SK8"]
 # Drop rows where ligand_chain and receptor_chain are the same
 benchmark_set = benchmark_set[benchmark_set["ligand_chain"] != benchmark_set["receptor_chain"]]
 
+# If ligand_pdb_seq ends with X, remove it (C-terminal amidation)
+benchmark_set["ligand_pdb_seq"] = benchmark_set["ligand_pdb_seq"].str.rstrip("X")
+
+# Drop sequences that contain non-standard amino acids (i.e. X)
+benchmark_set = benchmark_set[~benchmark_set["ligand_pdb_seq"].str.contains("X")]
+
+# Replace X with A for 7W40 ligand_pdb_seq
+benchmark_set.loc[benchmark_set["pdb"] == "7W40", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7W40", "ligand_pdb_seq"].str.replace("X", "A")
+
+# Remove the first letter from ligand_pdb_seq for 7Y66 and 7XAV - hetatm lines in PDB
+benchmark_set.loc[benchmark_set["pdb"] == "7Y66", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7Y66", "ligand_pdb_seq"].str[1:]
+benchmark_set.loc[benchmark_set["pdb"] == "7XAV", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7XAV", "ligand_pdb_seq"].str[1:]
+
 # Drop duplicates based on ligand_pdb_seq and receptor_pdb_seq
 benchmark_set = benchmark_set.sort_values(by=["receptor", "resolution"])
 pdbs_before = benchmark_set["pdb"]
@@ -313,16 +326,6 @@ pdbs_after = benchmark_set["pdb"]
 removed_pdbs = set(pdbs_before) - set(pdbs_after)
 if removed_pdbs:
     print(f"Removed the following PDB codes: {removed_pdbs}")
-
-# If ligand_pdb_seq ends with X, remove it (C-terminal amidation)
-benchmark_set["ligand_pdb_seq"] = benchmark_set["ligand_pdb_seq"].str.rstrip("X")
-
-# Replace X with A for 7W40 ligand_pdb_seq
-benchmark_set.loc[benchmark_set["pdb"] == "7W40", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7W40", "ligand_pdb_seq"].str.replace("X", "A")
-
-# Remove the first letter from ligand_pdb_seq for 7Y66 and 7XAV - hetatm lines in PDB
-benchmark_set.loc[benchmark_set["pdb"] == "7Y66", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7Y66", "ligand_pdb_seq"].str[1:]
-benchmark_set.loc[benchmark_set["pdb"] == "7XAV", "ligand_pdb_seq"] = benchmark_set.loc[benchmark_set["pdb"] == "7XAV", "ligand_pdb_seq"].str[1:]
 
 # Drop duplicates based on ligand_pdb_seq + name and receptor
 benchmark_set = benchmark_set.drop_duplicates(subset=["ligand_pdb_seq", "receptor"])
