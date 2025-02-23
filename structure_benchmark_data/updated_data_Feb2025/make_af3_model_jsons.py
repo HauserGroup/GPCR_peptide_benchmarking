@@ -32,6 +32,10 @@ for seed in seeds:
             msa_path = f"{msa_path}/{identifier}/{identifier}_data.json"
 
             # Load the MSA data for the GPCR and peptide
+            if not os.path.exists(msa_path):
+                print(f"MSA data not found for {identifier}")
+                continue
+            
             with open(msa_path, "r") as f:
                 msa_dict = json.load(f)
 
