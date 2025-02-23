@@ -15,46 +15,61 @@ decoy_df = pd.read_csv(f"{repo_dir}/classifier_benchmark_data/output/6_interacti
 
 # Paths to the MSA data and json output folder
 msa_folder = "/projects/ilfgrid/people/pqh443/AF3/MSAs/"
-json_path = "/projects/ilfgrid/people/pqh443/AF3/classifier_jsons/complexes/"
+json_path = "/projects/ilfgrid/people/pqh443/AF3/classifier_jsons/"
 os.makedirs(json_path, exist_ok=True)
 
-# Loop over the dataframe and make the complex jsons
-for index, row in decoy_df.iterrows():
+for templates in [True, False]:
+    # Loop over the dataframe and make the complex jsons
+    for index, row in decoy_df.iterrows():
 
-    # Parse identifier, GPCR and peptide names
-    identifier = row["Identifier"]
-    gpcr_name = identifier.split("___")[0]
-    peptide_name = identifier.split("___")[1]
+        # Parse identifier, GPCR and peptide names
+        identifier = row["Identifier"].lower()
+        gpcr_name = identifier.split("___")[0]
+        peptide_name = identifier.split("___")[1]
 
-    # Load GPCR and peptide MSA data
-    receptor_json_path = f"{msa_folder}/{gpcr_name}/{gpcr_name}_data.json"
-    peptide_json_path = f"{msa_folder}/{peptide_name}/{peptide_name}_data.json"
+        # Load GPCR and peptide MSA data
+        receptor_json_path = f"{msa_folder}/{gpcr_name}/{gpcr_name}_data.json"
+        peptide_json_path = f"{msa_folder}/{peptide_name}/{peptide_name}_data.json"
 
-    # Check if the MSA data exists for both GPCR and peptide
-    if not os.path.exists(receptor_json_path) or not os.path.exists(peptide_json_path):
-        continue
+        # Check if the MSA data exists for both GPCR and peptide
+        if not os.path.exists(receptor_json_path) or not os.path.exists(peptide_json_path):
+            continue
 
-    # Load the MSA data for the GPCR and peptide
-    with open(receptor_json_path, "r") as f:
-        receptor_dict = json.load(f)
-        receptor_dict = receptor_dict["sequences"][0]
-    with open(peptide_json_path, "r") as f:
-        peptide_dict = json.load(f)
-        peptide_dict = peptide_dict["sequences"][0]
+        # Load the MSA data for the GPCR and peptide
+        with open(receptor_json_path, "r") as f:
+            receptor_dict = json.load(f)
+            receptor_dict = receptor_dict["sequences"][0]
+        with open(peptide_json_path, "r") as f:
+            peptide_dict = json.load(f)
+            peptide_dict = peptide_dict["sequences"][0]
 
-    # Make json for the complex - parse the GPCR and peptide MSA data from the dictionaries
-    complex_dict = {}
-    complex_dict["name"] = identifier
-    complex_dict["sequences"] = []
-    complex_dict["sequences"].append(receptor_dict)
-    complex_dict["sequences"].append(peptide_dict)
-    complex_dict["modelSeeds"] = [1]
-    complex_dict["dialect"] = "alphafold3"
-    complex_dict["version"] = 1
+        # Remove templates if they are not needed
+        if not templates:
+            identifier = identifier + "_no_templates"
+            receptor_dict["protein"]["templates"] = []
+            peptide_dict["protein"]["templates"] = []
 
-    # Save output json
-    output_path = f"{json_path}/{identifier}.json"
-    print("Saving", output_path)
-    if not os.path.exists(output_path):
-        with open(output_path, "w") as f:
-            json.dump(complex_dict, f, indent=2)
+        # Make json for the complex - parse the GPCR and peptide MSA data from the dictionaries
+        complex_dict = {}
+        complex_dict["name"] = identifier
+        complex_dict["sequences"] = []
+        complex_dict["sequences"].append(receptor_dict)
+        complex_dict["sequences"].append(peptide_dict)
+        complex_dict["modelSeeds"] = [1]
+        complex_dict["dialect"] = "alphafold3"
+        complex_dict["version"] = 1
+
+        # Save output json
+        if templates:
+            output_path = f"{json_path}/with_templates/{identifier}.json"
+        else:
+            output_path = f"{json_path}/without_templates/{identifier}.json"
+        
+        # Make sure the output directory exists
+        output_dir = os.path.dirname(output_path)
+        os.makedirs(output_dir, exist_ok=True)
+
+        print("Saving", output_path)
+        if not os.path.exists(output_path):
+            with open(output_path, "w") as f:
+                json.dump(complex_dict, f, indent=2)
