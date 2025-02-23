@@ -14,14 +14,14 @@ repo_dir = file_dir[:index + len(repo_name)]
 structural_benchmark_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/3f_known_structures_benchmark_2021-09-30_updated.csv")
 
 # Paths to the json output folder
-json_path = "/projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/"
+json_path = "/projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/msa_inputs/"
 os.makedirs(json_path, exist_ok=True)
 
 # Loop over the dataframe and make the complex jsons
 for index, row in structural_benchmark_df.iterrows():
 
     # Parse identifier and json output path
-    identifier = row["pdb"]
+    identifier = row["pdb"].lower()
     output_json_path = f"{json_path}/{identifier}.json"
 
     # Make json for the complex - parse the GPCR and peptide MSA data from the dictionaries
