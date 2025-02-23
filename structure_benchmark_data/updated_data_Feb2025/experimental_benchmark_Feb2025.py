@@ -347,6 +347,9 @@ for receptor, group in benchmark_set.groupby('receptor'):
             unique_ligands.append(row)
     filtered_ligands[receptor] = unique_ligands
 
+# Set receptor sequence for 8JPS
+benchmark_set.loc[benchmark_set["pdb"] == "8JPS", "receptor_pdb_seq"] = "EAAAPCHSCNLLDDSALPFFILTSVLGILASSTVLFMLFRPLFRWQLCPGWPVLAQLAVGSALFSIVVPVLAPGLGSTRSSALCSLGYCVWYGSAFAQALLLGCHASLGHRLGAGQVPGLTLGLTVGIWGVAALLTLPVTLASGASGGLCTLIYSTELKALQATHTVACLAIFVLLPLGLFGAKGLKKALGMGPGPWMNILWAWFIFWWPHGV"
+
 # Save the benchmark set to a CSV file
 benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
 benchmark_set.reset_index(drop=True, inplace=True)
@@ -357,7 +360,6 @@ os.makedirs(f"{outdir}/fastas", exist_ok=True)
 os.makedirs(f"{outdir}/fastas/receptors", exist_ok=True)
 os.makedirs(f"{outdir}/fastas/ligands", exist_ok=True)
 os.makedirs(f"{outdir}/fastas/pairs", exist_ok=True)
-os.makedirs(f"{outdir}/fastas/boltz_fastas", exist_ok=True)
 os.makedirs(f"{outdir}/pdbs", exist_ok=True)
 os.makedirs(f"{outdir}/cifs", exist_ok=True)
 
@@ -369,9 +371,7 @@ for index, row in benchmark_set.iterrows():
     with open(f"{outdir}/fastas/pairs/{row['pdb']}.fasta", "w") as f:
         f.write(f">{row['pdb']}_receptor\n{row['receptor_pdb_seq']}\n")
         f.write(f">{row['pdb']}_ligand\n{row['ligand_pdb_seq']}\n")
-    with open(f"{outdir}/fastas/boltz_fastas/{row['pdb']}.fasta", "w") as f:
-        f.write(f">A|protein\n{row['receptor_pdb_seq']}\n")
-        f.write(f">B|protein\n{row['ligand_pdb_seq']}\n")        
+     
     # Dowload PDB files
     download_structure(row["pdb"], f"{outdir}/pdbs")
     download_structure(row["pdb"], f"{outdir}/cifs", type="cif")
