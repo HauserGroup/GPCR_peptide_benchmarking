@@ -29,14 +29,14 @@ for seed in seeds:
 
             # Parse identifier and json output path
             identifier = row["pdb"].lower()
-            msa_path = f"{msa_path}/{identifier}/{identifier}_data.json"
+            input_msa_path = f"{msa_path}/{identifier}/{identifier}_data.json"
 
             # Load the MSA data for the GPCR and peptide
-            if not os.path.exists(msa_path):
-                print(f"MSA data not found for {identifier}")
+            if not os.path.exists(input_msa_path):
+                print(f"MSA data not found for {identifier}, {input_msa_path}")
                 continue
             
-            with open(msa_path, "r") as f:
+            with open(input_msa_path, "r") as f:
                 msa_dict = json.load(f)
 
             # Remove templates if they are not needed
