@@ -1,10 +1,13 @@
-""" """
+"""
+This script contains the colors used in the project.
+It also contains functions to convert between different color formats. 
+These colors are used in the project to maintain consistency in the color scheme.
+"""
 
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.colors import LinearSegmentedColormap
 import seaborn as sns
-
 
 def rgba_to_hex(rgba: tuple) -> str:
     """Convert rgba to hex.
@@ -15,7 +18,6 @@ def rgba_to_hex(rgba: tuple) -> str:
     )
     return hex_color
 
-
 def hex_to_rgb(hex_color: str) -> tuple:
     """Convert hex to rgb.
     hex_color is a string of 6 characters.
@@ -25,11 +27,9 @@ def hex_to_rgb(hex_color: str) -> tuple:
     b = int(hex_color[5:7], 16)
     return r, g, b
 
-
-# sns uses rgb values between 0 and 1
 COLOR = {
     # compounds
-    "Receptor": "#0b3d91",  #
+    "Receptor": "#0b3d91",
     "Ligand": "#f9aa43",
     "Agonist": "#f9aa43",
     "Principal Agonist": "#f9aa43",
@@ -98,7 +98,6 @@ COLOR = {
 
 }
 
-
 def get_good_bad_cmap():
     start_color = "#99231b"
     middle_color = "#f1f1f1"
@@ -107,17 +106,16 @@ def get_good_bad_cmap():
     cmap = LinearSegmentedColormap.from_list("good_bad_cmap", colors)
     return cmap
 
-
+# Define the colormap for the good and bad decoys
 CMAP_GOOD_BAD = get_good_bad_cmap()
 
-
 def run_main():
-    # print decoy colors by splitting CMAP_GOOD_BAD in 11 and skipping the middle color
+    # Print decoy colors by splitting CMAP_GOOD_BAD in 11 and skipping the middle color
     colors_to_show = []
     for i in range(0, 11, 1):
         if i == 5:
             continue
-        # print hex color
+        # Print hex color
         rgba = CMAP_GOOD_BAD(i / 10)
         hex_color = rgba_to_hex(rgba)
         print(rgba, hex_color)
@@ -128,9 +126,7 @@ def run_main():
         plt.sca(ax[i])
         plt.axis("off")
         plt.fill_between([0, 1], 0, 1, color=color)
-
     plt.show()
-
 
 if __name__ == "__main__":
     run_main()
