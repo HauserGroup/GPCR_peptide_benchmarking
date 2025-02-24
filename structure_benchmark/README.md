@@ -1,0 +1,1 @@
+This folder contains the predicted structures from each included model in their own subdirectories. These predicted structures were compared against the experimental ground-truth structures. The scripts and results from these analyses are stored under `GPCR_peptide_benchmarking/structure_benchmark_data`.

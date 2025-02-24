@@ -93,7 +93,7 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", 
     # Get the top-level directory and build the path to the plot directory
     repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     if plot_path == "":
-        plot_path = f"{repo_dir}/structure_benchmark_data/plots"
+        plot_path = f"{repo_dir}/structure_benchmark_data/subanalysis/plots"
 
     # Get average pLDDT scores for predictions
     for pdb in data["pdb"]:
@@ -196,7 +196,7 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", 
 if __name__ == "__main__":
     # Get the file directory
     file_dir = os.path.dirname(__file__)
-    known_structs = pd.read_csv(f"{file_dir}/3f_known_structures.csv")
+    known_structs = pd.read_csv(f"{repo_dir}/classifier_benchmark_data/output/3f_known_structures.csv")
     pdb_to_protein = dict(zip(known_structs["pdb_code"], known_structs["protein"]))
 
     # Input paths to the search results
@@ -216,7 +216,7 @@ if __name__ == "__main__":
     )
 
     # Path to the DockQ results file
-    dockq_path = f"{file_dir}/DockQ_results.csv"
+    dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 
     # Get only AF2, AF3 and RFAA models
     input_models = ["AF2", "AF2_no_templates", "AF3", "RFAA", "RFAA_no_templates"]
