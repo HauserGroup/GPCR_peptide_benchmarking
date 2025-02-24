@@ -459,7 +459,7 @@ if __name__ == "__main__":
     print(af3_jsons)
 
     # Create a subdirectory for LIS results
-    lis_results_dir = f"{repo_dir}/structure_benchmark_data/AF_LIS_results"
+    lis_results_dir = f"{repo_dir}/structure_benchmark_data/subanalyses/AF_LIS_results"
     os.makedirs(lis_results_dir, exist_ok=True)
     print(f"LIS results directory: {lis_results_dir}")
 
