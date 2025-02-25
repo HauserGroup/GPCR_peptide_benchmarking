@@ -49,7 +49,7 @@ for seed in seeds:
             complex_dict = {}
             complex_dict["name"] = f"{identifier}_{str(seed)}"
             complex_dict["sequences"] = msa_dict["sequences"]
-            complex_dict["modelSeeds"] = seed
+            complex_dict["modelSeeds"] = [seed]
             complex_dict["dialect"] = "alphafold3"
             complex_dict["version"] = 1
 
@@ -64,6 +64,6 @@ for seed in seeds:
             os.makedirs(output_dir, exist_ok=True)
 
             print("Saving", output_path)
-            if not os.path.exists(output_path):
+            if os.path.exists(output_path):
                 with open(output_path, "w") as f:
                     json.dump(complex_dict, f, indent=2)
