@@ -479,12 +479,15 @@ if __name__ == "__main__":
 
     # Get directory where the current script is located
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    repo_dir = os.path.dirname(script_dir)
+    folder_name = script_dir.split('/')[-1]
+    repo_name = "GPCR_peptide_benchmarking"
+    index = script_dir.find(repo_name)
+    repo_dir = script_dir[:index + len(repo_name)]
 
     # Path to the directory where the predicted models are stored
-    dataset_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30.csv"
-    parsed_file = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv"
-    pdb_dir = f"{repo_dir}/structure_benchmark_data/pdbs/"
+    dataset_path = f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset.csv"
+    parsed_file = f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/structural_benchmark_dataset_cleaned.csv"
+    pdb_dir = f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/pdbs/"
 
     # Parse the dataset
     input_df = parse_dataset(dataset_path, parsed_file, pdb_dir)

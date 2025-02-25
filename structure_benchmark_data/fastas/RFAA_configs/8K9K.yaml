@@ -1,0 +1,13 @@
+defaults:
+- base
+job_name: 8K9K
+output_path: /projects/ilfgrid/people/pqh443/structural_benchmark_updated/RFAA/8K9K
+
+loader_params:
+  n_templ: 4
+
+protein_inputs:
+  A:
+    fasta_file: /projects/ilfgrid/people/pqh443/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/fastas/receptors/8K9K_receptor.fasta
+  B:
+    fasta_file: /projects/ilfgrid/people/pqh443/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/fastas/ligands/8K9K_ligand.fasta
