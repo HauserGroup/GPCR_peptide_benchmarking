@@ -1,0 +1,99 @@
+
+CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.
+To initialize your shell, run
+
+    $ conda init <SHELL_NAME>
+
+Currently supported shells are:
+  - bash
+  - fish
+  - tcsh
+  - xonsh
+  - zsh
+  - powershell
+
+See 'conda init --help' for more information and options.
+
+IMPORTANT: You may need to close and restart your shell after running 'conda init'.
+
+
+Traceback (most recent call last):
+  File "./run_esmfold.py", line 115, in <module>
+    predict_structure(sequence, model, output_path = output_path, seed = seed)
+  File "./run_esmfold.py", line 55, in predict_structure
+    output = model.infer_pdb(sequence)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 305, in infer_pdb
+    return self.infer_pdbs([sequence], *args, **kwargs)[0]
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 300, in infer_pdbs
+    output = self.infer(seqs, *args, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 27, in decorate_context
+    return func(*args, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 282, in infer
+    num_recycles=num_recycles,
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 173, in forward
+    structure: dict = self.trunk(s_s_0, s_z_0, aa, residx, mask, no_recycles=num_recycles)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/trunk.py", line 200, in forward
+    s_s, s_z = trunk_iter(s_s_0 + recycle_s, s_z_0 + recycle_z, residx, mask)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/trunk.py", line 183, in trunk_iter
+    s, z = block(s, z, mask=mask, residue_index=residx, chunk_size=self.chunk_size)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/tri_self_attn_block.py", line 151, in forward
+    self.tri_att_start(pairwise_state, mask=tri_mask, chunk_size=chunk_size)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/triangular_attention.py", line 142, in forward
+    use_lma=use_lma
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/primitives.py", line 500, in forward
+    o = _attention(q, k, v, biases)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/primitives.py", line 252, in _attention
+    a = softmax_no_cast(a, -1)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/primitives.py", line 236, in softmax_no_cast
+    s = torch.nn.functional.softmax(t, dim=dim)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/functional.py", line 1834, in softmax
+    ret = input.softmax(dim)
+RuntimeError: CUDA out of memory. Tried to allocate 46.66 GiB (GPU 0; 79.25 GiB total capacity; 64.36 GiB already allocated; 13.12 GiB free; 65.03 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+Traceback (most recent call last):
+  File "./run_esmfold.py", line 115, in <module>
+    predict_structure(sequence, model, output_path = output_path, seed = seed)
+  File "./run_esmfold.py", line 55, in predict_structure
+    output = model.infer_pdb(sequence)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 305, in infer_pdb
+    return self.infer_pdbs([sequence], *args, **kwargs)[0]
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 300, in infer_pdbs
+    output = self.infer(seqs, *args, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/autograd/grad_mode.py", line 27, in decorate_context
+    return func(*args, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 282, in infer
+    num_recycles=num_recycles,
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/esmfold.py", line 173, in forward
+    structure: dict = self.trunk(s_s_0, s_z_0, aa, residx, mask, no_recycles=num_recycles)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/trunk.py", line 200, in forward
+    s_s, s_z = trunk_iter(s_s_0 + recycle_s, s_z_0 + recycle_z, residx, mask)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/trunk.py", line 183, in trunk_iter
+    s, z = block(s, z, mask=mask, residue_index=residx, chunk_size=self.chunk_size)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/esm/esmfold/v1/tri_self_attn_block.py", line 151, in forward
+    self.tri_att_start(pairwise_state, mask=tri_mask, chunk_size=chunk_size)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/triangular_attention.py", line 142, in forward
+    use_lma=use_lma
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/modules/module.py", line 1130, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/primitives.py", line 500, in forward
+    o = _attention(q, k, v, biases)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/primitives.py", line 252, in _attention
+    a = softmax_no_cast(a, -1)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/openfold/model/primitives.py", line 236, in softmax_no_cast
+    s = torch.nn.functional.softmax(t, dim=dim)
+  File "/projects/ilfgrid/apps/esmfold/esm/conda_env_esm/lib/python3.7/site-packages/torch/nn/functional.py", line 1834, in softmax
+    ret = input.softmax(dim)
+RuntimeError: CUDA out of memory. Tried to allocate 46.76 GiB (GPU 0; 79.25 GiB total capacity; 64.46 GiB already allocated; 13.00 GiB free; 65.15 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
