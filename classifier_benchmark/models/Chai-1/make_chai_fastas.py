@@ -1,7 +1,6 @@
 # Function to make fasta files for the Chai benchmark dataset
 import os 
 import pandas as pd
-import json
 
 # Get the directory of the current file and build the path to the repository directory
 file_dir = os.path.dirname(__file__)
