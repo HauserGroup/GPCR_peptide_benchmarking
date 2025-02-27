@@ -1,0 +1,56 @@
+>> Running the following command:
+/var/spool/slurm//job240904/slurm_script ../classifier_with_templates.txt
+
+>> Start time:  Sun Feb 23 20:33:46 CET 2025
+   Machine:     ilfgridgpun01fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/pqh443/AF3/Scripts
+   GPU:         1
+
+>> AF3 input:
+   .json:      /maps/projects/ilfgrid/people/pqh443/AF3/classifier_jsons/with_templates/ackr2_human___821.json
+>> Starting prediction for ackr2_human___821 
+
+
+Launching AF3 with the following command:
+python /projects/ilfgrid/apps/alphafold3/run_alphafold.py --db_dir /local_db/alphafold_db --run_data_pipeline=false --json_path /projects/ilfgrid/people/pqh443/AF3/classifier_jsons/with_templates/ackr2_human___821.json --output_dir /projects/ilfgrid/people/pqh443/AF3/Models --model_dir /local_db/alphafold3_model_parameters
+I0223 20:33:48.614193 139848139833856 folding_input.py:1044] Detected /projects/ilfgrid/people/pqh443/AF3/classifier_jsons/with_templates/ackr2_human___821.json is an AlphaFold 3 JSON since the top-level is not a list.
+I0223 20:33:49.098358 139848139833856 xla_bridge.py:895] Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+I0223 20:33:49.100180 139848139833856 xla_bridge.py:895] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0223 20:33:57.704852 139848139833856 pipeline.py:165] processing ackr2_human___821, random_seed=1
+I0223 20:33:57.728565 139848139833856 pipeline.py:258] Calculating bucket size for input with 461 tokens.
+I0223 20:33:57.728652 139848139833856 pipeline.py:264] Got bucket size 512 for input with 461 tokens, resulting in 51 padded tokens.
+Running AlphaFold 3. Please note that standard AlphaFold 3 model parameters are
+only available under terms of use provided at
+https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md.
+If you do not agree to these terms and are using AlphaFold 3 derived model
+parameters, cancel execution of AlphaFold 3 inference with CTRL-C, and do not
+use the model parameters.
+Skipping running the data pipeline.
+Found local devices: [CudaDevice(id=0)]
+Building model from scratch...
+Processing 1 fold inputs.
+Processing fold input ackr2_human___821
+Checking we can load the model parameters...
+Skipping data pipeline...
+Output directory: /projects/ilfgrid/people/pqh443/AF3/Models/ackr2_human___821
+Writing model input JSON to /projects/ilfgrid/people/pqh443/AF3/Models/ackr2_human___821
+Predicting 3D structure for ackr2_human___821 for seed(s) (1,)...
+Featurising data for seeds (1,)...
+Featurising ackr2_human___821 with rng_seed 1.
+Featurising ackr2_human___821 with rng_seed 1 took 11.19 seconds.
+Featurising data for seeds (1,) took  15.42 seconds.
+Running model inference for seed 1...
+Running model inference for seed 1 took  69.48 seconds.
+Extracting output structures (one per sample) for seed 1...
+Extracting output structures (one per sample) for seed 1 took  0.60 seconds.
+Running model inference and extracting output structures for seed 1 took  70.08 seconds.
+Running model inference and extracting output structures for seeds (1,) took  70.08 seconds.
+Writing outputs for ackr2_human___821 for seed(s) (1,)...
+Done processing fold input ackr2_human___821.
+Done processing 1 fold inputs.
+>> Prediction for ackr2_human___821 finished in 1740339323 seconds.
+
+
+>> Job finished at: Sun Feb 23 20:35:23 CET 2025
+
+>> Runtime: 97 s
