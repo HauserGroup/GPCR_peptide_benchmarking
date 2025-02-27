@@ -1,0 +1,200 @@
+>> Running the following command:
+/var/spool/slurm//job241167/slurm_script ../structural_benchmark_with_templates.txt
+
+>> Start time:  Tue Feb 25 21:08:27 CET 2025
+   Machine:     ilfgridgpun01fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/pqh443/AF3/Scripts
+   GPU:         1
+
+>> AF3 input:
+   .json:      /maps/projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/8jbh_3.json
+>> Starting prediction for 8jbh_3 
+
+
+Launching AF3 with the following command:
+python /projects/ilfgrid/apps/alphafold3/run_alphafold.py --db_dir /local_db/alphafold_db --run_data_pipeline=false --json_path /projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/8jbh_3.json --output_dir /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models --model_dir /local_db/alphafold3_model_parameters
+I0225 21:08:29.082508 140707271422464 folding_input.py:1044] Detected /projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/8jbh_3.json is an AlphaFold 3 JSON since the top-level is not a list.
+I0225 21:08:29.554745 140707271422464 xla_bridge.py:895] Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+I0225 21:08:29.555820 140707271422464 xla_bridge.py:895] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0225 21:08:39.431915 140707271422464 pipeline.py:165] processing 8jbh_3, random_seed=3
+I0225 21:08:39.498500 140707271422464 pipeline.py:258] Calculating bucket size for input with 1439 tokens.
+I0225 21:08:39.498663 140707271422464 pipeline.py:264] Got bucket size 1536 for input with 1439 tokens, resulting in 97 padded tokens.
+2025-02-25 21:09:59.318249: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1117_computation (parameter_0.15: bf16[1536,1536,128,1], parameter_1.15: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.15 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2293 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.15), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48748 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2293)
+  %parameter_1.15 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2294 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.15), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48749 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2294)
+  ROOT %dot.1600 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48748, bf16[128,1536,1536]{2,1,0} %bitcast.48749), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/cik,cjk->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.283473388s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:01.889348: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1117_computation (parameter_0.15: bf16[1536,1536,128,1], parameter_1.15: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.15 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2293 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.15), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48748 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2293)
+  %parameter_1.15 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2294 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.15), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48749 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2294)
+  ROOT %dot.1600 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48748, bf16[128,1536,1536]{2,1,0} %bitcast.48749), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/cik,cjk->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.285567505s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:3,num_warps:4,num_ctas:1}
+2025-02-25 21:10:03.933675: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1117_computation (parameter_0.15: bf16[1536,1536,128,1], parameter_1.15: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.15 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2293 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.15), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48748 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2293)
+  %parameter_1.15 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2294 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.15), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48749 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2294)
+  ROOT %dot.1600 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48748, bf16[128,1536,1536]{2,1,0} %bitcast.48749), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_outgoing/cik,cjk->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.018456054s. {block_m:16,block_n:64,block_k:128,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:25.792931: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1118_computation (parameter_0.17: bf16[1536,1536,128,1], parameter_1.17: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2295 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48752 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2295)
+  %parameter_1.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2296 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48753 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2296)
+  ROOT %dot.1602 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48752, bf16[128,1536,1536]{2,1,0} %bitcast.48753), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.221315551s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:28.238863: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1118_computation (parameter_0.17: bf16[1536,1536,128,1], parameter_1.17: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2295 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48752 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2295)
+  %parameter_1.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2296 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48753 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2296)
+  ROOT %dot.1602 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48752, bf16[128,1536,1536]{2,1,0} %bitcast.48753), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.222019043s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:3,num_warps:4,num_ctas:1}
+2025-02-25 21:10:30.661326: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1118_computation (parameter_0.17: bf16[1536,1536,128,1], parameter_1.17: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2295 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48752 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2295)
+  %parameter_1.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2296 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48753 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2296)
+  ROOT %dot.1602 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48752, bf16[128,1536,1536]{2,1,0} %bitcast.48753), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.209451538s. {block_m:16,block_n:64,block_k:128,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:32.864159: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1118_computation (parameter_0.17: bf16[1536,1536,128,1], parameter_1.17: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2295 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48752 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2295)
+  %parameter_1.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2296 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48753 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2296)
+  ROOT %dot.1602 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48752, bf16[128,1536,1536]{2,1,0} %bitcast.48753), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.099952148s. {block_m:16,block_n:64,block_k:256,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:35.324912: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1118_computation (parameter_0.17: bf16[1536,1536,128,1], parameter_1.17: bf16[1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(0)
+  %transpose.2295 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_0.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48752 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2295)
+  %parameter_1.17 = bf16[1536,1536,128,1]{3,2,1,0} parameter(1)
+  %transpose.2296 = bf16[1,128,1536,1536]{3,2,1,0} transpose(bf16[1536,1536,128,1]{3,2,1,0} %parameter_1.17), dimensions={3,2,0,1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48753 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,128,1536,1536]{3,2,1,0} %transpose.2296)
+  ROOT %dot.1602 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48752, bf16[128,1536,1536]{2,1,0} %bitcast.48753), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/evoformer/while/body/msa_stack/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.229369384s. {block_m:16,block_n:128,block_k:32,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:52.749316: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1065_computation (parameter_0.87: bf16[1,1536,1536,128,1], parameter_1.87: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2315 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48883 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2315)
+  %parameter_1.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2316 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48884 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2316)
+  ROOT %dot.1672 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48883, bf16[128,1536,1536]{2,1,0} %bitcast.48884), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.221596191s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:55.197019: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1065_computation (parameter_0.87: bf16[1,1536,1536,128,1], parameter_1.87: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2315 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48883 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2315)
+  %parameter_1.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2316 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48884 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2316)
+  ROOT %dot.1672 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48883, bf16[128,1536,1536]{2,1,0} %bitcast.48884), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.222072265s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:3,num_warps:4,num_ctas:1}
+2025-02-25 21:10:57.620774: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1065_computation (parameter_0.87: bf16[1,1536,1536,128,1], parameter_1.87: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2315 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48883 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2315)
+  %parameter_1.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2316 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48884 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2316)
+  ROOT %dot.1672 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48883, bf16[128,1536,1536]{2,1,0} %bitcast.48884), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.210092529s. {block_m:16,block_n:64,block_k:128,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:10:59.823897: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1065_computation (parameter_0.87: bf16[1,1536,1536,128,1], parameter_1.87: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2315 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48883 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2315)
+  %parameter_1.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2316 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48884 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2316)
+  ROOT %dot.1672 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48883, bf16[128,1536,1536]{2,1,0} %bitcast.48884), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.099454467s. {block_m:16,block_n:64,block_k:256,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:11:02.283262: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1065_computation (parameter_0.87: bf16[1,1536,1536,128,1], parameter_1.87: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2315 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48883 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2315)
+  %parameter_1.87 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2316 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.87), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48884 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2316)
+  ROOT %dot.1672 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48883, bf16[128,1536,1536]{2,1,0} %bitcast.48884), lhs_batch_dims={0}, lhs_contracting_dims={1}, rhs_batch_dims={0}, rhs_contracting_dims={1}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_incoming/ckj,cki->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.228235717s. {block_m:16,block_n:128,block_k:32,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:11:19.837181: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1064_computation (parameter_0.85: bf16[1,1536,1536,128,1], parameter_1.85: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.85 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2313 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.85), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48879 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2313)
+  %parameter_1.85 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2314 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.85), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48880 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2314)
+  ROOT %dot.1670 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48879, bf16[128,1536,1536]{2,1,0} %bitcast.48880), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/cik,cjk->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.285056518s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+2025-02-25 21:11:22.413321: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1064_computation (parameter_0.85: bf16[1,1536,1536,128,1], parameter_1.85: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.85 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2313 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.85), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48879 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2313)
+  %parameter_1.85 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2314 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.85), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48880 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2314)
+  ROOT %dot.1670 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48879, bf16[128,1536,1536]{2,1,0} %bitcast.48880), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/cik,cjk->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.286445068s. {block_m:16,block_n:16,block_k:256,split_k:1,num_stages:3,num_warps:4,num_ctas:1}
+2025-02-25 21:11:24.454262: W external/xla/xla/service/gpu/autotuning/gemm_fusion_autotuner.cc:1142] Slow kernel for %gemm_fusion_dot.1064_computation (parameter_0.85: bf16[1,1536,1536,128,1], parameter_1.85: bf16[1,1536,1536,128,1]) -> bf16[128,1536,1536] {
+  %parameter_0.85 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(0)
+  %transpose.2313 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_0.85), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48879 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2313)
+  %parameter_1.85 = bf16[1,1536,1536,128,1]{4,3,2,1,0} parameter(1)
+  %transpose.2314 = bf16[1,1,128,1536,1536]{4,3,2,1,0} transpose(bf16[1,1536,1536,128,1]{4,3,2,1,0} %parameter_1.85), dimensions={0,4,3,1,2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/slice" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+  %bitcast.48880 = bf16[128,1536,1536]{2,1,0} bitcast(bf16[1,1,128,1536,1536]{4,3,2,1,0} %transpose.2314)
+  ROOT %dot.1670 = bf16[128,1536,1536]{2,1,0} dot(bf16[128,1536,1536]{2,1,0} %bitcast.48879, bf16[128,1536,1536]{2,1,0} %bitcast.48880), lhs_batch_dims={0}, lhs_contracting_dims={2}, rhs_batch_dims={0}, rhs_contracting_dims={2}, metadata={op_name="jit(apply_fn)/jit(main)/diffuser/while/body/vmap(confidence_head)/while/body/confidence_pairformer/triangle_multiplication_outgoing/cik,cjk->cij/dot_general" source_file="/projects/ilfgrid/apps/alphafold3/run_alphafold.py" source_line=290}
+} took: 1.019761657s. {block_m:16,block_n:64,block_k:128,split_k:1,num_stages:1,num_warps:4,num_ctas:1}
+Running AlphaFold 3. Please note that standard AlphaFold 3 model parameters are
+only available under terms of use provided at
+https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md.
+If you do not agree to these terms and are using AlphaFold 3 derived model
+parameters, cancel execution of AlphaFold 3 inference with CTRL-C, and do not
+use the model parameters.
+Skipping running the data pipeline.
+Found local devices: [CudaDevice(id=0)]
+Building model from scratch...
+Processing 1 fold inputs.
+Processing fold input 8jbh_3
+Checking we can load the model parameters...
+Skipping data pipeline...
+Output directory: /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models/8jbh_3
+Writing model input JSON to /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models/8jbh_3
+Predicting 3D structure for 8jbh_3 for seed(s) (3,)...
+Featurising data for seeds (3,)...
+Featurising 8jbh_3 with rng_seed 3.
+Featurising 8jbh_3 with rng_seed 3 took 42.88 seconds.
+Featurising data for seeds (3,) took  47.18 seconds.
+Running model inference for seed 3...
+Running model inference for seed 3 took  348.07 seconds.
+Extracting output structures (one per sample) for seed 3...
+Extracting output structures (one per sample) for seed 3 took  2.79 seconds.
+Running model inference and extracting output structures for seed 3 took  350.86 seconds.
+Running model inference and extracting output structures for seeds (3,) took  350.86 seconds.
+Writing outputs for 8jbh_3 for seed(s) (3,)...
+Done processing fold input 8jbh_3.
+Done processing 1 fold inputs.
+>> Prediction for 8jbh_3 finished in 1740514523 seconds.
+
+
+>> Job finished at: Tue Feb 25 21:15:23 CET 2025
+
+>> Runtime: 416 s

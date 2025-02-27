@@ -1,0 +1,56 @@
+>> Running the following command:
+/var/spool/slurm//job241167/slurm_script ../structural_benchmark_with_templates.txt
+
+>> Start time:  Tue Feb 25 22:38:19 CET 2025
+   Machine:     ilfgridgpun01fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/pqh443/AF3/Scripts
+   GPU:         1
+
+>> AF3 input:
+   .json:      /maps/projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/8wvy_2.json
+>> Starting prediction for 8wvy_2 
+
+
+Launching AF3 with the following command:
+python /projects/ilfgrid/apps/alphafold3/run_alphafold.py --db_dir /local_db/alphafold_db --run_data_pipeline=false --json_path /projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/8wvy_2.json --output_dir /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models --model_dir /local_db/alphafold3_model_parameters
+I0225 22:38:21.020238 140541216178688 folding_input.py:1044] Detected /projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/with_templates/8wvy_2.json is an AlphaFold 3 JSON since the top-level is not a list.
+I0225 22:38:21.443575 140541216178688 xla_bridge.py:895] Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+I0225 22:38:21.444701 140541216178688 xla_bridge.py:895] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0225 22:38:30.158861 140541216178688 pipeline.py:165] processing 8wvy_2, random_seed=2
+I0225 22:38:30.205440 140541216178688 pipeline.py:258] Calculating bucket size for input with 935 tokens.
+I0225 22:38:30.205669 140541216178688 pipeline.py:264] Got bucket size 1024 for input with 935 tokens, resulting in 89 padded tokens.
+Running AlphaFold 3. Please note that standard AlphaFold 3 model parameters are
+only available under terms of use provided at
+https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md.
+If you do not agree to these terms and are using AlphaFold 3 derived model
+parameters, cancel execution of AlphaFold 3 inference with CTRL-C, and do not
+use the model parameters.
+Skipping running the data pipeline.
+Found local devices: [CudaDevice(id=0)]
+Building model from scratch...
+Processing 1 fold inputs.
+Processing fold input 8wvy_2
+Checking we can load the model parameters...
+Skipping data pipeline...
+Output directory: /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models/8wvy_2
+Writing model input JSON to /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models/8wvy_2
+Predicting 3D structure for 8wvy_2 for seed(s) (2,)...
+Featurising data for seeds (2,)...
+Featurising 8wvy_2 with rng_seed 2.
+Featurising 8wvy_2 with rng_seed 2 took 27.39 seconds.
+Featurising data for seeds (2,) took  31.85 seconds.
+Running model inference for seed 2...
+Running model inference for seed 2 took  156.18 seconds.
+Extracting output structures (one per sample) for seed 2...
+Extracting output structures (one per sample) for seed 2 took  3.53 seconds.
+Running model inference and extracting output structures for seed 2 took  159.70 seconds.
+Running model inference and extracting output structures for seeds (2,) took  159.70 seconds.
+Writing outputs for 8wvy_2 for seed(s) (2,)...
+Done processing fold input 8wvy_2.
+Done processing 1 fold inputs.
+>> Prediction for 8wvy_2 finished in 1740519703 seconds.
+
+
+>> Job finished at: Tue Feb 25 22:41:44 CET 2025
+
+>> Runtime: 205 s
