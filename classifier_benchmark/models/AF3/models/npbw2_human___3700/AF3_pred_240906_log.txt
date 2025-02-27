@@ -1,0 +1,56 @@
+>> Running the following command:
+/var/spool/slurm//job240906/slurm_script ../classifier_with_templates.txt
+
+>> Start time:  Mon Feb 24 22:52:40 CET 2025
+   Machine:     ilfgridgpun04fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/pqh443/AF3/Scripts
+   GPU:         1
+
+>> AF3 input:
+   .json:      /maps/projects/ilfgrid/people/pqh443/AF3/classifier_jsons/with_templates/npbw2_human___3700.json
+>> Starting prediction for npbw2_human___3700 
+
+
+Launching AF3 with the following command:
+python /projects/ilfgrid/apps/alphafold3/run_alphafold.py --db_dir /local_db/alphafold_db --run_data_pipeline=false --json_path /projects/ilfgrid/people/pqh443/AF3/classifier_jsons/with_templates/npbw2_human___3700.json --output_dir /projects/ilfgrid/people/pqh443/AF3/Models --model_dir /local_db/alphafold3_model_parameters
+I0224 22:52:41.761593 139865831769088 folding_input.py:1044] Detected /projects/ilfgrid/people/pqh443/AF3/classifier_jsons/with_templates/npbw2_human___3700.json is an AlphaFold 3 JSON since the top-level is not a list.
+I0224 22:52:42.114951 139865831769088 xla_bridge.py:895] Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+I0224 22:52:42.115869 139865831769088 xla_bridge.py:895] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0224 22:52:50.105512 139865831769088 pipeline.py:165] processing npbw2_human___3700, random_seed=1
+I0224 22:52:50.126092 139865831769088 pipeline.py:258] Calculating bucket size for input with 548 tokens.
+I0224 22:52:50.126231 139865831769088 pipeline.py:264] Got bucket size 768 for input with 548 tokens, resulting in 220 padded tokens.
+Running AlphaFold 3. Please note that standard AlphaFold 3 model parameters are
+only available under terms of use provided at
+https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md.
+If you do not agree to these terms and are using AlphaFold 3 derived model
+parameters, cancel execution of AlphaFold 3 inference with CTRL-C, and do not
+use the model parameters.
+Skipping running the data pipeline.
+Found local devices: [CudaDevice(id=0)]
+Building model from scratch...
+Processing 1 fold inputs.
+Processing fold input npbw2_human___3700
+Checking we can load the model parameters...
+Skipping data pipeline...
+Output directory: /projects/ilfgrid/people/pqh443/AF3/Models/npbw2_human___3700
+Writing model input JSON to /projects/ilfgrid/people/pqh443/AF3/Models/npbw2_human___3700
+Predicting 3D structure for npbw2_human___3700 for seed(s) (1,)...
+Featurising data for seeds (1,)...
+Featurising npbw2_human___3700 with rng_seed 1.
+Featurising npbw2_human___3700 with rng_seed 1 took 8.95 seconds.
+Featurising data for seeds (1,) took  12.59 seconds.
+Running model inference for seed 1...
+Running model inference for seed 1 took  97.69 seconds.
+Extracting output structures (one per sample) for seed 1...
+Extracting output structures (one per sample) for seed 1 took  0.80 seconds.
+Running model inference and extracting output structures for seed 1 took  98.48 seconds.
+Running model inference and extracting output structures for seeds (1,) took  98.48 seconds.
+Writing outputs for npbw2_human___3700 for seed(s) (1,)...
+Done processing fold input npbw2_human___3700.
+Done processing 1 fold inputs.
+>> Prediction for npbw2_human___3700 finished in 1740434080 seconds.
+
+
+>> Job finished at: Mon Feb 24 22:54:40 CET 2025
+
+>> Runtime: 120 s
