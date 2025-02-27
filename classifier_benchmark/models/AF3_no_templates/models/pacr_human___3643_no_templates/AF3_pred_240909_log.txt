@@ -1,0 +1,56 @@
+>> Running the following command:
+/var/spool/slurm//job240909/slurm_script ../classifier_without_templates.txt
+
+>> Start time:  Tue Feb 25 16:42:46 CET 2025
+   Machine:     ilfgridgpun03fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/pqh443/AF3/Scripts
+   GPU:         0
+
+>> AF3 input:
+   .json:      /maps/projects/ilfgrid/people/pqh443/AF3/classifier_jsons/without_templates/pacr_human___3643_no_templates.json
+>> Starting prediction for pacr_human___3643_no_templates 
+
+
+Launching AF3 with the following command:
+python /projects/ilfgrid/apps/alphafold3/run_alphafold.py --db_dir /local_db/alphafold_db --run_data_pipeline=false --json_path /projects/ilfgrid/people/pqh443/AF3/classifier_jsons/without_templates/pacr_human___3643_no_templates.json --output_dir /projects/ilfgrid/people/pqh443/AF3/Models --model_dir /local_db/alphafold3_model_parameters
+I0225 16:42:48.962865 140269316399616 folding_input.py:1044] Detected /projects/ilfgrid/people/pqh443/AF3/classifier_jsons/without_templates/pacr_human___3643_no_templates.json is an AlphaFold 3 JSON since the top-level is not a list.
+I0225 16:42:49.417014 140269316399616 xla_bridge.py:895] Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+I0225 16:42:49.418171 140269316399616 xla_bridge.py:895] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0225 16:42:57.365349 140269316399616 pipeline.py:165] processing pacr_human___3643_no_templates, random_seed=1
+I0225 16:42:57.391097 140269316399616 pipeline.py:258] Calculating bucket size for input with 495 tokens.
+I0225 16:42:57.391188 140269316399616 pipeline.py:264] Got bucket size 512 for input with 495 tokens, resulting in 17 padded tokens.
+Running AlphaFold 3. Please note that standard AlphaFold 3 model parameters are
+only available under terms of use provided at
+https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md.
+If you do not agree to these terms and are using AlphaFold 3 derived model
+parameters, cancel execution of AlphaFold 3 inference with CTRL-C, and do not
+use the model parameters.
+Skipping running the data pipeline.
+Found local devices: [CudaDevice(id=0)]
+Building model from scratch...
+Processing 1 fold inputs.
+Processing fold input pacr_human___3643_no_templates
+Checking we can load the model parameters...
+Skipping data pipeline...
+Output directory: /projects/ilfgrid/people/pqh443/AF3/Models/pacr_human___3643_no_templates
+Writing model input JSON to /projects/ilfgrid/people/pqh443/AF3/Models/pacr_human___3643_no_templates
+Predicting 3D structure for pacr_human___3643_no_templates for seed(s) (1,)...
+Featurising data for seeds (1,)...
+Featurising pacr_human___3643_no_templates with rng_seed 1.
+Featurising pacr_human___3643_no_templates with rng_seed 1 took 11.38 seconds.
+Featurising data for seeds (1,) took  15.32 seconds.
+Running model inference for seed 1...
+Running model inference for seed 1 took  70.37 seconds.
+Extracting output structures (one per sample) for seed 1...
+Extracting output structures (one per sample) for seed 1 took  1.03 seconds.
+Running model inference and extracting output structures for seed 1 took  71.40 seconds.
+Running model inference and extracting output structures for seeds (1,) took  71.40 seconds.
+Writing outputs for pacr_human___3643_no_templates for seed(s) (1,)...
+Done processing fold input pacr_human___3643_no_templates.
+Done processing 1 fold inputs.
+>> Prediction for pacr_human___3643_no_templates finished in 1740498264 seconds.
+
+
+>> Job finished at: Tue Feb 25 16:44:24 CET 2025
+
+>> Runtime: 98 s
