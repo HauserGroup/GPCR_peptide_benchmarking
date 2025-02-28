@@ -1,0 +1,16 @@
+Model1,Model2,Model1_Avg_Runtime,Model1_SE_Runtime,Model2_Avg_Runtime,Model2_SE_Runtime,Statistic,P-value,Corrected P-value,Significance
+AF3,AF3 (no templates),96.54,6.023,95.37,6.076,786.0,0.00755,0.00755,**
+AF3,Chai-1,96.54,6.023,246.0,15.57,0.0,0.0,0.0,****
+AF3,ESMFold,96.54,6.023,61.15,2.224,0.0,0.0,0.0,****
+AF3,RF-AA,96.54,6.023,61.13,13.47,68.0,0.0,0.0,****
+AF3,RF-AA (no templates),96.54,6.023,60.33,8.144,136.0,1e-10,1e-10,****
+AF3 (no templates),Chai-1,95.37,6.076,246.0,15.57,0.0,0.0,0.0,****
+AF3 (no templates),ESMFold,95.37,6.076,61.15,2.224,2.0,0.0,0.0,****
+AF3 (no templates),RF-AA,95.37,6.076,61.13,13.47,68.0,0.0,0.0,****
+AF3 (no templates),RF-AA (no templates),95.37,6.076,60.33,8.144,137.0,1e-10,1e-10,****
+Chai-1,ESMFold,246.0,15.57,61.15,2.224,0.0,0.0,0.0,****
+Chai-1,RF-AA,246.0,15.57,61.13,13.47,68.0,0.0,0.0,****
+Chai-1,RF-AA (no templates),246.0,15.57,60.33,8.144,26.0,0.0,0.0,****
+ESMFold,RF-AA,61.15,2.224,61.13,13.47,79.5,0.0,0.0,****
+ESMFold,RF-AA (no templates),61.15,2.224,60.33,8.144,156.5,8e-10,9e-10,****
+RF-AA,RF-AA (no templates),61.13,13.47,60.33,8.144,419.0,0.003088,0.003309,**
