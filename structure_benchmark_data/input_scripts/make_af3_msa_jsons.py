@@ -1,4 +1,4 @@
-# Script to make complex .json files for AF3 classifier benchmark dataset
+# Script to make complex .json files for AF3 sturctural benchmark dataset
 # NOTE: Run this script on ILFGRID as it requires access to the MSA data
 import os 
 import pandas as pd

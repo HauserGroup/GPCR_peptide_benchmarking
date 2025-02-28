@@ -55,6 +55,7 @@ COLOR = {
     "AF2": "#115185",
     "AF2 (no templates)": "#008FD7",
     "AF3": "#061F4A",
+    "AF3 (no templates)": "#0b1321",
     "Chai-1": "#855e40",
     "Chai-1 (no MSAs)": "#b89881",
     "ColabFold (no MSAs)": "#5b616b",

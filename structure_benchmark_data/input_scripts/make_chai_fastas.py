@@ -1,5 +1,4 @@
 # Function to make fasta files for the Chai benchmark dataset
-
 import os 
 import pandas as pd
 import json
