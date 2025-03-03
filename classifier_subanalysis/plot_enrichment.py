@@ -24,9 +24,25 @@ sys.path.append(".")
 from plot_heatmap_combined import apply_first_pick_to_predictions
 
 
+def get_peptide_protein_GPCRs():
+    script_dir = pathlib.Path(__file__).parent
+    # gpcr,name,accession,receptor_class,receptor_family,ligand_type,subfamily,endogenous_ligands,species
+    gpcr_df = pd.read_csv(script_dir / "gpcr_list_human_pep_prot_ligand.csv")
+    ground_truth = get_ground_truth_df()
+
+     # split into peptide vs protein interface.
+    peptide_receptors = gpcr_df[gpcr_df['ligand_type'] == 'Peptide receptors']['gpcr'].values
+    peptide_receptors = [i.lower().strip() for i in peptide_receptors]
+    other_receptors = gpcr_df[gpcr_df['ligand_type'] != 'Peptide receptors']['gpcr'].values
+    other_receptors = [i.lower().strip() for i in other_receptors]
+
+    return peptide_receptors, other_receptors
+
+
 def run_main(plot_p,
              only_GPCRs_without_complex=False,
              reject_models_with_substrings=[],
+             gpcrs_to_reject = [],
              ):
     """ """
     rcParams['font.family'] = 'Helvetica'  # or use 'sans-serif' if Helvetica isn't available
@@ -35,6 +51,7 @@ def run_main(plot_p,
     models = get_models(script_dir / "models")
     if len(reject_models_with_substrings) > 0:
         models = [m for m in models if not any([r in m[0] for r in reject_models_with_substrings])]
+    models = [m for m in models if m[0] in MODELS_TO_KEEP]
 
     # remove models with LIS or APPRAISE
     unique_models = list([m[0] for m in models])
@@ -57,6 +74,10 @@ def run_main(plot_p,
     new_models = []
     for model_name, pred_df in models:
         pred_df["gpcr"] = pred_df["identifier"].apply(lambda x: x.split("___")[0])
+        if len(gpcrs_to_reject) > 0:
+            print(f'Rejecting GPCRs: {len(gpcrs_to_reject)}')
+            pred_df = pred_df[~pred_df["gpcr"].isin(gpcrs_to_reject)]
+
         pred_df["class"] = pred_df["gpcr"].apply(lambda x: gpcr_to_class[x])
         pred_df["is_agonist"] = pred_df["identifier"].apply(
             lambda x: x in agonist_identifiers
@@ -131,6 +152,8 @@ def run_main(plot_p,
 
     colors = [COLOR[m] for m in plot_df["model"].unique()]
     markers = [MARKER[m] for m in plot_df["model"].unique()]
+    markers = ['_' if m is None else m for m in markers]
+
     # plot dashed line at random performance
     random_performance_yvals = 1 / 11 * plot_df["keep_top_n"].unique()
     # random perf line
@@ -241,8 +264,22 @@ def run_main(plot_p,
 
 
 if __name__ == "__main__":
+    # MODELS_TO_KEEP = ["AF3_local", "AF2 (no templates)", "RF-AA"]
+    MODELS_TO_KEEP = ["AF3_local", "AF2 (no templates)", "RF-AA", 
+                         "AF2 (no templates) DeepRank-GNN-esm", "AF2 LIS (no templates)"]
+    
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/enrichment_plot.svg"
     run_main(plot_p, reject_models_with_substrings=['energy'])
     plot_p = script_dir / "plots/enrichment_plot_no_complex.svg"
     run_main(plot_p, only_GPCRs_without_complex=True)
+    
+    # run for peptide vs protein interface
+    peptide_receptors, other_receptors = get_peptide_protein_GPCRs()
+    
+    plot_p = script_dir / "plots/enrichment_plot_peptide_receptors.svg"
+    run_main(plot_p, gpcrs_to_reject=other_receptors)
+
+    plot_p = script_dir / "plots/enrichment_plot_other_receptors.svg"
+    run_main(plot_p, gpcrs_to_reject=peptide_receptors)
+

@@ -400,6 +400,12 @@ def plot_combined():
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/combined_heatmap.svg"
 
+    # save the metric types to csv
+    metric_all.to_csv(script_dir / "plots/heatmap_metric_all.csv")
+    metric_1on1.to_csv(script_dir / "plots/heatmap_metric_1on1.csv")
+    metric_similar.to_csv(script_dir / "plots/heatmap_metric_similar.csv")
+    metric_dissimilar.to_csv(script_dir / "plots/heatmap_metric_dissimilar.csv")
+
     # create a figure with 5 subplots (4 modes, 1 cbar)
     fig, axs = plt.subplots(1, 5, figsize=(15, 5))
     cmap = CMAP_GOOD_BAD
@@ -552,6 +558,11 @@ def plot_combined():
         # transp bgr
         transparent=True,
     )
+    plt.savefig(
+        plot_p.with_suffix(".png"),
+        dpi=300,
+        transparent=False,
+    )
 
 
 def plot_10_to_1_only():
@@ -559,6 +570,10 @@ def plot_10_to_1_only():
     - summarizes the 3 evaluation modes
 
     """
+        
+    script_dir = pathlib.Path(__file__).parent
+    plot_p = script_dir / "plots/combined_heatmap_10on1.svg"
+
     # print(plt.style.available)
     # ['Solarize_Light2', '_classic_test_patch', '_mpl-gallery', '_mpl-gallery-nogrid', 'bmh', 'classic', 'dark_background', 'fast', 'fivethirtyeight', 'ggplot', 'grayscale', 'seaborn-v0_8', 'seaborn-v0_8-bright', 'seaborn-v0_8-colorblind', 'seaborn-v0_8-dark', 'seaborn-v0_8-dark-palette', 'seaborn-v0_8-darkgrid', 'seaborn-v0_8-deep', 'seaborn-v0_8-muted', 'seaborn-v0_8-notebook', 'seaborn-v0_8-paper', 'seaborn-v0_8-pastel', 'seaborn-v0_8-poster', 'seaborn-v0_8-talk', 'seaborn-v0_8-ticks', 'seaborn-v0_8-white', 'seaborn-v0_8-whitegrid', 'tableau-colorblind10']
     plt.style.use("seaborn-v0_8-whitegrid")
@@ -572,9 +587,6 @@ def plot_10_to_1_only():
         metric_all.loc["AF3", col] = np.nan
     metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
     metric_all = metric_all.loc[rows, cols]
-
-    script_dir = pathlib.Path(__file__).parent
-    plot_p = script_dir / "plots/combined_heatmap_10on1.svg"
 
     # create a figure with 5 subplots (4 modes, 1 cbar)
     fig, axs = plt.subplots(1, 2, figsize=(10, 5))
@@ -677,7 +689,7 @@ def plot_10_to_1_only():
         # transp bgr
         transparent=True,
     )
-
+    
 
 if __name__ == "__main__":
     plot_combined()

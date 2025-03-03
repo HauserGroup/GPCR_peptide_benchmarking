@@ -105,6 +105,9 @@ def plot_decoy_rankings(
     labels = list()
     peptide_names = list()
 
+    # gpcr : float
+    principal_agonist_yvals = {}
+
     for gpcr in gpcrs:
         gpcr_df = predictions_df[predictions_df[gpcr_col] == gpcr]
         for i, row in gpcr_df.iterrows():
@@ -126,22 +129,37 @@ def plot_decoy_rankings(
                 print(
                     f"{model_name},{gpcr},{rank_label},{iptm},{row['identifier'].rpartition('___')[2]}"
                 )
+            if rank_label == "Principal Agonist":
+                  principal_agonist_yvals[gpcr] = iptm
+    
+    # combine xvals, yvals, labels, colors into df
+    df = pd.DataFrame(
+        {
+            "GPCR": xvals,
+            "Interaction Probability": yvals,
+            "Decoy Type": labels,
+            "Color": colors,
+        }
+    )
+    df['pa_yvals'] = df['GPCR'].apply(lambda x: principal_agonist_yvals.get(x))
+    # sort by pa_yvals
+    df = df.sort_values(by='pa_yvals', ascending=False)
 
     # plot scatter
-    plt.figure(figsize=(1, 5))
+    plt.figure(figsize=(len(gpcrs)//5, 4))
     plt.grid(axis="x", linestyle="--", linewidth=1, alpha=0.3)
 
     sns.scatterplot(
-        x=xvals,
-        y=yvals,
-        hue=labels,
-        color=colors,
-        palette=decoy_colors,
+        x=df['GPCR'],
+        y=df['Interaction Probability'],
+        hue=df["Decoy Type"],
+        color=df['Color'],
+        palette=decoy_colors,        
         # add labels to each point
         # order of the legend
         hue_order=decoy_colors.keys(),
-        s=100,
-        alpha=0.8,
+        s=20,
+        alpha=0.5,
     )
     if show_legend:
         plt.legend(
@@ -160,7 +178,7 @@ def plot_decoy_rankings(
 
     # after scatter, add text at each y value
     if add_names:
-        for iptm, name in zip(yvals, peptide_names):
+        for iptm, name in zip(df["Interaction Probability"], df["Decoy Type"]):
             name = name.rpartition("___")[2]
             name = f"  {name}"
             plt.text(
@@ -178,14 +196,15 @@ def plot_decoy_rankings(
     plt.ylim(ymin, ymax)
     # plt.xlabel("GPCR")
     plt.xticks(
-        rotation=0,
+        rotation=90,
         # fontsize
         fontsize=12,
+        
     )
-
     # save
     plt.title(title, fontsize=10)
     plt.savefig(output_path, bbox_inches="tight", dpi=300)
+    plt.savefig(output_path.with_suffix(".png"), bbox_inches="tight", dpi=300)
     plt.close()
 
 
@@ -266,9 +285,10 @@ def run_main():
     for model_name, pred_df in models:
         if model_name not in ["AF2 (no templates)", "AF2 LIS (no templates)"]:
              continue
-        # print(f"Processing {model_name}")
+        print(f"Processing {model_name}")
 
         plot_p = script_dir / f"plots/{model_name}_decoy_ranking.svg"
+        print(plot_p)
         pred_df["Decoy Rank"] = pred_df["identifier"].apply(
             lambda x: identifier_to_rank.get(x, None)
         )
@@ -283,9 +303,11 @@ def run_main():
         plot_decoy_rankings(
             pred_df,
             "InteractionProbability",
-            ranking_dir / f"{model_name}_decoy_ranking.svg",
+            plot_p,
             get_color_mapping(),
+            title=model_name,
         )
+        continue
 
         # plot individual targets
         for unique_target in pred_df["Target ID"].unique():
