@@ -19,6 +19,10 @@ COLOR = {
     'AF2 LIS (no templates) 1m' :  "#008FD7",
     "AF2 RIA energy (no templates)": "#008FD7",
     "AF2 RIA sc (no templates)": "#008FD7",
+    'AF2 (no templates) DeepRank-GNN-esm': "#008FD7",
+
+    # new color for AF3
+    "AF3_local" : "#FF7F0E",
 
     "Peptriever": "#9E005D",
 
@@ -52,6 +56,7 @@ APPRAISE_MARKER = '|'
 RIA_ENERGY_MARKER = '2'
 RIA_SC_MARKER = '3'
 LIS_MARKER = '+'
+DEEPRANK_MARKER = 'x'
 
 MARKER = {
     "RF-AA":BASE_MARKER,
@@ -63,6 +68,9 @@ MARKER = {
     "AF2 APPRAISE (no templates)": APPRAISE_MARKER,
     "AF2 RIA energy (no templates)": RIA_ENERGY_MARKER,
     "AF2 RIA sc (no templates)": RIA_SC_MARKER,
+    'AF2 (no templates) DeepRank-GNN-esm': DEEPRANK_MARKER,
+
+    "AF3_local" : BASE_MARKER,
 
     # LIS is only for AF2
     "AF2 LIS (no templates)": LIS_MARKER,
@@ -88,6 +96,9 @@ STYLE = {
     "AF2 APPRAISE (no templates)": RESCORING_STYLE,
     "AF2 RIA energy (no templates)": RESCORING_STYLE,
     "AF2 RIA sc (no templates)": RESCORING_STYLE,
+    'AF2 (no templates) DeepRank-GNN-esm': RESCORING_STYLE,
+
+    "AF3_local" : DEFAULT_STYLE,
 
     # LIS is only for AF2
     "AF2 LIS (no templates)": RESCORING_STYLE,

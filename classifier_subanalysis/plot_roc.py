@@ -28,6 +28,19 @@ def create_roc(invalid_identifiers, plot_p, log_p):
     # run
     logging.basicConfig(filename=log_p, level=logging.INFO, filemode="w")
     models = get_models(model_dir)
+    models = [(name, df) for name, df in models if name in MODELS_TO_INCLUDE]
+
+    all_model_identifiers = set()
+    for n, m in models:
+        # print if 'InteractionProbability' value is nan
+        for v in m['identifier'].values:
+            all_model_identifiers.add(v)
+
+    for n, m in models:
+        for v in all_model_identifiers:
+            if v not in m['identifier'].values:
+                print(f'{n} missing {v}')
+
     ground_truth = get_ground_truth_df()
     # filter invalid identifiers
     ground_truth = ground_truth[~ground_truth[identifier_col].isin(invalid_identifiers)]
@@ -113,6 +126,8 @@ def create_roc(invalid_identifiers, plot_p, log_p):
 def main():
     ground_truth = get_ground_truth_df()
     script_dir = pathlib.Path(__file__).parent
+    # gpcr,name,accession,receptor_class,receptor_family,ligand_type,subfamily,endogenous_ligands,species
+    gpcr_df = pd.read_csv(script_dir / "gpcr_list_human_pep_prot_ligand.csv")
 
     # create roc for all
     create_roc(
@@ -146,6 +161,49 @@ def main():
         log_p=script_dir / "plots/roc_most_dissimilar.log",
     )
 
+    # split into peptide vs protein interface.
+    peptide_receptors = gpcr_df[gpcr_df['ligand_type'] == 'Peptide receptors']['gpcr'].values
+    peptide_receptors = [i.lower().strip() for i in peptide_receptors]
+    receptor_to_class = gpcr_df.set_index('gpcr')['receptor_class'].to_dict()
+    if 'hrh4_human' not in receptor_to_class:
+        receptor_to_class['hrh4_human'] = 'Class A (Rhodopsin)'
+    all_identifiers = ground_truth['identifier'].unique()
+    peptide_identifiers = list()
+    other_identifiers = list()
+    for i in all_identifiers:
+        i = str(i).strip().lower()
+        i_gpcr = i.split("___")[0].lower()
+        if i_gpcr in peptide_receptors:
+            peptide_identifiers.append(i)
+        else:
+            other_identifiers.append(i)
+    # report counts of class for peptide_identifiers and other_identifiers
+    peptide_identifiers_gpcrs = [i.split("___")[0] for i in peptide_identifiers]
+    other_identifiers_gpcrs = [i.split("___")[0] for i in other_identifiers]
+    peptide_identifiers_classes = [receptor_to_class[i] for i in peptide_identifiers_gpcrs]
+    other_identifiers_classes = [receptor_to_class[i] for i in other_identifiers_gpcrs]
+    print("Peptide identifiers:")
+    print(pd.Series(peptide_identifiers_classes).value_counts())
+    print("Other identifiers:")
+    print(pd.Series(other_identifiers_classes).value_counts())
+
+    # plot roc for peptide
+    create_roc(
+        invalid_identifiers=other_identifiers,
+        plot_p=script_dir / "plots/roc_peptide.svg",
+        log_p=script_dir / "plots/roc_peptide.log",
+    )
+
+    # plot roc for other
+    create_roc(
+        invalid_identifiers=peptide_identifiers,
+        plot_p=script_dir / "plots/roc_other.svg",
+        log_p=script_dir / "plots/roc_other.log",
+    )
+
 
 if __name__ == "__main__":
+    # MODELS_TO_INCLUDE = ['AF2 (no templates)', 'AF3_local', "RF-AA"]
+    MODELS_TO_INCLUDE = ["AF3_local", "AF2 (no templates)", "RF-AA", 
+                         "AF2 (no templates) DeepRank-GNN-esm", "AF2 LIS (no templates)"]
     main()

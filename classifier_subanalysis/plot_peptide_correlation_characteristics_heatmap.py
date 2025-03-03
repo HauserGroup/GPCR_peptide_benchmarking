@@ -57,9 +57,7 @@ def load_rankings():
     3  AF2 (no templates)   v1ar_human            1    True  Class A (Rhodopsin)
     4  AF2 (no templates)  galr2_human            1    True  Class A (Rhodopsin)
     """
-    script_dir = pathlib.Path(__file__).parent.absolute()
-    rankings_path = os.path.join(script_dir, "agonist_rankings.csv")
-    rankings = pd.read_csv(rankings_path)
+    rankings = pd.read_csv('classifier_benchmark/agonist_rankings.csv')
     return rankings
 
 def get_agonist_len(chain_lengths_s : str):
@@ -406,15 +404,19 @@ def main(models_to_keep, plot_p):
 
     # models to keep
     correlation_df = create_correlation_df(attributes, rankings)
-    # to csv
-    script_dir = pathlib.Path(__file__).parent.absolute()
-    correlation_df.to_csv(script_dir / "peptide_correlation_characteristics.csv")
+    
     # keep only models to keep
     if len(models_to_keep) > 0:
         correlation_df = correlation_df.loc[models_to_keep]
-
     plot_correlation_heatmap(correlation_df, plot_p)
 
+    # to csv
+    script_dir = pathlib.Path(__file__).parent.absolute()
+    correlation_df.to_csv(script_dir / "peptide_correlation_characteristics.csv")
+    #                             agonist length  ...                                     N-term length
+    # AF2 (no templates)       (0.24687015266979925, 0.005910457810487032, 123)  ...  (-0.07952563609671996, 0.38192090669073486, 123)
+    
+    
 
 def corr_plot_peptriever_vs_af2(plot_p):
     """ On y-axis, rank of agonist, on x-axis, agonist length

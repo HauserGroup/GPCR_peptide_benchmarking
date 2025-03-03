@@ -16,6 +16,7 @@ from colors import COLOR
 
 
 def create_roc(invalid_identifiers, plot_p, log_p,
+               models_to_plot,
                label_missing=True, disable_labels=False):
     """
     valid_identifiers: list of str, identifiers to keep. Remove other ones
@@ -30,7 +31,7 @@ def create_roc(invalid_identifiers, plot_p, log_p,
     logging.basicConfig(filename=log_p, level=logging.INFO, filemode="w")
     models = get_models(model_dir)
     # remove models with 'APPRAISE' or 'LIS' in name
-    models = [(name, df) for name, df in models if "APPRAISE" not in name and "LIS" not in name]
+    models = [(name, df) for name, df in models if name in models_to_plot]
 
     ground_truth = get_ground_truth_df()
     # filter invalid identifiers
@@ -63,12 +64,13 @@ def create_roc(invalid_identifiers, plot_p, log_p,
 
         y_pred = prediction_df[score_col].to_numpy()
         y_true = get_ground_truth_values(ground_truth, prediction_df[identifier_col])
-
+        
         if len(y_pred) != len(ground_truth):
             logging.warning(
                 f"Number of predictions ({len(y_pred)}) does not match the number of ground truth values ({len(ground_truth)})"
             )
 
+        # keep only valid predictions
         # calculate ROC curve
         fpr, tpr, _ = roc_curve(y_true, y_pred)
         roc_auc = auc(fpr, tpr)
@@ -157,12 +159,14 @@ def create_roc(invalid_identifiers, plot_p, log_p,
 
     # ensure the roc plot is square
     plt.gca().set_aspect("equal", adjustable="box")
+    print("saving to ", plot_p)
     # adjust so plot is total height
-    plt.savefig(plot_p, dpi=300)
-    logging.info(f"Wrote ROC curve to {plot_p}")
+    plt.savefig(plot_p.with_suffix('.png'), dpi=300)
+    plt.savefig(plot_p.with_suffix('.svg'))
+    logging.info(f"Wrote ROC curve to {plot_p} (png and svg)")
 
 
-def main():
+def main(models_to_plot):
     ground_truth = get_ground_truth_df()
     script_dir = pathlib.Path(__file__).parent
 
@@ -172,6 +176,7 @@ def main():
     
     # create roc for all
     create_roc(
+        models_to_plot=models_to_plot,
         invalid_identifiers=[],
         plot_p=script_dir / "plots/roc_all.svg",
         log_p=script_dir / "plots/roc_all.log",
@@ -183,6 +188,7 @@ def main():
         if row["Decoy Type"] == "Similar":
             similar_identifiers.append(row["identifier"])
     create_roc(
+        models_to_plot=models_to_plot,
         invalid_identifiers=similar_identifiers,
         plot_p=script_dir / "plots/roc_no_similar.png",
         log_p=script_dir / "plots/roc_no_similar.log",
@@ -205,6 +211,7 @@ def main():
             print(row["Decoy Type"], row["identifier"], row['Decoy Rank'])
 
     create_roc(
+        models_to_plot=models_to_plot,
         invalid_identifiers=not_included,
         plot_p=script_dir / "plots/roc_most_dissimilar.svg",
         log_p=script_dir / "plots/roc_most_dissimilar.log",
@@ -215,4 +222,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    models_to_plot = ["AF3_local", "AF2 (no templates)", "RF-AA", "AF2 (no templates) DeepRank-GNN-esm",
+                      "AF2 LIS (no templates)"]
+    main(models_to_plot)

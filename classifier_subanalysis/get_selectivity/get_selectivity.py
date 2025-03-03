@@ -32,6 +32,7 @@ def plot_targets_per_ligand(agonist_df, plot_dir, plot_base):
     plt.title("Number of GPCRs per ligand")
     plt.grid(axis="y", alpha=0.5)
     plt.savefig(plot_dir / f"{plot_base}_targets_per_ligand.png", dpi=300)
+    plt.savefig(plot_dir / f"{plot_base}_targets_per_ligand.svg")
     plt.close()
 
 
@@ -47,6 +48,7 @@ def plot_ligands_per_target(agonist_df, plot_dir, plot_base):
     plt.grid(axis="y", alpha=0.5)
     plt.title("Number of ligands per GPCR")
     plt.savefig(plot_dir / f"{plot_base}_ligands_per_target.png", dpi=300)
+    plt.savefig(plot_dir / f"{plot_base}_ligands_per_target.svg")
     plt.close()
 
 
