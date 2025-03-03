@@ -350,12 +350,16 @@ for receptor, group in benchmark_set.groupby('receptor'):
             unique_ligands.append(row)
     filtered_ligands[receptor] = unique_ligands
 
-# Set receptor sequence for 8JPS
-benchmark_set.loc[benchmark_set["pdb"] == "8JPS", "receptor_pdb_seq"] = "EAAAPCHSCNLLDDSALPFFILTSVLGILASSTVLFMLFRPLFRWQLCPGWPVLAQLAVGSALFSIVVPVLAPGLGSTRSSALCSLGYCVWYGSAFAQALLLGCHASLGHRLGAGQVPGLTLGLTVGIWGVAALLTLPVTLASGASGGLCTLIYSTELKALQATHTVACLAIFVLLPLGLFGAKGLKKALGMGPGPWMNILWAWFIFWWPHGV"
-
 # Save the benchmark set to a CSV file
 benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
 benchmark_set.reset_index(drop=True, inplace=True)
+
+# Set receptor sequence for 8JPS
+benchmark_set.loc[benchmark_set["pdb"] == "8JPS", "receptor_pdb_seq"] = "EAAAPCHSCNLLDDSALPFFILTSVLGILASSTVLFMLFRPLFRWQLCPGWPVLAQLAVGSALFSIVVPVLAPGLGSTRSSALCSLGYCVWYGSAFAQALLLGCHASLGHRLGAGQVPGLTLGLTVGIWGVAALLTLPVTLASGASGGLCTLIYSTELKALQATHTVACLAIFVLLPLGLFGAKGLKKALGMGPGPWMNILWAWFIFWWPHGV"
+
+# Drop 8JBG, 8JBF, 8JBH from the benchmark set - the receptor sequence contains BRIL fusion protein
+benchmark_set = benchmark_set[benchmark_set["pdb"] != "8JBG"]
+benchmark_set = benchmark_set[benchmark_set["pdb"] != "8JBH"]
 benchmark_set.to_csv(f"{outdir}/{outfile}", index=False)
 
 # Save fastas to separate folders

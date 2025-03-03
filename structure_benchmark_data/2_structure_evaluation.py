@@ -486,8 +486,8 @@ if __name__ == "__main__":
 
     # Path to the directory where the predicted models are stored
     dataset_path = f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset.csv"
-    parsed_file = f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/structural_benchmark_dataset_cleaned.csv"
-    pdb_dir = f"{repo_dir}/structure_benchmark_data/updated_data_Feb2025/pdbs/"
+    parsed_file = f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset_cleaned.csv"
+    pdb_dir = f"{repo_dir}/structure_benchmark_data/pdbs/"
 
     # Parse the dataset
     input_df = parse_dataset(dataset_path, parsed_file, pdb_dir)
