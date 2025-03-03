@@ -1,4 +1,4 @@
-# ray settings
+# This file is used as a config for PyMOL to create a ray-traced image of the protein structure
 set ray_trace_mode, 1
 set ray_trace_gain, 0.1
 set ray_shadows, 1
@@ -28,7 +28,7 @@ set light6, 0.3, -0.7, 0.3
 set light7, 0.5, 0.5, -0.5
 set light8, -0.5, -0.5, 0.5
 
-# settings to make the receptor look more like chimerax
+# Settings to make the receptor look more like chimerax
 set cartoon_side_chain_helper, 1
 set cartoon_tube_radius, 0.4
 set cartoon_tube_width, 1.0

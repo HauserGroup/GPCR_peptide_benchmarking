@@ -1,0 +1,27 @@
+[{
+ "name": "7vv0",
+ "modelSeeds": [
+  "1930713918"
+ ],
+ "sequences": [
+  {
+   "proteinChain": {
+    "sequence": "MDPTTPAWGTESTTVNGNDQALLLLCGKETLIPVFLILFIALVGLVGNGFVLWLLGFRMRRNAFSVYVLSLAGADFLFLCFQIINCLVYLSNFFCSISINFPSFFTTVMTCAYLAGLSMLSTVSTERCLSVLWPIWYRCRRPRHLSAVVCVLLWALSLLLSILEGKFCGFLFSDGDSGWCQTFDFITAAWLIFLFMVLCGSSLALLVRILCGSRGLPLTRLYLTILLTVLVFLLCGLPFGIQWFLILWIWKDSDVLFCHIHPVSVVLSSLNSSANPIIYFFVGSFRKQWRLQQPILKLALQRALQDIAEVDHSEGCFRQGTPEMSRSSLV",
+    "count": 1,
+    "useStructureTemplate": true,
+    "maxTemplateDate": "2021-09-30"
+   }
+  },
+  {
+   "proteinChain": {
+    "sequence": "FRKKWNKWALSR",
+    "count": 1,
+    "useStructureTemplate": true,
+    "maxTemplateDate": "2021-09-30"
+   }
+  }
+ ],
+ "dialect": "alphafoldserver",
+ "version": 1
+}
+]

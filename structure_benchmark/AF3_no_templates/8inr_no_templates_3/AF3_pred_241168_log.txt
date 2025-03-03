@@ -1,0 +1,56 @@
+>> Running the following command:
+/var/spool/slurm//job241168/slurm_script ../structural_benchmark_without_templates.txt
+
+>> Start time:  Wed Feb 26 08:01:19 CET 2025
+   Machine:     ilfgridgpun03fl.unicph.domain
+   Directory:   /projects/ilfgrid/people/pqh443/AF3/Scripts
+   GPU:         0
+
+>> AF3 input:
+   .json:      /maps/projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/without_templates/8inr_no_templates_3.json
+>> Starting prediction for 8inr_no_templates_3 
+
+
+Launching AF3 with the following command:
+python /projects/ilfgrid/apps/alphafold3/run_alphafold.py --db_dir /local_db/alphafold_db --run_data_pipeline=false --json_path /projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/without_templates/8inr_no_templates_3.json --output_dir /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models --model_dir /local_db/alphafold3_model_parameters
+I0226 08:01:21.949013 140620080607744 folding_input.py:1044] Detected /projects/ilfgrid/people/pqh443/AF3/structural_benchmark_jsons/without_templates/8inr_no_templates_3.json is an AlphaFold 3 JSON since the top-level is not a list.
+I0226 08:01:22.453262 140620080607744 xla_bridge.py:895] Unable to initialize backend 'rocm': module 'jaxlib.xla_extension' has no attribute 'GpuAllocatorConfig'
+I0226 08:01:22.454475 140620080607744 xla_bridge.py:895] Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory
+I0226 08:01:34.564861 140620080607744 pipeline.py:165] processing 8inr_no_templates_3, random_seed=3
+I0226 08:01:34.592203 140620080607744 pipeline.py:258] Calculating bucket size for input with 526 tokens.
+I0226 08:01:34.592399 140620080607744 pipeline.py:264] Got bucket size 768 for input with 526 tokens, resulting in 242 padded tokens.
+Running AlphaFold 3. Please note that standard AlphaFold 3 model parameters are
+only available under terms of use provided at
+https://github.com/google-deepmind/alphafold3/blob/main/WEIGHTS_TERMS_OF_USE.md.
+If you do not agree to these terms and are using AlphaFold 3 derived model
+parameters, cancel execution of AlphaFold 3 inference with CTRL-C, and do not
+use the model parameters.
+Skipping running the data pipeline.
+Found local devices: [CudaDevice(id=0)]
+Building model from scratch...
+Processing 1 fold inputs.
+Processing fold input 8inr_no_templates_3
+Checking we can load the model parameters...
+Skipping data pipeline...
+Output directory: /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models/8inr_no_templates_3
+Writing model input JSON to /projects/ilfgrid/people/pqh443/AF3/Structural_Benchmark_Models/8inr_no_templates_3
+Predicting 3D structure for 8inr_no_templates_3 for seed(s) (3,)...
+Featurising data for seeds (3,)...
+Featurising 8inr_no_templates_3 with rng_seed 3.
+Featurising 8inr_no_templates_3 with rng_seed 3 took 12.87 seconds.
+Featurising data for seeds (3,) took  17.94 seconds.
+Running model inference for seed 3...
+Running model inference for seed 3 took  104.70 seconds.
+Extracting output structures (one per sample) for seed 3...
+Extracting output structures (one per sample) for seed 3 took  0.81 seconds.
+Running model inference and extracting output structures for seed 3 took  105.51 seconds.
+Running model inference and extracting output structures for seeds (3,) took  105.51 seconds.
+Writing outputs for 8inr_no_templates_3 for seed(s) (3,)...
+Done processing fold input 8inr_no_templates_3.
+Done processing 1 fold inputs.
+>> Prediction for 8inr_no_templates_3 finished in 1740553418 seconds.
+
+
+>> Job finished at: Wed Feb 26 08:03:38 CET 2025
+
+>> Runtime: 139 s
