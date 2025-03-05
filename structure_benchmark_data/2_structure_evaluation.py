@@ -406,22 +406,24 @@ def run_dockq_scoring(input_df, model_paths, output_file):
     # List of dictionaries to store the results
     results_dicts = []
 
+    # Models with seeds
+    seeded_models = ["AF2", "AF2_no_templates", "AF3", "AF3_no_templates", "Chai-1"]
+
     for model_name in model_paths.keys():
         for index, row in input_df.iterrows():
             for seed in range(1, 6):
 
+                # Set model paths for models without extra seeds
+                if "RFAA_no_templates" in model_name:
+                    model_path = f"{model_paths[model_name]}/{row['pdb']}_no_templates.pdb"
+                else:
+                    model_path = f"{model_paths[model_name]}/{row['pdb']}.pdb"
+
                 # Analyse extra seeds for AF2, AF3 and Chai-1
-                if model_name in ["AF2", "AF2_no_templates", "AF3", "AF3_no_templates", "Chai-1"]:
+                if model_name in seeded_models:
                     model_path = f"{model_paths[model_name]}/{row['pdb']}_{seed}.pdb"
                 elif seed != 1:
                     continue
-
-                if "RFAA_no_templates" in model_name:
-                    model_path = f"{model_paths[model_name]}/{row['pdb']}_no_templates.pdb"
-                elif "Chai-1_no_MSAs" in model_name:
-                    model_path = f"{model_paths[model_name]}/{row['pdb']}_no_MSAs.pdb"
-                else:
-                    model_path = f"{model_paths[model_name]}/{row['pdb']}.pdb"
 
                 # Check if model_path exists
                 if not os.path.exists(model_path):
