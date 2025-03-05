@@ -204,6 +204,18 @@ def main():
 
 if __name__ == "__main__":
     # MODELS_TO_INCLUDE = ['AF2 (no templates)', 'AF3_local', "RF-AA"]
-    MODELS_TO_INCLUDE = ["AF3_local", "AF2 (no templates)", "RF-AA", 
-                         "AF2 (no templates) DeepRank-GNN-esm", "AF2 LIS (no templates)"]
+    MODELS_TO_INCLUDE = ["AF3_local", 
+                         "AF3_local DeepRank-GNN-esm",
+                         
+
+                         "AF3_local (no templates) DeepRank-GNN-esm",
+
+                         "AF2 (no templates)", 
+                         "AF2 (no templates) DeepRank-GNN-esm",
+                         "AF2 LIS (no templates)",
+                         "AF2 (no templates) GNN-DOVE",
+
+                         "RF-AA",
+                         "RFAA (no templates) DeepRank-GNN-esm",
+    ]
     main()

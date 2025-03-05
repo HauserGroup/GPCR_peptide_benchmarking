@@ -155,7 +155,8 @@ def create_roc(invalid_identifiers, plot_p, log_p,
     plt.tight_layout()
 
     # remove the legend
-    plt.legend().remove()
+    if disable_labels:
+        plt.legend().remove()
 
     # ensure the roc plot is square
     plt.gca().set_aspect("equal", adjustable="box")
@@ -180,6 +181,7 @@ def main(models_to_plot):
         invalid_identifiers=[],
         plot_p=script_dir / "plots/roc_all.svg",
         log_p=script_dir / "plots/roc_all.log",
+        disable_labels=False,
     )
 
     # create roc WITHOUT similar decoys
@@ -218,10 +220,20 @@ def main(models_to_plot):
         label_missing=False,
         disable_labels=True,
     )
-    
+
 
 
 if __name__ == "__main__":
-    models_to_plot = ["AF3_local", "AF2 (no templates)", "RF-AA", "AF2 (no templates) DeepRank-GNN-esm",
-                      "AF2 LIS (no templates)"]
+    models_to_plot = ["AF3",
+                      "AF3 (no templates)",
+                      "AF2 (no templates)",
+                      "AF2",
+                      "RF-AA (no templates)",
+                      "RF-AA",
+                      "Neuralplexer",
+                      "D-SCRIPT",
+                      "ESMFold",
+                      "Peptriever",
+                      "Chai-1"
+    ]
     main(models_to_plot)

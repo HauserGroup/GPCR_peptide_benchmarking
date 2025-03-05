@@ -146,12 +146,12 @@ def run_main(plot_p,
     plt.grid(axis="x", linestyle="--", alpha=0.5)
     
     # add marker to plot df so we can sort on marker and model, for legend
-    plot_df['marker'] = plot_df['model'].apply(lambda x: MARKER[x])
-    plot_df['color'] = plot_df['model'].apply(lambda x: COLOR[x])
+    plot_df['marker'] = plot_df['model'].apply(lambda x: MARKER.get(x, None))
+    plot_df['color'] = plot_df['model'].apply(lambda x: COLOR.get(x, 'black'))
     plot_df = plot_df.sort_values(['model', 'marker'])
 
-    colors = [COLOR[m] for m in plot_df["model"].unique()]
-    markers = [MARKER[m] for m in plot_df["model"].unique()]
+    colors = [COLOR.get(m, 'black') for m in plot_df["model"].unique()]
+    markers = [MARKER.get(m, None) for m in plot_df["model"].unique()]
     markers = ['_' if m is None else m for m in markers]
 
     # plot dashed line at random performance
@@ -227,11 +227,11 @@ def run_main(plot_p,
     # then it should contain the black markers for the rescoring methods
     for model_name in plot_df["model"].unique():
         # get the color of the model
-        model_color = COLOR[model_name]
+        model_color = COLOR.get(model_name, 'black')
         # get the line style of the model
-        model_line_style = STYLE[model_name]
+        model_line_style = STYLE.get(model_name, '--')
         # model marker
-        model_marker = MARKER[model_name]
+        model_marker = MARKER.get(model_name, None)
         # remove the (no templates) part and add a dagger symbol instead
         replacement = r'$^\dagger$'
         model_name = model_name.replace(" (no templates)", replacement)
@@ -265,8 +265,14 @@ def run_main(plot_p,
 
 if __name__ == "__main__":
     # MODELS_TO_KEEP = ["AF3_local", "AF2 (no templates)", "RF-AA"]
-    MODELS_TO_KEEP = ["AF3_local", "AF2 (no templates)", "RF-AA", 
-                         "AF2 (no templates) DeepRank-GNN-esm", "AF2 LIS (no templates)"]
+    MODELS_TO_KEEP = [
+                      "AF2 (no templates)", 
+                      "AF2 (no templates) DeepRank-GNN-esm",
+                      "AF2 APPRAISE (no templates)",
+                      "AF2 LIS (no templates)",
+                      "AF2 RIA sc (no templates)",
+                      # "AF2 (no templates) GNN-DOVE",
+                      ]
     
     script_dir = pathlib.Path(__file__).parent
     plot_p = script_dir / "plots/enrichment_plot.svg"
