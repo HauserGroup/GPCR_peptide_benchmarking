@@ -20,12 +20,13 @@ if __name__ == "__main__":
     dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
     dockq_df = pd.read_csv(dockq_path)
     dockq_df = dockq_df[dockq_df["model"].isin(["AF2", "AF3", "AF2_no_templates"])]
+    dockq_df = dockq_df[dockq_df["seed"] == 1]
     dockq_df.rename(columns = {"model": "MODEL_NAME"}, inplace = True)
     dockq_df.columns = dockq_df.columns.str.upper()
 
     # Load AF LIS data
-    af2_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/AF_LIS_results/AF2_LIS_results.csv", sep = ",")
-    af3_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/AF_LIS_results/AF3_LIS_results.csv", sep = ",")
+    af2_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/AFM-LIS_results/AF2_LIS_results.csv", sep = ",")
+    af3_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/AFM-LIS_results/AF3_LIS_results.csv", sep = ",")
     af3_lis_df["pdb"] = [i.split("_")[-1].upper() for i in af3_lis_df["folder_name"]]
     af2_lis_df["pdb"] = [i.split("/")[-1].upper() for i in af2_lis_df["saved folder"]]
     af2_lis_df["MODEL_NAME"] = af2_lis_df["saved folder"].apply(lambda x: "AF2_no_templates" if "no_templates" in x else "AF2")
