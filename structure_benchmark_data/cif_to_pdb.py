@@ -79,4 +79,12 @@ chai_results_df = pd.DataFrame(npz_scores, columns=["model_id", "model_name", "a
 chai_results_df = chai_results_df.sort_values(["model_id", "iptm"], ascending=[True, False])
 chai_results_df = chai_results_df.drop_duplicates(subset="model_id", keep="first")
 
-print(chai_results_df)
+print("\n\n\nChai:\n")
+chai_dir = f"{repo_dir}/structure_benchmark/Chai-1"
+for index, row in chai_results_df.iterrows():
+    model_id = row["model_id"]
+    idx = row["model_name"].split("_")[-1].replace(".npz", "")
+    model_name = f"pred.model_idx_{idx}.cif"
+    cif_file = f"{chai_dir}/{model_id}/{model_name}"
+    pdb_file = f"{chai_dir}/{model_id}.pdb"
+    cif_to_pdb(cif_file, pdb_file)

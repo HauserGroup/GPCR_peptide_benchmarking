@@ -9,6 +9,9 @@ from scipy.stats import wilcoxon
 import itertools
 from statsmodels.stats.multitest import multipletests
 import numpy as np
+import glob
+import json
+
 
 file_dir = os.getcwd()
 repo_name = "GPCR_peptide_benchmarking"
@@ -24,16 +27,35 @@ rfaa_model_path = f"{repo_dir}/structure_benchmark/"
 rfaa_model_no_templates_path = f"{repo_dir}/structure_benchmark/RFAA_no_templates"
 esm_runtime_path = f"{repo_dir}/structure_benchmark/ESMFold/ESMfold_241608_out.txt"
 esm_model_path = f"{repo_dir}/structure_benchmark/ESMFold"
+chai1_runtime_path = f"{repo_dir}/structure_benchmark/Chai-1"
 af3_runtime_path = f"{repo_dir}/structure_benchmark/AF3"
 af3_runtime_no_templates_path = f"{repo_dir}/structure_benchmark/AF3_no_templates"
-
 af2_runtime_path = f"{repo_dir}/structure_benchmark/AF2"
 af2_runtime_no_templates_path = f"{repo_dir}/structure_benchmark/AF2_no_templates"
 
-chai1_runtime_path = f"{repo_dir}/structure_benchmark/Chai-1"
 
 # ADD NEURALPLEXER RUNTIMES
-# ADD AF2 RUNTIMES
+
+def get_af2_total_runtime(timings_json, avg = False):
+
+    with open(timings_json, "r") as f:
+        timings = json.load(f)
+
+    total_time = 0
+    c = 0
+    for key in timings:
+        if "predict_and_compile_model" in key:
+            c += 1
+            total_time += timings[key]
+    
+    # Get average
+    print("Total time:", total_time)
+    print("Number of models:", c)
+    if c > 0 and avg:
+        total_time /= c
+        print("Average time:", total_time)
+
+    return total_time
 
 def parse_esm_rfaa_runtimes(filepath, model_dir):
     runtime_dict = {}
@@ -152,6 +174,7 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
 
         # Merge the two subsets on PDB code
         merged = var1.merge(var2, on=pdb_col, suffixes=(f'_{model1}', f'_{model2}'))
+        print(merged)
 
         if merged.shape[0] < 2:
             # Skip if there are not enough data points for the test
@@ -204,6 +227,24 @@ chai1 = parse_chai_runtime(chai1_runtime_path)
 af3 = parse_alphafold3_runtime(af3_runtime_path)
 af3_no_templates = parse_alphafold3_runtime(af3_runtime_no_templates_path)
 
+
+# List timings.json files in the subdirectories of the above two folders and parse them
+# to get the runtimes for each model
+af2_timings = glob.glob(f"{af2_runtime_path}/*_1/timings.json")
+af2_no_templates_timings = glob.glob(f"{af2_runtime_no_templates_path}/*_1/timings.json")
+
+af2 = {}
+af2_no_templates = {}
+
+for timings_file in af2_timings:
+    model = os.path.basename(os.path.dirname(timings_file)).split("_1")[0].upper()
+    af2[model] = get_af2_total_runtime(timings_file)
+
+for timings_file in af2_no_templates_timings:
+    model = os.path.basename(os.path.dirname(timings_file)).split("_1")[0].upper()
+    af2_no_templates[model] = get_af2_total_runtime(timings_file)
+    
+
 # Make a dataframe from the runtimes
 rfaa_df = pd.DataFrame(rfaa_with_templates.items(), columns=["Model", "Runtime"])
 rfaa_no_templates_df = pd.DataFrame(rfaa_no_templates.items(), columns=["Model", "Runtime"])
@@ -211,6 +252,9 @@ esm_df = pd.DataFrame(esmfold.items(), columns=["Model", "Runtime"])
 chai_df = pd.DataFrame(chai1.items(), columns=["Model", "Runtime"])
 af3_df = pd.DataFrame(af3.items(), columns=["Model", "Runtime"])
 af3_no_templates_df = pd.DataFrame(af3_no_templates.items(), columns=["Model", "Runtime"])
+af2_df = pd.DataFrame(af2.items(), columns=["Model", "Runtime"])
+af2_no_templates_df = pd.DataFrame(af2_no_templates.items(), columns=["Model", "Runtime"])
+
 
 # Add the model type to the dataframes
 rfaa_df["Model Type"] = "RF-AA"
@@ -219,9 +263,11 @@ esm_df["Model Type"] = "ESMFold"
 chai_df["Model Type"] = "Chai-1"
 af3_df["Model Type"] = "AF3"
 af3_no_templates_df["Model Type"] = "AF3 (no templates)"
+af2_df["Model Type"] = "AF2"
+af2_no_templates_df["Model Type"] = "AF2 (no templates)"
 
 # Concatenate the dataframes
-all_runtimes = pd.concat([rfaa_df, rfaa_no_templates_df, esm_df, chai_df, af3_df, af3_no_templates_df])
+all_runtimes = pd.concat([rfaa_df, rfaa_no_templates_df, esm_df, chai_df, af3_df, af3_no_templates_df, af2_df, af2_no_templates_df])
 
 ### Plot the runtimes
 
@@ -263,7 +309,7 @@ sns.swarmplot(
 )
 
 plt.rcParams['svg.fonttype'] = 'none'
-plt.ylim(0, 500)
+plt.ylim(0, 10000)
 plt.title("Runtime comparison between different models")
 ax.set_xlabel("")
 plt.ylabel("Runtime (seconds)", fontsize="large")

@@ -408,58 +408,64 @@ def run_dockq_scoring(input_df, model_paths, output_file):
 
     for model_name in model_paths.keys():
         for index, row in input_df.iterrows():
+            for seed in range(1, 6):
 
-            if "RFAA_no_templates" in model_name:
-                model_path = model_paths[model_name] + "/" + row["pdb"] + "_no_templates.pdb"
-            elif "Chai-1_no_MSAs" in model_name:
-                model_path = model_paths[model_name] + "/" + row["pdb"] + "_no_MSAs.pdb"
-            else:
-                model_path = model_paths[model_name] + "/" + row["pdb"] + ".pdb"
+                # Analyse extra seeds for AF2, AF3 and Chai-1
+                if model_name in ["AF2", "AF2_no_templates", "AF3", "AF3_no_templates", "Chai-1"]:
+                    model_path = f"{model_paths[model_name]}/{row['pdb']}_{seed}.pdb"
+                elif seed != 1:
+                    continue
 
-            # Check if model_path exists
-            if not os.path.exists(model_path):
-                print(f"Model {model_path} not found!")
-                continue
+                if "RFAA_no_templates" in model_name:
+                    model_path = f"{model_paths[model_name]}/{row['pdb']}_no_templates.pdb"
+                elif "Chai-1_no_MSAs" in model_name:
+                    model_path = f"{model_paths[model_name]}/{row['pdb']}_no_MSAs.pdb"
+                else:
+                    model_path = f"{model_paths[model_name]}/{row['pdb']}.pdb"
 
-            # Print which model is being processed
-            print(f"Processing {model_name} model of {row['pdb']}")
+                # Check if model_path exists
+                if not os.path.exists(model_path):
+                    print(f"Model {model_path} not found!")
+                    continue
 
-            # Renumber residues in the predicted model so that each chain starts from 1
-            renumbered_path = renumber_residues(model_path)
+                # Print which model is being processed
+                print(f"Processing {model_name} model of {row['pdb']}")
 
-            # Rename chains for Chai models
-            if "Chai" in model_name:
-                renumbered_path = rename_pdb_chains(renumbered_path)
+                # Renumber residues in the predicted model so that each chain starts from 1
+                renumbered_path = renumber_residues(model_path)
 
-            # Remove missing residues from the predicted model
-            missing_residues = {
-                "A" : ast.literal_eval(row["missing_receptor_pos"]),
-                "B" : ast.literal_eval(row["missing_ligand_pos"])
-            }
-            if "AF2" in model_name:
-                cleaned_path = renumbered_path
-            else:
-                cleaned_path = remove_missing_residues(renumbered_path, missing_residues)
-                os.remove(renumbered_path)
+                # Rename chains for Chai models
+                #if "Chai" in model_name:
+                #    renumbered_path = rename_pdb_chains(renumbered_path)
 
-            # Calculate RMSD
-            rmsd = calculate_rmsd(cleaned_path, row["pdb_path"], "A", "A")
+                # Remove missing residues from the predicted model
+                missing_residues = {
+                    "A" : ast.literal_eval(row["missing_receptor_pos"]),
+                    "B" : ast.literal_eval(row["missing_ligand_pos"])
+                }
 
-            model = load_PDB(cleaned_path)
-            model.id = cleaned_path
-            native = load_PDB(row['pdb_path'])  
-            native.id = row['pdb_path']          
-            chain_map = {"A": "A", "B": "B"}
+                if "AF2" in model_name:
+                    cleaned_path = renumbered_path
+                else:
+                    cleaned_path = remove_missing_residues(renumbered_path, missing_residues)
+                    os.remove(renumbered_path)
 
-            results = run_on_all_native_interfaces(model, native, chain_map=chain_map)
-            results = results[0]
-            results = results[("A", "B")]
-            results["model"] = model_name
-            results["pdb"] = row["pdb"]
-            results_dicts.append(results)
+                model = load_PDB(cleaned_path)
+                model.id = cleaned_path
+                native = load_PDB(row['pdb_path'])  
+                native.id = row['pdb_path']          
+                chain_map = {"A": "A", "B": "B"}
 
-            # Remove temporary files
-            os.remove(cleaned_path)
+                results = run_on_all_native_interfaces(model, native, chain_map=chain_map)
+                results = results[0]
+                results = results[("A", "B")]
+                results["model"] = model_name
+                results["pdb"] = row["pdb"]
+                results["seed"] = seed
+                results_dicts.append(results)
+
+                # Remove temporary files
+                os.remove(cleaned_path)
 
 
     # Make a dataframe from the results and save it
@@ -469,7 +475,7 @@ def run_dockq_scoring(input_df, model_paths, output_file):
     results_df = results_df.drop(columns=["chain_map"])
 
     # Reorder columns
-    columns = ["model","pdb","DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2"]
+    columns = ["model","pdb", "seed", "DockQ_F1","DockQ","F1","irms","Lrms","fnat","nat_correct","nat_total","fnonnat","nonnat_count","model_total","clashes","len1","len2"]
     results_df = results_df[columns]
     results_df.to_csv(output_file, index=False)
 
@@ -494,16 +500,16 @@ if __name__ == "__main__":
 
     # Paths for predicted models
     model_paths = {
-        "NeuralPLexer" : f"{repo_dir}/structure_benchmark/neuralplexer_chain",
-        "RFAA" : f"{repo_dir}/structure_benchmark/RFAA_chain",
-        "RFAA_no_templates" : f"{repo_dir}/structure_benchmark/RFAA_chain_no_templates",
+        "NeuralPLexer" : f"{repo_dir}/structure_benchmark/NeuralPLexer",
+        "RFAA" : f"{repo_dir}/structure_benchmark/RFAA",
+        "RFAA_no_templates" : f"{repo_dir}/structure_benchmark/RFAA_no_templates",
         "AF2" : f"{repo_dir}/structure_benchmark/AF2",
         "AF2_no_templates" : f"{repo_dir}/structure_benchmark/AF2_no_templates",
         "ESMFold" : f"{repo_dir}/structure_benchmark/ESMFold",
         "AF3": f"{repo_dir}/structure_benchmark/AF3",
-        "Chai-1": f"{repo_dir}/structure_benchmark/Chai-1",
-        "Chai-1_no_MSAs": f"{repo_dir}/structure_benchmark/Chai-1_no_MSAs"
-
+        "AF3_no_templates": f"{repo_dir}/structure_benchmark/AF3_no_templates",
+        "AF3_server": f"{repo_dir}/structure_benchmark/AF3_server",
+        "Chai-1": f"{repo_dir}/structure_benchmark/Chai-1"
     }
 
     # Output file path
