@@ -32,9 +32,29 @@ af3_runtime_path = f"{repo_dir}/structure_benchmark/AF3"
 af3_runtime_no_templates_path = f"{repo_dir}/structure_benchmark/AF3_no_templates"
 af2_runtime_path = f"{repo_dir}/structure_benchmark/AF2"
 af2_runtime_no_templates_path = f"{repo_dir}/structure_benchmark/AF2_no_templates"
+neuralplexer_runtime_path = f"{repo_dir}/structure_benchmark/NeuralPLexer/NeuralPLexer_runtimes.txt"
+neuralplexer_folder_path = f"{repo_dir}/structure_benchmark/NeuralPLexer"
 
 
-# ADD NEURALPLEXER RUNTIMES
+def get_neuralplexer_runtimes(filepath, folderpath):
+    runtime_dict = {}
+    pattern = re.compile(r"Processed (.+?) in (\d+) seconds")
+
+    # List pdb files in folderpath
+    pdb_files = [f for f in os.listdir(folderpath) if f.endswith(".pdb")]
+
+    # Open file
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+        
+    for line in lines:
+        match = pattern.search(line)
+        if match and match.group(1) + ".pdb" in pdb_files:
+            pdb_code = match.group(1)
+            runtime = float(match.group(2))
+            runtime_dict[pdb_code] = runtime
+    
+    return runtime_dict
 
 def get_af2_total_runtime(timings_json, avg = False):
 
@@ -84,8 +104,8 @@ def parse_esm_rfaa_runtimes(filepath, model_dir):
             file_path = match_fasta.group(1)
             runtime = float(match_fasta.group(2))
             file_name = file_path.split('/')[-1].split('.')[0]  # Extract filename without extension
-            if not os.path.exists(f"{model_dir}/{file_name}/{file_name}.pdb"):
-                print(f"{model_dir}/{file_name}/{file_name}.pdb does not exist")
+            if not os.path.exists(f"{model_dir}/{file_name}.pdb"):
+                print(f"{model_dir}/{file_name}.pdb does not exist")
                 continue
             runtime_dict[file_name] = runtime
     
@@ -243,6 +263,9 @@ for timings_file in af2_timings:
 for timings_file in af2_no_templates_timings:
     model = os.path.basename(os.path.dirname(timings_file)).split("_1")[0].upper()
     af2_no_templates[model] = get_af2_total_runtime(timings_file)
+
+# Get neuralplexer runtimes
+neuralplexer_runtimes = get_neuralplexer_runtimes(neuralplexer_runtime_path, neuralplexer_folder_path)
     
 
 # Make a dataframe from the runtimes
@@ -254,7 +277,7 @@ af3_df = pd.DataFrame(af3.items(), columns=["Model", "Runtime"])
 af3_no_templates_df = pd.DataFrame(af3_no_templates.items(), columns=["Model", "Runtime"])
 af2_df = pd.DataFrame(af2.items(), columns=["Model", "Runtime"])
 af2_no_templates_df = pd.DataFrame(af2_no_templates.items(), columns=["Model", "Runtime"])
-
+neuralplexer_df = pd.DataFrame(neuralplexer_runtimes.items(), columns=["Model", "Runtime"])
 
 # Add the model type to the dataframes
 rfaa_df["Model Type"] = "RF-AA"
@@ -265,9 +288,10 @@ af3_df["Model Type"] = "AF3"
 af3_no_templates_df["Model Type"] = "AF3 (no templates)"
 af2_df["Model Type"] = "AF2"
 af2_no_templates_df["Model Type"] = "AF2 (no templates)"
+neuralplexer_df["Model Type"] = "NeuralPLexer"
 
 # Concatenate the dataframes
-all_runtimes = pd.concat([rfaa_df, rfaa_no_templates_df, esm_df, chai_df, af3_df, af3_no_templates_df, af2_df, af2_no_templates_df])
+all_runtimes = pd.concat([neuralplexer_df, esm_df, rfaa_df, rfaa_no_templates_df, chai_df, af2_df, af2_no_templates_df, af3_df, af3_no_templates_df])
 
 ### Plot the runtimes
 

@@ -1,21 +1,30 @@
 import os
 import glob
 import csv
+import re
 from pymol import cmd  # Importing PyMOL cmd module
 
-repo_dir = "/Users/pqh443/Documents/Git_projects/GPRC_peptide_benchmarking"
+# This script should be run with PyMOL installed and from command line using the following command:
+# pymol -cq calculate_receptor_rmsd.py
+
+file_dir = "/Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/subanalyses"
+folder_name = file_dir.split('/')[-1]
+repo_name = "GPCR_peptide_benchmarking"
+index = file_dir.find(repo_name)
+repo_dir = file_dir[:index + len(repo_name)]
 model_folder = f"{repo_dir}/structure_benchmark"
 
 model_path_dict = {
-    "Chai-1": f"{model_folder}/Chai-1/renamed_chains",
-    "Chai-1_no_MSAs": f"{model_folder}/Chai-1_no_MSAs/renamed_chains",
-    "RFAA": f"{model_folder}/RFAA_chain",
-    "RFAA_no_templates": f"{model_folder}/RFAA_chain_no_templates",
+    "Chai-1": f"{model_folder}/Chai-1",
+    "RFAA": f"{model_folder}/RFAA",
+    "RFAA_no_templates": f"{model_folder}/RFAA_no_templates",
     "AF2": f"{model_folder}/AF2",
     "AF2_no_templates": f"{model_folder}/AF2_no_templates",
     "AF3": f"{model_folder}/AF3",
+    "AF3_server": f"{model_folder}/AF3_server",
+    "AF3_no_templates": f"{model_folder}/AF3_no_templates",
     "ESMFold": f"{model_folder}/ESMFold",
-    "NeuralPLexer": f"{model_folder}/neuralplexer_chain",
+    "NeuralPLexer": f"{model_folder}/NeuralPLexer",
 }
 
 def calculate_rmsd(model, protein1, protein2, chain_id_1, chain_id_2):
@@ -43,7 +52,7 @@ def calculate_rmsd(model, protein1, protein2, chain_id_1, chain_id_2):
     # Return only RMSD value
     return rmsd[0]
 
-structure_list_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv"
+structure_list_path = f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset_cleaned.csv"
 pdbs = []
 with open(structure_list_path, mode='r') as file:
     reader = csv.DictReader(file)
@@ -59,19 +68,24 @@ for pdb in pdbs:
         continue
     
     for model, model_dir in model_path_dict.items():
+
         model_pattern = f"{model_dir}/{pdb}*"
         model_files = glob.glob(model_pattern)
-        rmsd = None
+        model_files = [f for f in model_files if not os.path.isdir(f)]        
         if model_files:
-            model_path = model_files[0]  # Assuming the first file in case of multiple matches
-            try:
-                rmsd = calculate_rmsd(model, experimental_path, model_path, "A", "A")
-            except Exception as e:
-                print(f"Error calculating RMSD for {pdb} with model {model}: {e}")
-        else:
-            print(f"Model {model} not found for PDB {pdb}.")
+            for model_path in model_files:
 
-        results.append([model, pdb, rmsd])
+                # Extract seed from model path. It is stored in the file name as _*.pdb
+                rmsd = None
+                match = re.search(r'_(\d+)\.pdb$', model_path)
+                seed = match.group(1) if match else "1"
+                print(f"Calculating RMSD for {pdb} with model {model} and seed {seed}.")
+                model_path = repo_dir + model_path.split(repo_name)[1]
+                try:
+                    rmsd = calculate_rmsd(model, experimental_path, model_path, "A", "A")
+                    results.append([model, pdb, seed, rmsd])
+                except Exception as e:
+                    print(f"Error calculating RMSD for {pdb} with model {model}: {e}")
 
 # Sort results by model
 results.sort(key=lambda x: x[0])
@@ -80,5 +94,5 @@ results.sort(key=lambda x: x[0])
 output_csv_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
 with open(output_csv_path, mode='w', newline='') as file:
     writer = csv.writer(file)
-    writer.writerow(["model", "pdb", "rmsd"])
+    writer.writerow(["model", "pdb", "seed", "rmsd"])
     writer.writerows(results)

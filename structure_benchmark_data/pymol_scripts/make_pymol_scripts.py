@@ -42,6 +42,7 @@ script_dir = os.path.dirname(script_path)
 # Load DockQ data
 dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 data = pd.read_csv(dockq_path)
+data = data[data["seed"] == 1].copy().reset_index(drop=True)
 
 # Get best and worst AF2 models
 af2_data = data[data['model'] == 'AF2']
@@ -50,13 +51,13 @@ best_pdb = af2_data.iloc[-1]['pdb']
 worst_pdb = af2_data.iloc[0]['pdb']
 
 # Fix Chai models to have AB suffix and change chain B to A and C to B
-for model in [worst_pdb, best_pdb]:
-    for chai_model in ["Chai-1", "Chai-1_no_MSAs"]:
-        if "no_MSAs" in chai_model:
-            model += "_no_MSAs"
-        input_pdb = f"{repo_dir}/structure_benchmark/{chai_model}/{model}.pdb"
-        output_pdb = f"{repo_dir}/structure_benchmark/{chai_model}/{model}_AB.pdb"
-        rename_chains_in_pdb(input_pdb, output_pdb)
+#for model in [worst_pdb, best_pdb]:
+#    for chai_model in ["Chai-1", "Chai-1_no_MSAs"]:
+#        if "no_MSAs" in chai_model:
+#            model += "_no_MSAs"
+#        input_pdb = f"{repo_dir}/structure_benchmark/{chai_model}/{model}.pdb"
+#        output_pdb = f"{repo_dir}/structure_benchmark/{chai_model}/{model}_AB.pdb"
+#        rename_chains_in_pdb(input_pdb, output_pdb)
 
 def hex_to_rgb(hex_code):
     """
@@ -77,13 +78,14 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     Create a pymol script to visualize predicted vs experimental structures for a given PDB file
     """
     name = pdb + "_alphafold_rfaa_chai"
-    af2_path = f"{repo_dir}/structure_benchmark/AF2/{pdb}.pdb"
-    af2_no_templates_path = f"{repo_dir}/structure_benchmark/AF2_no_templates/{pdb}.pdb"
-    af3_path = f"{repo_dir}/structure_benchmark/AF3/{pdb}.pdb"
-    rfaa_path = f"{repo_dir}/structure_benchmark/RFAA_chain/{pdb}.pdb"
-    rfaa_no_templates_path = f"{repo_dir}/structure_benchmark/RFAA_chain_no_templates/{pdb}_no_templates.pdb"
-    chai_path = f"{repo_dir}/structure_benchmark/Chai-1/{pdb}_AB.pdb"
-    chai_no_msas_path = f"{repo_dir}/structure_benchmark/Chai-1_no_MSAs/{pdb}_no_MSAs_AB.pdb"
+    af2_path = f"{repo_dir}/structure_benchmark/AF2/{pdb}_1.pdb"
+    af2_no_templates_path = f"{repo_dir}/structure_benchmark/AF2_no_templates/{pdb}_1.pdb"
+    af3_path = f"{repo_dir}/structure_benchmark/AF3/{pdb}_1.pdb"
+    af3_no_templates_path = f"{repo_dir}/structure_benchmark/AF3_no_templates/{pdb}_1.pdb"
+    af3_server_path = f"{repo_dir}/structure_benchmark/AF3_server/{pdb}.pdb"
+    rfaa_path = f"{repo_dir}/structure_benchmark/RFAA/{pdb}.pdb"
+    rfaa_no_templates_path = f"{repo_dir}/structure_benchmark/RFAA_no_templates/{pdb}_no_templates.pdb"
+    chai_path = f"{repo_dir}/structure_benchmark/Chai-1/{pdb}_1.pdb"
 
     # Parse path to the experimental structure
     exp_path = f"{repo_dir}/structure_benchmark_data/cleaned_pdbs/{pdb}_AB.pdb"
@@ -97,12 +99,13 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"\n\n\n"
     script += generate_pymol_color_command(colors["AF2"], f"{pdb}_af2_color") + "\n"
     script += generate_pymol_color_command(colors["AF3"], f"{pdb}_af3_color") + "\n"
+    script += generate_pymol_color_command(colors["AF3 (no templates)"], f"{pdb}_af3_nt_color") + "\n"
+    script += generate_pymol_color_command(colors["AF3 (server)"], f"{pdb}_af3_server_color") + "\n"
     script += generate_pymol_color_command(colors["AF2 (no templates)"], f"{pdb}_af2_nt_color") + "\n"
     script += generate_pymol_color_command(colors["Agonist"], f"{pdb}_experimental_color") + "\n"
     script += generate_pymol_color_command(colors["RF-AA"], f"{pdb}_rfaa_color") + "\n"
     script += generate_pymol_color_command(colors["RF-AA (no templates)"], f"{pdb}_rfaa_nt_color") + "\n"
     script += generate_pymol_color_command(colors["Chai-1"], f"{pdb}_chai_color") + "\n"
-    script += generate_pymol_color_command(colors["Chai-1 (no MSAs)"], f"{pdb}_chai_no_msas_color") + "\n"
     script += "set grid_mode, 1\n"
     script += f"\n\n\n"
 
@@ -113,11 +116,15 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"load {af2_path}, {pdb}_af2\n"
     script += f"load {af2_no_templates_path}, {pdb}_af2_no_templates\n"
     script += f"load {af3_path}, {pdb}_af3\n"
+    script += f"load {af3_no_templates_path}, {pdb}_af3_no_templates\n"
+    script += f"load {af3_server_path}, {pdb}_af3_server\n"
 
     # Color AlphaFold structures
     script += f"color {pdb}_af2_color, {pdb}_af2 and chain B\n"
     script += f"color {pdb}_af2_nt_color, {pdb}_af2_no_templates and chain B\n"
     script += f"color {pdb}_af3_color, {pdb}_af3 and chain B\n"
+    script += f"color {pdb}_af3_nt_color, {pdb}_af3_no_templates and chain B\n"
+    script += f"color {pdb}_af3_server_color, {pdb}_af3_server and chain B\n"
 
     # Load RF-AA models
     script += f"\n\n\n"
@@ -132,12 +139,10 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     # Load Chai models
     script += f"\n\n\n"
     script += f"load {chai_path}, {pdb}_chai\n"
-    script += f"load {chai_no_msas_path}, {pdb}_chai_no_msas\n"
 
     # Color Chai structures
     script += f"color white, chain A\n"
     script += f"color {pdb}_chai_color, {pdb}_chai and chain B\n"
-    script += f"color {pdb}_chai_no_msas_color, {pdb}_chai_no_msas and chain B\n"
 
     # Color experimental structure
     script += f"color {pdb}_experimental_color, {pdb}_experimental and chain B\n"
@@ -162,18 +167,20 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"create {pdb}_af2_ligand, {pdb}_af2 and chain B\n"
     script += f"create {pdb}_af2_nt_ligand, {pdb}_af2_no_templates and chain B\n"
     script += f"create {pdb}_af3_ligand, {pdb}_af3 and chain B\n"
+    script += f"create {pdb}_af3_nt_ligand, {pdb}_af3_no_templates and chain B\n"
+    script += f"create {pdb}_af3_server_ligand, {pdb}_af3_server and chain B\n"
     script += f"create {pdb}_chai_ligand, {pdb}_chai and chain B\n"
-    script += f"create {pdb}_chai_no_msas_ligand, {pdb}_chai_no_msas and chain B\n"
 
     # Show ligand as cartoon
     script += f"show cartoon, {pdb}_exp_ligand\n"
     script += f"show cartoon, {pdb}_rfaa_ligand\n"
     script += f"show cartoon, {pdb}_rfaa_nt_ligand\n"
     script += f"show cartoon, {pdb}_af3_ligand\n"
+    script += f"show cartoon, {pdb}_af3_nt_ligand\n"
+    script += f"show cartoon, {pdb}_af3_server_ligand\n"
     script += f"show cartoon, {pdb}_af2_nt_ligand\n"
     script += f"show cartoon, {pdb}_af2_ligand\n"
     script += f"show cartoon, {pdb}_chai_ligand\n"
-    script += f"show cartoon, {pdb}_chai_no_msas_ligand\n"
 
     # Set loop width
     loop_radius = 0.7
@@ -183,14 +190,17 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"set cartoon_oval_width, {loop_radius}, {pdb}_rfaa_ligand\n"
     script += f"set cartoon_oval_width, {loop_radius}, {pdb}_rfaa_nt_ligand\n"
     script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af3_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af3_nt_ligand\n"
+    script += f"set cartoon_oval_width, {loop_radius}, {pdb}_af3_server_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_exp_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af2_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af2_nt_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_rfaa_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_rfaa_nt_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af3_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af3_nt_ligand\n"
+    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_af3_server_ligand\n"
     script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_chai_ligand\n"
-    script += f"set cartoon_loop_radius, {loop_radius}, {pdb}_chai_no_msas_ligand\n"
 
     # Set grid slots for specific structures
     script += f"set grid_slot, 1, {pdb}_experimental\n"
@@ -200,15 +210,17 @@ def visualize_af_rfaa_pdb(config_path, repo_dir, pdb, colors):
     script += f"set grid_slot, 2, {pdb}_rfaa_ligand\n"
     script += f"set grid_slot, 2, {pdb}_rfaa_nt_ligand\n"
     script += f"set grid_slot, 3, {pdb}_chai\n"
-    script += f"set grid_slot, 3, {pdb}_chai_no_msas\n"
     script += f"set grid_slot, 3, {pdb}_chai_ligand\n"
-    script += f"set grid_slot, 3, {pdb}_chai_no_msas_ligand\n"
     script += f"set grid_slot, 4, {pdb}_af2\n"
-    script += f"set grid_slot, 4, {pdb}_af2_no_templates\n"
-    script += f"set grid_slot, 4, {pdb}_af3\n"
     script += f"set grid_slot, 4, {pdb}_af2_ligand\n"
+    script += f"set grid_slot, 4, {pdb}_af2_no_templates\n"
     script += f"set grid_slot, 4, {pdb}_af2_nt_ligand\n"
+    script += f"set grid_slot, 4, {pdb}_af3\n"
     script += f"set grid_slot, 4, {pdb}_af3_ligand\n"
+    script += f"set grid_slot, 4, {pdb}_af3_no_templates\n"
+    script += f"set grid_slot, 4, {pdb}_af3_nt_ligand\n"
+    script += f"set grid_slot, 4, {pdb}_af3_server\n"
+    script += f"set grid_slot, 4, {pdb}_af3_server_ligand\n"
 
     # Center the view on the experimental structure
     script += f"center {pdb}_experimental\n"
@@ -226,7 +238,7 @@ visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_
 visualize_af_rfaa_pdb(f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt", repo_dir, best_pdb, COLOR)
 
 # Create a list of legend entries
-colors_to_plot = ["Agonist", "AF2", "AF3", "RF-AA", "RF-AA (no templates)", "AF2 (no templates)", "Chai-1", "Chai-1 (no MSAs)"]
+colors_to_plot = ["Agonist", "AF2", "AF2 (no templates)", "AF3", "AF3 (no templates)", "AF3 (server)", "RF-AA", "RF-AA (no templates)", "Chai-1"]
 legend_entries = [mpatches.Patch(color=color, label=model) for model, color in COLOR.items() if model in colors_to_plot]
 legend_entries[0] = mpatches.Patch(color=COLOR["Agonist"], label="Experimental")
 
@@ -246,18 +258,19 @@ plt.rcParams['svg.fonttype'] = 'none'
 plt.savefig(f'{script_dir}/legend.svg', dpi=600)
 
 columns = ["model", "pdb","DockQ", "irms", "Lrms", "fnat", "fnonnat"]
-models_to_check = ["AF2", "AF2_no_templates","AF3", "RFAA", "RFAA_no_templates", "Chai-1", "Chai-1_no_MSAs"]
+models_to_check = ["AF2", "AF2_no_templates","AF3", "AF3_server", "AF3_no_templates", "RFAA", "RFAA_no_templates", "Chai-1"]
 data = data[data["model"].isin(models_to_check)][columns]
 data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA (no templates)")
 data["model"] = data["model"].replace("RFAA", "RF-AA")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2 (no templates)")
-data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1 (no MSAs)")
+data["model"] = data["model"].replace("AF3_no_templates", "AF3 (no templates)")
+data["model"] = data["model"].replace("AF3_server", "AF3 (server)")
 
 # Get only the best and worst models
 data = data[data["pdb"].isin([best_pdb, worst_pdb])]
 data = data.round(2)
 data.columns = ["Model", "PDB", "DockQ", "iRMS", "lRMS", "Fnat", "Fnonnat"]
-model_order = ["AF2", "AF2 (no templates)","AF3", "RF-AA", "RF-AA (no templates)", "Chai-1", "Chai-1 (no MSAs)"]
+model_order = ["AF2", "AF2 (no templates)","AF3", "AF3 (no templates)", "AF3 (server)", "RF-AA", "RF-AA (no templates)", "Chai-1"]
 
 # Convert the PDB and Model columns to categorical types with the specified order
 data['PDB'] = pd.Categorical(data['PDB'], categories=[worst_pdb, best_pdb], ordered=True)
