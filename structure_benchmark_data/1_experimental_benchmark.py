@@ -354,8 +354,13 @@ for receptor, group in benchmark_set.groupby('receptor'):
 benchmark_set = pd.concat([pd.DataFrame.from_records([ligand]) for ligands in filtered_ligands.values() for ligand in ligands])
 benchmark_set.reset_index(drop=True, inplace=True)
 
-# Set receptor sequence for 8JPS
-benchmark_set.loc[benchmark_set["pdb"] == "8JPS", "receptor_pdb_seq"] = "EAAAPCHSCNLLDDSALPFFILTSVLGILASSTVLFMLFRPLFRWQLCPGWPVLAQLAVGSALFSIVVPVLAPGLGSTRSSALCSLGYCVWYGSAFAQALLLGCHASLGHRLGAGQVPGLTLGLTVGIWGVAALLTLPVTLASGASGGLCTLIYSTELKALQATHTVACLAIFVLLPLGLFGAKGLKKALGMGPGPWMNILWAWFIFWWPHGV"
+# Drop rows where receptor_pdb_seq or receptor_pdb_seq is None or empty
+benchmark_set = benchmark_set[~benchmark_set["receptor_pdb_seq"].isna()]
+benchmark_set = benchmark_set[~benchmark_set["receptor_pdb_seq"].str.strip().eq("")]
+benchmark_set = benchmark_set[~benchmark_set["receptor_pdb_seq"].str.strip().eq("None")]
+benchmark_set = benchmark_set[~benchmark_set["ligand_pdb_seq"].isna()]
+benchmark_set = benchmark_set[~benchmark_set["ligand_pdb_seq"].str.strip().eq("")]
+benchmark_set = benchmark_set[~benchmark_set["ligand_pdb_seq"].str.strip().eq("None")]
 
 # Drop 8JBG, 8JBF, 8JBH from the benchmark set - the receptor sequence contains BRIL fusion protein
 benchmark_set = benchmark_set[benchmark_set["pdb"] != "8JBG"]

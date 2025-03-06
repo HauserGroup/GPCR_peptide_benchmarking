@@ -57,7 +57,7 @@ colors = {
     'AF2\n(no templates)': COLOR["AF2 (no templates)"],
     'AF3': COLOR["AF3"],
     'AF3\n(no templates)': COLOR["AF3 (no templates)"],
-    'AF3 (server)': COLOR["AF3 (server)"]
+    'AF3 (server)': "#02bfe7"
 } 
 data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
 data = data.reset_index(drop=True)

@@ -70,6 +70,10 @@ receptor_info_df = pd.read_csv(receptor_info_path)
 receptor_info_df["Peptide length"] = [len(x) for x in list(receptor_info_df["ligand_pdb_seq"])]
 receptor_info_df = receptor_info_df[["pdb", "receptor", "uniprot_id", "ligand_name", "Peptide length"]]
 
+# Print how many unique receptors are in the dataset
+print(f"Unique receptors: {len(receptor_info_df['receptor'].unique())}")
+print(f"Unique ligands: {len(receptor_info_df['ligand_name'].unique())}")
+
 # Merge DockQ data with receptor info
 dockq_df = pd.merge(dockq_df, receptor_info_df, on="pdb", how="inner")
 
@@ -79,6 +83,22 @@ dockq_df["model"] = dockq_df["model"].replace("RFAA", "RF-AA")
 dockq_df["model"] = dockq_df["model"].replace("AF2_no_templates", "AF2 (no templates)")
 dockq_df["model"] = dockq_df["model"].replace("AF3_no_templates", "AF3 (no templates)")
 dockq_df["model"] = dockq_df["model"].replace("AF3_server", "AF3 (server)")
+
+# Count how many times RF-AA DockQ score is under 0.23
+print(dockq_df[(dockq_df["model"] == "RF-AA") & (dockq_df["DockQ"] < 0.23)].shape[0])
+print(dockq_df[(dockq_df["model"] == "RF-AA (no templates)") & (dockq_df["DockQ"] < 0.23)].shape[0])
+
+print("Failed AF3 models:")
+print("AF3 with templates: ",dockq_df[(dockq_df["model"] == "AF3") & (dockq_df["DockQ"] < 0.23)].shape[0])
+print("AF3 without templates: ",dockq_df[(dockq_df["model"] == "AF3 (no templates)") & (dockq_df["DockQ"] < 0.23)].shape[0])
+print("AF3 server: ", dockq_df[(dockq_df["model"] == "AF3 (server)") & (dockq_df["DockQ"] < 0.23)].shape[0])
+
+# Print failed AF2 models
+print("Failed AF2 models:")
+print("AF2 with templates: ",dockq_df[(dockq_df["model"] == "AF2") & (dockq_df["DockQ"] < 0.23)].shape[0])
+print(dockq_df[(dockq_df["model"] == "AF2") & (dockq_df["DockQ"] < 0.23)]["pdb"].values)
+print("AF2 without templates: ",dockq_df[(dockq_df["model"] == "AF2 (no templates)") & (dockq_df["DockQ"] < 0.23)].shape[0])
+print(dockq_df[(dockq_df["model"] == "AF2 (no templates)") & (dockq_df["DockQ"] < 0.23)]["pdb"].values)
 
 # Get activity data from GPCRdb
 activity_df = get_pki_data(dockq_df, f"{repo_dir}/structure_benchmark_data/subanalyses/activity_data.csv")

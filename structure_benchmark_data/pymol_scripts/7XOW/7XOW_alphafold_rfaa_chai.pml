@@ -40,7 +40,7 @@ set ray_shadows, 0
 set_color 7XOW_af2_color, [0.067, 0.318, 0.522]
 set_color 7XOW_af3_color, [0.024, 0.122, 0.290]
 set_color 7XOW_af3_nt_color, [0.043, 0.075, 0.129]
-set_color 7XOW_af3_server_color, [0.031, 0.055, 0.090]
+set_color 7XOW_af3_server_color, [0.608, 0.855, 0.945]
 set_color 7XOW_af2_nt_color, [0.000, 0.561, 0.843]
 set_color 7XOW_experimental_color, [0.976, 0.667, 0.263]
 set_color 7XOW_rfaa_color, [0.651, 0.463, 0.839]

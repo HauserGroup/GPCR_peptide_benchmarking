@@ -6,7 +6,7 @@ from scipy.stats import mannwhitneyu
 
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
-repo_name = "GPRC_peptide_benchmarking"
+repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
 
@@ -30,16 +30,20 @@ def round_to_significant_digits(number, significant_digits=3):
 # Load DockQ data
 dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 data = pd.read_csv(dockq_path)
+data = data[data["seed"] == 1]
+data = data.drop(columns=["seed"])
 
 # Load receptor RMSD data
 receptor_rmsd_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
 receptor_rmsd = pd.read_csv(receptor_rmsd_path)
+receptor_rmsd = receptor_rmsd[receptor_rmsd["seed"] == 1]
+receptor_rmsd = receptor_rmsd.drop(columns=["seed"])
 
 # Merge with data
 data = data.merge(receptor_rmsd, on=["pdb", "model"])
 
 # Get class A and B1 data 
-class_data_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv"
+class_data_path = f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset_cleaned.csv"
 class_data = pd.read_csv(class_data_path)
 class_data = class_data[["pdb","receptor","uniprot_id","class","family","resolution","ligand_name"]]
 
@@ -51,7 +55,9 @@ data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA\n(no templates
 data["model"] = data["model"].replace("RFAA", "RF-AA")
 data["model"] = data["model"].replace("AF2", "AF2")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2\n(no templates)")
-data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1\n(no MSAs)")
+data["model"] = data["model"].replace("AF3_no_templates", "AF3\n(no templates)")
+data["model"] = data["model"].replace("AF3_server", "AF3\n(server)")
+
 
 def stat_results(data, variable, data_dir):
     # Define the custom colors for the models based on the provided dictionary
@@ -61,10 +67,11 @@ def stat_results(data, variable, data_dir):
         'RF-AA': COLOR["RF-AA"], 
         'RF-AA\n(no templates)': COLOR["RF-AA (no templates)"], 
         'Chai-1': COLOR["Chai-1"],
-        'Chai-1\n(no MSAs)': COLOR["Chai-1 (no MSAs)"],
         'AF2': COLOR["AF2"], 
         'AF2\n(no templates)': COLOR["AF2 (no templates)"],
-        'AF3': COLOR["AF3"]
+        'AF3': COLOR["AF3"],
+        'AF3\n(no templates)': COLOR["AF3 (no templates)"],
+        'AF3\n(server)': COLOR["AF3 (server)"],
     }
 
     # Initialize a dictionary to store the results
@@ -105,7 +112,7 @@ def stat_results(data, variable, data_dir):
     # Apply function to all numeric columns in the DataFrame
     for col in results_df.columns:
         results_df[col] = results_df[col].apply(lambda x: round_to_significant_digits(x, 3) if pd.to_numeric(x, errors='coerce') is not None else x)
-    results_df.to_csv(f"{data_dir}/subanalyses/class_{variable}_comparison_results.csv", index=False)
+    results_df.to_csv(f"{data_dir}/class_{variable}_comparison_results.csv", index=False)
 
 # Perform statistical tests for DockQ scores
 stat_results(data, 'DockQ', f"{file_dir}")
