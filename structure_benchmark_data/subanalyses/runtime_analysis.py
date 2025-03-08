@@ -189,6 +189,7 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
     # Perform pairwise Wilcoxon signed-rank tests between all models
     results = []
     for model1, model2 in itertools.combinations(data[model_col].unique(), 2):
+        print(model1, model2)
         # Get subset of data for each model
         var1 = data[data[model_col] == model1][[variable, pdb_col, model_col]].dropna()
         var2 = data[data[model_col] == model2][[variable, pdb_col, model_col]].dropna()
@@ -296,15 +297,15 @@ neuralplexer_runtimes = get_neuralplexer_runtimes(neuralplexer_runtime_path, neu
     
 
 # Make a dataframe from the runtimes
-rfaa_df = pd.DataFrame(rfaa_with_templates.items(), columns=["Model", "Runtime"])
-rfaa_no_templates_df = pd.DataFrame(rfaa_no_templates.items(), columns=["Model", "Runtime"])
-esm_df = pd.DataFrame(esmfold.items(), columns=["Model", "Runtime"])
-chai_df = pd.DataFrame(chai1.items(), columns=["Model", "Runtime"])
-af3_df = pd.DataFrame(af3.items(), columns=["Model", "Runtime"])
-af3_no_templates_df = pd.DataFrame(af3_no_templates.items(), columns=["Model", "Runtime"])
-af2_df = pd.DataFrame(af2.items(), columns=["Model", "Runtime"])
-af2_no_templates_df = pd.DataFrame(af2_no_templates.items(), columns=["Model", "Runtime"])
-neuralplexer_df = pd.DataFrame(neuralplexer_runtimes.items(), columns=["Model", "Runtime"])
+rfaa_df = pd.DataFrame(rfaa_with_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+rfaa_no_templates_df = pd.DataFrame(rfaa_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+esm_df = pd.DataFrame(esmfold.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+chai_df = pd.DataFrame(chai1.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af3_df = pd.DataFrame(af3.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af3_no_templates_df = pd.DataFrame(af3_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af2_df = pd.DataFrame(af2.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af2_no_templates_df = pd.DataFrame(af2_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+neuralplexer_df = pd.DataFrame(neuralplexer_runtimes.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
 
 # Add the model type to the dataframes
 rfaa_df["Model Type"] = "RF-AA"
@@ -331,11 +332,27 @@ colors = {
 
 # Concatenate the dataframes
 all_runtimes = pd.concat([neuralplexer_df, esm_df, rfaa_df, rfaa_no_templates_df, chai_df, af2_df, af2_no_templates_df, af3_df, af3_no_templates_df])
+all_runtimes["Runtime"] = all_runtimes["Runtime"].astype(float)
 
-### Plot the runtimes
+# Statistical analysis of the runtimes
+all_runtimes["Model"] = all_runtimes["Model"].str.upper()
+all_runtimes["Model"] = [i.split("_")[0] for i in all_runtimes["Model"]]
+all_runtimes = all_runtimes[["Model","Model Type","Runtime"]]
+all_runtimes = all_runtimes.sort_values(by=["Model", "Model Type"])
+
+# Replace new line characters in model names
+runtime_csv = all_runtimes.copy()
+runtime_csv["Model Type"] = runtime_csv["Model Type"].replace("\n", " ", regex=True)
+runtime_csv.to_csv(f'{repo_dir}/structure_benchmark_data/model_runtimes.csv', index=False)
+
+# Perform Wilcoxon signed-rank tests for DockQ scores
+all_runtimes = all_runtimes.rename(columns={"Model": "pdb", "Model Type": "model"})
+get_significance(all_runtimes, 'Runtime')
 
 # Get consistent order
-model_order = all_runtimes["Model Type"].unique()
+model_order = all_runtimes["model"].unique()
+
+### Plot the runtimes
 
 # Create figure
 fig, ax = plt.subplots()
@@ -343,9 +360,9 @@ fig, ax = plt.subplots()
 # Swarm plot (dots)
 sns.swarmplot(
     data=all_runtimes,
-    x="Model Type",
+    x="model",
     y="Runtime",
-    hue="Model Type",
+    hue="model",
     dodge=False,  # Prevent offset
     ax=ax,
     size=1.5,
@@ -357,9 +374,9 @@ sns.swarmplot(
 
 # Bar plot (invisible bars, just for error bars)
 sns.barplot(
-    x="Model Type",
+    x="model",
     y="Runtime",
-    hue="Model Type",
+    hue="model",
     data=all_runtimes,
     capsize=0.5,
     alpha=0.2,  # Make bars invisible
@@ -388,12 +405,3 @@ ax.tick_params(axis='y', direction='in')
 plt.tight_layout()
 plt.savefig(f"{repo_dir}/structure_benchmark_data/plots/runtime_comparison.svg", format="svg")
 plt.close()
-
-# Statistical analysis of the runtimes
-all_runtimes["Model"] = all_runtimes["Model"].str.upper()
-all_runtimes["Model"] = [i.split("_")[0] for i in all_runtimes["Model"]]
-all_runtimes.to_csv(f'{repo_dir}/structure_benchmark_data/model_runtimes.csv', index=False)
-
-# Perform Wilcoxon signed-rank tests for DockQ scores
-all_runtimes = all_runtimes.rename(columns={"Model": "pdb", "Model Type": "model", "Runtime": "Runtime"})
-get_significance(all_runtimes, 'Runtime')

@@ -111,6 +111,8 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", 
             model_extension = "_no_templates"
         elif "RFAA" in model:
             model_name = model
+        elif model == "AF3_server":
+            model_name = model
         else:
             model_name = model
             model_extension = "_1"
@@ -228,7 +230,7 @@ if __name__ == "__main__":
     dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 
     # Get only AF2, AF3 and RFAA models
-    input_models = ["AF2", "AF2_no_templates", "AF3", "RFAA", "RFAA_no_templates", "AF3", "AF3_no_templates"]
+    input_models = ["AF2", "AF2_no_templates", "AF3", "RFAA", "RFAA_no_templates", "AF3", "AF3_no_templates", "AF3_server"]
     for model in input_models:
         if "AF" in model:
             training_struct_df = af_training_struct
