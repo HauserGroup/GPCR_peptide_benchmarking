@@ -3,7 +3,16 @@ import os
 import pandas as pd
 from scipy.stats import friedmanchisquare
 import sys
+import numpy as np
 
+def round_to_significant_digits(number, significant_digits=3):
+    if pd.isnull(number) or not isinstance(number, (int, float)):
+        return number
+    if number == 0:
+        return 0
+    else:
+        return round(number, significant_digits - int(np.floor(np.log10(abs(number)))) - 1)
+    
 # Script to analyse Dock correlations against peptide length and activity values
 file_dir = os.path.dirname(__file__)
 folder_name = file_dir.split('/')[-1]
@@ -59,4 +68,9 @@ sd_summary = sd_summary.round(6)
 
 friedman_results_df = pd.merge(friedman_results_df, sd_summary, on="model")
 friedman_results_df = friedman_results_df[["model",  "DockQ_sd", "chisq", "p_value"]]
+
+# Apply function to all numeric columns in the DataFrame
+for col in friedman_results_df.columns:
+    friedman_results_df[col] = friedman_results_df[col].apply(lambda x: round_to_significant_digits(x, 4) if pd.to_numeric(x, errors='coerce') is not None else x)
+
 friedman_results_df.to_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/seed_analyses_friedman.csv", index=False)

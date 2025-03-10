@@ -192,7 +192,7 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
     # Perform pairwise Wilcoxon signed-rank tests between all models
     results = []
     for model1, model2 in itertools.combinations(data[model_col].unique(), 2):
-        print(model1, model2)
+
         # Get subset of data for each model
         var1 = data[data[model_col] == model1][[variable, pdb_col, model_col]].dropna()
         var2 = data[data[model_col] == model2][[variable, pdb_col, model_col]].dropna()
@@ -202,7 +202,7 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
         if merged.shape[0] < 2:
             # Skip if there are not enough data points for the test
             continue
-        
+
         try:
             stat, p_value = wilcoxon(merged[f'{variable}_{model1}'], merged[f'{variable}_{model2}'])
         except ValueError:
@@ -352,7 +352,7 @@ all_runtimes = all_runtimes.rename(columns={"Model": "pdb", "Model Type": "model
 get_significance(all_runtimes, 'Runtime')
 
 # Get consistent order
-model_order = all_runtimes["model"].unique()
+model_order = colors.keys()
 
 ### Plot the runtimes
 
@@ -392,7 +392,7 @@ sns.barplot(
 
 plt.rcParams['svg.fonttype'] = 'none'
 plt.ylim(0, 200)
-plt.title("Runtime comparison between different models")
+plt.title("Runtime comparison between structural modelling tools\nGPU: NVIDIA A100")
 ax.set_xlabel("")
 plt.ylabel("Runtime (seconds)", fontsize="large")
 plt.xticks(rotation=90)
