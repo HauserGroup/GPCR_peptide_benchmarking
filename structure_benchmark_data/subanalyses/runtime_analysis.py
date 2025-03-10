@@ -186,6 +186,9 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
     # Order dataframe by model and then by PDB code
     data = data.sort_values(by=[model_col, pdb_col])
 
+    # Replace "\n" with " " in model names
+    data[model_col] = data[model_col].replace("\n", " ", regex=True)
+
     # Perform pairwise Wilcoxon signed-rank tests between all models
     results = []
     for model1, model2 in itertools.combinations(data[model_col].unique(), 2):
@@ -199,7 +202,7 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
         if merged.shape[0] < 2:
             # Skip if there are not enough data points for the test
             continue
-
+        
         try:
             stat, p_value = wilcoxon(merged[f'{variable}_{model1}'], merged[f'{variable}_{model2}'])
         except ValueError:
@@ -295,7 +298,6 @@ for timings_file in af2_no_templates_timings:
 # Get neuralplexer runtimes
 neuralplexer_runtimes = get_neuralplexer_runtimes(neuralplexer_runtime_path, neuralplexer_folder_path)
     
-
 # Make a dataframe from the runtimes
 rfaa_df = pd.DataFrame(rfaa_with_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
 rfaa_no_templates_df = pd.DataFrame(rfaa_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")

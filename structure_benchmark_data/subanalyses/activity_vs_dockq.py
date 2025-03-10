@@ -54,7 +54,7 @@ folder_name = file_dir.split('/')[-1]
 repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
 repo_dir = file_dir[:index + len(repo_name)]
-plot_dir = f"{repo_dir}/structure_benchmark_data/plots"
+plot_dir = f"{repo_dir}/structure_benchmark_data/subanalyses/plots"
 sys.path.append(repo_dir)
 from colors import * 
 
