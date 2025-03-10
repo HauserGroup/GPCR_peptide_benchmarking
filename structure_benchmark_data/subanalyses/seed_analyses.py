@@ -31,11 +31,12 @@ for model in dockq_df["model"].unique():
     
     # Friedman test (non-parametric alternative)
     friedman_stat, p_value_friedman = friedmanchisquare(*pivot_df.T.values)
-    friedman_results[model] = p_value_friedman
+    friedman_results[model] = [friedman_stat, p_value_friedman]
 
-print("\nFriedman test results:")
-for model, p_value in friedman_results.items():
-    print(f"{model}: {p_value}")
+# Save Friedman test results
+friedman_results_df = pd.DataFrame(friedman_results.items(), columns=["model", "p_value"])
+friedman_results_df["chisq"] = friedman_results_df["p_value"].apply(lambda x: x[0])
+friedman_results_df["p_value"] = friedman_results_df["p_value"].apply(lambda x: x[1])
 
 # Make a summary table that computes average DockQ for each model and input
 summary_results = []
@@ -55,4 +56,7 @@ summary_df.to_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/seed_analyse
 # Save summary of DockQ score SDs per model
 sd_summary = summary_df.groupby("model")["DockQ_sd"].mean()
 sd_summary = sd_summary.round(6)
-sd_summary.to_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/seed_analyses_sds.csv")
+
+friedman_results_df = pd.merge(friedman_results_df, sd_summary, on="model")
+friedman_results_df = friedman_results_df[["model",  "DockQ_sd", "chisq", "p_value"]]
+friedman_results_df.to_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/seed_analyses_friedman.csv", index=False)
