@@ -8,47 +8,45 @@ AF2 RIA sc                      RF-AA RIA sc
 """
 # sns uses rgb values between 0 and 1
 COLOR = {
+    # AF2
+    "AF2 (no templates)": "#008FD7",
+    "AF2 (no templates) APPRAISE": "#008FD7",
+    "AF2 (no templates) LIS": "#008FD7",
+    'AF2 (no templates) LIS 1m' :  "#008FD7",
+    "AF2 (no templates) RIA energy": "#008FD7",
+    "AF2 (no templates) RIA sc": "#008FD7",
+    'AF2 (no templates) DeepRank-GNN-esm': "#008FD7",
+    'AF2 (no templates) GNN-DOVE' : "#008FD7",
+    
+    # RF-AA
     "RF-AA": "#A676D6",
     "RF-AA APPRAISE": "#A676D6",
     "RF-AA RIA energy": "#A676D6",
     "RF-AA RIA sc": "#A676D6",
-    
-    "AF2 (no templates)": "#008FD7",
-    "AF2 APPRAISE (no templates)": "#008FD7",
-    "AF2 LIS (no templates)": "#008FD7",
-    'AF2 LIS (no templates) 1m' :  "#008FD7",
-    "AF2 RIA energy (no templates)": "#008FD7",
-    "AF2 RIA sc (no templates)": "#008FD7",
-    'AF2 (no templates) DeepRank-GNN-esm': "#008FD7",
+    "RF-AA DeepRank-GNN-esm": "#A676D6",
+    "RF-AA GNN-DOVE": "#A676D6",
 
-    # new color for AF3
-    "AF3_local" : "#FF7F0E",
+    # AF3
+    "AF3": "#061F4A",
+    "AF3 APPRAISE": "#061F4A",
+    "AF3 RIA energy": "#061F4A",
+    "AF3 RIA sc": "#061F4A",
+    "AF3 DeepRank-GNN-esm": "#061F4A",
+    "AF3 GNN-DOVE": "#061F4A",
+    "AF3 LIS" : "#061F4A",
 
-    "Peptriever": "#9E005D",
+    # Chai-1
+    "Chai-1": "#855e40",
+    "Chai-1 APPRAISE": "#855e40",
+    "Chai-1 RIA energy": "#855e40",
+    "Chai-1 RIA sc": "#855e40",
+    "Chai-1 DeepRank-GNN-esm": "#855e40",
+    "Chai-1 GNN-DOVE": "#855e40",
 
-    "ColabFold (no MSAs)": "#5b616b",
-    "ColabFold (no MSAs) LIS": "#5b616b",
+    # "ColabFold (no MSAs)": "#5b616b",
+    # "ColabFold (no MSAs) LIS": "#5b616b",
+    #"Peptriever": "#9E005D",
 }
-
-# add markers to the rescoring tools (scatterplot). Default = 'o'
-# BASE_MARKER = 'd'
-# MARKER = {
-#     "RF-AA":BASE_MARKER,
-#     "RF-AA APPRAISE": "^",
-#     "RF-AA RIA energy": "P",
-#     "RF-AA RIA sc": "d",
-    
-#     "AF2 (no templates)": BASE_MARKER,
-#     "AF2 APPRAISE (no templates)": "^",
-#     "AF2 RIA energy (no templates)": "P",
-#     "AF2 RIA sc (no templates)": "d",
-
-#     # LIS is only for AF2
-#     "AF2 LIS (no templates)": "X",
-#     'AF2 LIS (no templates) 1m' : 'X', 
-
-#     "Peptriever": BASE_MARKER,
-# }
 
 
 BASE_MARKER = None
@@ -57,56 +55,35 @@ RIA_ENERGY_MARKER = '2'
 RIA_SC_MARKER = '3'
 LIS_MARKER = '+'
 DEEPRANK_MARKER = 'x'
+GNN_DOVE_MARKER = '_'
 
-MARKER = {
-    "RF-AA":BASE_MARKER,
-    "RF-AA APPRAISE": APPRAISE_MARKER,
-    "RF-AA RIA energy": RIA_ENERGY_MARKER,
-    "RF-AA RIA sc": RIA_SC_MARKER,
-    
-    "AF2 (no templates)": BASE_MARKER,
-    "AF2 APPRAISE (no templates)": APPRAISE_MARKER,
-    "AF2 RIA energy (no templates)": RIA_ENERGY_MARKER,
-    "AF2 RIA sc (no templates)": RIA_SC_MARKER,
-    'AF2 (no templates) DeepRank-GNN-esm': DEEPRANK_MARKER,
-
-    "AF3_local" : BASE_MARKER,
-
-    # LIS is only for AF2
-    "AF2 LIS (no templates)": LIS_MARKER,
-    'AF2 LIS (no templates) 1m' : LIS_MARKER,
-
-    "Peptriever": BASE_MARKER,
-
-    # ColabFold
-    "ColabFold (no MSAs)": BASE_MARKER,
-    "ColabFold (no MSAs) LIS": LIS_MARKER,
-}
-
+MARKER = dict()
+for M in COLOR.keys():
+    if "APPRAISE" in M:
+        MARKER[M] = APPRAISE_MARKER
+    elif "RIA energy" in M:
+        MARKER[M] = RIA_ENERGY_MARKER
+    elif "RIA sc" in M:
+        MARKER[M] = RIA_SC_MARKER
+    elif "LIS" in M:
+        MARKER[M] = LIS_MARKER
+    elif "DeepRank" in M:
+        MARKER[M] = DEEPRANK_MARKER
+    elif "GNN-DOVE" in M:
+        MARKER[M] = GNN_DOVE_MARKER
+    else:
+        MARKER[M] = BASE_MARKER
 
 DEFAULT_STYLE="--"
 RESCORING_STYLE=":"
-STYLE = {
-    "RF-AA":DEFAULT_STYLE,
-    "RF-AA APPRAISE": RESCORING_STYLE,
-    "RF-AA RIA energy": RESCORING_STYLE,
-    "RF-AA RIA sc": RESCORING_STYLE,
-
-    "AF2 (no templates)": DEFAULT_STYLE,
-    "AF2 APPRAISE (no templates)": RESCORING_STYLE,
-    "AF2 RIA energy (no templates)": RESCORING_STYLE,
-    "AF2 RIA sc (no templates)": RESCORING_STYLE,
-    'AF2 (no templates) DeepRank-GNN-esm': RESCORING_STYLE,
-
-    "AF3_local" : DEFAULT_STYLE,
-
-    # LIS is only for AF2
-    "AF2 LIS (no templates)": RESCORING_STYLE,
-    'AF2 LIS (no templates) 1m' : RESCORING_STYLE,
-
-    "Peptriever": DEFAULT_STYLE,
-
-    # ColabFold
-    "ColabFold (no MSAs)": DEFAULT_STYLE,
-    "ColabFold (no MSAs) LIS": RESCORING_STYLE,
-}
+STYLE = dict()
+for M in COLOR.keys():
+    if "APPRAISE" in M:
+        STYLE[M] = RESCORING_STYLE
+    elif "RIA energy" in M:
+        STYLE[M] = RESCORING_STYLE
+    elif "RIA sc" in M:
+        STYLE[M] = RESCORING_STYLE
+    else:
+        STYLE[M] = DEFAULT_STYLE
+        

@@ -111,6 +111,15 @@ def get_good_bad_cmap():
 CMAP_GOOD_BAD = get_good_bad_cmap()
 
 def run_main():
+    # print rgba and hex colors for each color
+    for name, color in COLOR.items():
+        hex_color = color
+        rgba = hex_to_rgb(color)
+        rgba = tuple([x / 255 for x in rgba])
+
+        print(name, rgba, hex_color)
+
+    
     # Print decoy colors by splitting CMAP_GOOD_BAD in 11 and skipping the middle color
     colors_to_show = []
     for i in range(0, 11, 1):
@@ -128,6 +137,7 @@ def run_main():
         plt.axis("off")
         plt.fill_between([0, 1], 0, 1, color=color)
     plt.show()
+
 
 if __name__ == "__main__":
     run_main()

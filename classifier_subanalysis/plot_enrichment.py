@@ -36,6 +36,10 @@ def get_peptide_protein_GPCRs():
     other_receptors = gpcr_df[gpcr_df['ligand_type'] != 'Peptide receptors']['gpcr'].values
     other_receptors = [i.lower().strip() for i in other_receptors]
 
+    if not 'hrh4_human' in other_receptors:
+        other_receptors.append('hrh4_human')
+        
+    # add 
     return peptide_receptors, other_receptors
 
 
@@ -48,7 +52,7 @@ def run_main(plot_p,
     rcParams['font.family'] = 'Helvetica'  # or use 'sans-serif' if Helvetica isn't available
 
     script_dir = pathlib.Path(__file__).parent
-    models = get_models(script_dir / "models")
+    models = get_models(script_dir.parent / "classifier_benchmark/models")
     if len(reject_models_with_substrings) > 0:
         models = [m for m in models if not any([r in m[0] for r in reject_models_with_substrings])]
     models = [m for m in models if m[0] in MODELS_TO_KEEP]
@@ -62,9 +66,6 @@ def run_main(plot_p,
     agonist_identifiers = ground_truth[ground_truth["Acts as agonist"] == 1][
         "identifier"
     ].values
-
-    # remove AF3 from models
-    models = [m for m in models if m[0] != "AF3"]
 
     # read gpcr_no_complex.txt
     no_complex_txt = script_dir / 'gpcrs_no_complex.txt'
@@ -139,7 +140,7 @@ def run_main(plot_p,
     # plot
     sns.set_context("paper")
     sns.set_style("whitegrid") 
-    fig, ax = plt.subplots(figsize=(3, 3))
+    fig, ax = plt.subplots(figsize=(2.25, 3))
     # grid with opacity
     plt.grid()
     plt.grid(axis="y", linestyle="--", alpha=0.5)
@@ -152,7 +153,7 @@ def run_main(plot_p,
 
     colors = [COLOR.get(m, 'black') for m in plot_df["model"].unique()]
     markers = [MARKER.get(m, None) for m in plot_df["model"].unique()]
-    markers = ['_' if m is None else m for m in markers]
+    markers = ['' if m is None else m for m in markers]
 
     # plot dashed line at random performance
     random_performance_yvals = 1 / 11 * plot_df["keep_top_n"].unique()
@@ -186,14 +187,19 @@ def run_main(plot_p,
         y="pa_retained",
         ax=ax,
         # color for models
-        palette=colors,
         hue="model",
         # markers for rescoring methods
         markers=markers,
-        # do not fill markers
-        edgecolor="black",
+
+        # use this one if the colors of markers should match the line colors
+        # palette=colors,
+        
+        # use this one if the colors of markers should all be black
+        palette={m: 'black' for m in plot_df["model"].unique()},
+       
         style="model",
         # make markers same size
+        s=25,
         # line opacity
         alpha=1.0,
         legend=False,
@@ -225,7 +231,10 @@ def run_main(plot_p,
     # fix the legend.
     # first it should contain a line with the color of the base models
     # then it should contain the black markers for the rescoring methods
-    for model_name in plot_df["model"].unique():
+    model_names = plot_df["model"].unique()
+    # sort on last word
+    sorted_names = list(sorted(model_names, key=lambda x: x.replace(" (no templates)", "").split()[-1]))
+    for model_name in model_names:
         # get the color of the model
         model_color = COLOR.get(model_name, 'black')
         # get the line style of the model
@@ -234,24 +243,30 @@ def run_main(plot_p,
         model_marker = MARKER.get(model_name, None)
         # remove the (no templates) part and add a dagger symbol instead
         replacement = r'$^\dagger$'
+
+        # TODO: FIX THIS
         model_name = model_name.replace(" (no templates)", replacement)
+        if " " in model_name:
+            model_name = model_name.partition(" ")[2]
         # add a line, with the marker of the model, style and color
         plt.plot([], [], color=model_color, linestyle=model_line_style, label=model_name,
                     marker=model_marker, 
                     # set marker color to black
                     markerfacecolor='black', markeredgecolor='black', markersize=5)
     
-    plt.legend(loc='lower right', fontsize=8,
-               # use helvetica font for legend
-    )
-   
+  
     plt.tight_layout()
-    legend = plt.legend()
     # for xticks and yticks
+    legend = plt.legend(loc='lower right', fontsize=8)
     for text_object in ax.get_xticklabels() + ax.get_yticklabels() + legend.get_texts():
         text_object.set_fontname('Helvetica')
-        text_object.set_fontsize(7)
-
+        text_object.set_fontsize(8)
+        text_object.set_color('black')
+        
+    ax.tick_params(axis='x', pad=0)  # Adjust pad for x-axis labels
+    ax.tick_params(axis='y', pad=0)  # Adjust pad for y-axis labels
+    
+    # no padding
 
     plt.savefig(plot_p)
     print(f"Saved plot to {plot_p}")
@@ -268,24 +283,65 @@ if __name__ == "__main__":
     MODELS_TO_KEEP = [
                       "AF2 (no templates)", 
                       "AF2 (no templates) DeepRank-GNN-esm",
-                      "AF2 APPRAISE (no templates)",
-                      "AF2 LIS (no templates)",
-                      "AF2 RIA sc (no templates)",
-                      # "AF2 (no templates) GNN-DOVE",
+                      "AF2 (no templates) APPRAISE",
+                      "AF2 (no templates) LIS",
+                      "AF2 (no templates) GNN-DOVE",
+                      "AF2 (no templates) RIA sc",
                       ]
-    
     script_dir = pathlib.Path(__file__).parent
-    plot_p = script_dir / "plots/enrichment_plot.svg"
-    run_main(plot_p, reject_models_with_substrings=['energy'])
-    plot_p = script_dir / "plots/enrichment_plot_no_complex.svg"
+    plot_p = script_dir / "plots/rescoring_enrichment_AF2_plot.svg"
+    run_main(plot_p)
+    plot_p = script_dir / "plots/rescoring_enrichment_AF2_no_complex.svg"
+    run_main(plot_p, only_GPCRs_without_complex=True)
+
+    # run for AF3
+    MODELS_TO_KEEP = ["AF3",
+                      "AF3 DeepRank-GNN-esm",
+                      "AF3 APPRAISE",
+                      "AF3 LIS",
+                      "AF3 RIA sc",
+                      "AF3 GNN-DOVE",
+                      ]
+    plot_p = script_dir / "plots/rescoring_enrichment_AF3_plot.svg"
+    run_main(plot_p)
+    plot_p = script_dir / "plots/rescoring_enrichment_AF3_no_complex.svg"
+    run_main(plot_p, only_GPCRs_without_complex=True)
+
+
+    # run for Chai-1
+    MODELS_TO_KEEP = ["Chai-1",
+                      "Chai-1 DeepRank-GNN-esm",
+                      "Chai-1 APPRAISE",
+                      "Chai-1 LIS",
+                      "Chai-1 RIA sc",
+                      "Chai-1 GNN-DOVE",
+                      ]
+    plot_p = script_dir / "plots/rescoring_enrichment_Chai-1_plot.svg"
+    run_main(plot_p)
+    plot_p = script_dir / "plots/rescoring_enrichment_Chai-1_no_complex.svg"
+    run_main(plot_p, only_GPCRs_without_complex=True)
+
+
+    # run for RF-AA
+    MODELS_TO_KEEP = ["RF-AA",
+                      "RF-AA DeepRank-GNN-esm",
+                      "RF-AA APPRAISE",
+                      "RF-AA LIS",
+                      "RF-AA RIA sc",
+                      "RF-AA GNN-DOVE",
+                      ]
+    plot_p = script_dir / "plots/rescoring_enrichment_RF-AA_plot.svg"
+    run_main(plot_p)
+    plot_p = script_dir / "plots/rescoring_enrichment_RF-AA_no_complex.svg"
     run_main(plot_p, only_GPCRs_without_complex=True)
     
+
+
     # run for peptide vs protein interface
-    peptide_receptors, other_receptors = get_peptide_protein_GPCRs()
-    
-    plot_p = script_dir / "plots/enrichment_plot_peptide_receptors.svg"
-    run_main(plot_p, gpcrs_to_reject=other_receptors)
+    # peptide_receptors, other_receptors = get_peptide_protein_GPCRs()
+    # plot_p = script_dir / "plots/enrichment_plot_peptide_receptors.svg"
+    # run_main(plot_p, gpcrs_to_reject=other_receptors)
+    # plot_p = script_dir / "plots/enrichment_plot_other_receptors.svg"
+    # run_main(plot_p, gpcrs_to_reject=peptide_receptors)
 
-    plot_p = script_dir / "plots/enrichment_plot_other_receptors.svg"
-    run_main(plot_p, gpcrs_to_reject=peptide_receptors)
-
+ 

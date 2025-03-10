@@ -1,9 +1,17 @@
 Model1,Model2,Statistic,p-value,Number of GPCRs,Model2 is better (a=0.05)
+AF3 (no templates),AF3,669.0,0.017587148482798,122,True
+AF3 DeepRank-GNN-esm,AF3 (no templates) DeepRank-GNN-esm,1933.5,0.5410591453553143,122,False
+AF2 (no templates) LIS,AF2 LIS,283.0,0.48202731848172,123,False
+RF-AA (no templates) DeepRank-GNN-esm,RF-AA DeepRank-GNN-esm,2404.0,0.9517381428708852,121,False
 AF2 (no templates),AF2,455.0,0.4820684479226406,123,False
-AF2 LIS (no templates),AF2 LIS,283.0,0.48202731848172,123,False
-AF2 APPRAISE (no templates),AF2 APPRAISE,1240.0,0.4224626722803682,123,False
+AF2 DeepRank-GNN-esm,AF2 (no templates) DeepRank-GNN-esm,1571.5,0.962173515066044,123,False
+AF2 APPRAISE,AF2 (no templates) APPRAISE,1175.0,0.5775373277196317,123,False
 RF-AA (no templates),RF-AA,1182.0,0.3093821490206938,122,False
+AF3,AF3 (no templates),321.0,0.982412851517202,122,False
+AF3 (no templates) DeepRank-GNN-esm,AF3 DeepRank-GNN-esm,1982.5,0.4589408546446857,122,False
+AF2 LIS,AF2 (no templates) LIS,278.0,0.51797268151828,123,False
+RF-AA DeepRank-GNN-esm,RF-AA (no templates) DeepRank-GNN-esm,3482.0,0.0482618571291148,121,True
 AF2,AF2 (no templates),448.0,0.5179315520773594,123,False
-AF2 LIS,AF2 LIS (no templates),278.0,0.51797268151828,123,False
-AF2 APPRAISE,AF2 APPRAISE (no templates),1175.0,0.5775373277196317,123,False
+AF2 (no templates) DeepRank-GNN-esm,AF2 DeepRank-GNN-esm,2433.5,0.037826484933956,123,True
+AF2 (no templates) APPRAISE,AF2 APPRAISE,1240.0,0.4224626722803682,123,False
 RF-AA,RF-AA (no templates),1029.0,0.6906178509793062,122,False

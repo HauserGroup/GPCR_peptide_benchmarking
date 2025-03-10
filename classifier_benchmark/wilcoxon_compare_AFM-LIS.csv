@@ -1,6 +1,9 @@
 Model1,Model2,Statistic,p-value,Number of GPCRs,Model2 is better (a=0.05)
-AF2 (no templates),AF2 LIS (no templates),866.5,0.0018172915641868,123,True
+AF2 (no templates) LIS,AF2 (no templates),309.5,0.9981827084358132,123,False
 AF2,AF2 LIS,822.0,0.0009164048378863,123,True
-AF2 LIS (no templates),AF2 (no templates),309.5,0.9981827084358132,123,False
-AF2 LIS (no templates) 1m,AF2 LIS (no templates),531.5,0.1558827729992062,123,False
+AF3,AF3 LIS,924.0,0.0007070766135125,122,True
+AF3 LIS 1m,AF3 LIS,49.0,0.7505949012197356,122,False
+AF2 (no templates),AF2 (no templates) LIS,866.5,0.0018172915641868,123,True
+AF2 (no templates) LIS 1m,AF2 (no templates) LIS,531.5,0.1558827729992062,123,False
 AF2 LIS,AF2,259.0,0.9990835951621136,123,False
+AF3 LIS,AF3,301.0,0.9992929233864876,122,False

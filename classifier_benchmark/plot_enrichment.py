@@ -23,26 +23,14 @@ from colors import COLOR
 from plot_heatmap_combined import apply_first_pick_to_predictions
 
 
-def run_main():
+def run_main(models_to_plot):
     """ """
-    # # set models to keep to [] to use all models
-    # MODELS_TO_KEEP = [
-    #     # "AF2 (no templates)",
-    #     # "AF2 LIS (no templates)",
-    #     "AF2",
-    #     "AF2 LIS",
-    #     "AF2 APPRAISE",
-    #     # "RF-AA (no templates)",
-    #     # "AF2 (no templates)+pocket",
-    #     # "AF2 LIS (no templates)+pocket",
-    #     # "RF-AA (no templates)+pocket",
-    # ]
-    # print("models to keep", MODELS_TO_KEEP)
-
+  
     script_dir = pathlib.Path(__file__).parent
     models = get_models(script_dir / "models")
     # remove models with LIS or APPRAISE
-    models = [m for m in models if "LIS" not in m[0] and "APPRAISE" not in m[0] and not "RIA" in m[0]]
+    models = [m for m in models if m[0] in models_to_plot]
+
     unique_models = list([m[0] for m in models])
     plot_p = script_dir / "plots/enrichment.svg"
     ground_truth = get_ground_truth_df()
@@ -54,7 +42,6 @@ def run_main():
     ].values
 
     # remove AF3 from models
-    models = [m for m in models if m[0] != "AF3"]
     for model_name, pred_df in models:
         pred_df["gpcr"] = pred_df["identifier"].apply(lambda x: x.split("___")[0])
         pred_df["class"] = pred_df["gpcr"].apply(lambda x: gpcr_to_class[x])
@@ -108,7 +95,7 @@ def run_main():
     # plot
     sns.set_context("paper")
     sns.set_style("whitegrid") 
-    fig, ax = plt.subplots(figsize=(4, 4))
+    fig, ax = plt.subplots(figsize=(3.3, 3.3))
     colors = [COLOR.get(m, "black") for m in plot_df["model"].unique()]
     sns.lineplot(
         x="keep_top_n",
@@ -149,7 +136,7 @@ def run_main():
     # plt.title("True agonist retention")
     # plt.ylabel("Percent agonists retained")
     # plt.xlabel("Number of samples chosen")
-    plt.legend(title="Model", loc="lower right", fontsize=11, title_fontsize=12)
+    plt.legend(title="Model", loc="lower right", fontsize=8, title_fontsize=10)
 
     plt.xticks(range(1, 12))
     plt.yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
@@ -164,22 +151,31 @@ def run_main():
     colors = [COLOR.get(m, "black") for m in labels]
     handles = [plt.Line2D([0], [0], color=c, lw=1) for c in colors]
     ax = plt.gca()
+    
     ax.legend(
         handles,
         labels,
-        title="Model",
+        title="",
         loc="lower right",
-        fontsize=11,
-        title_fontsize=12,
+        fontsize=8,
+        title_fontsize=10,
+        # tight layout
+        bbox_to_anchor=(1.0, 0.0),
+        # shrink legend
+        borderaxespad=0,
     )
     # fontsize of x and y labels
-    plt.xticks(fontsize=12)
-    plt.yticks(fontsize=12)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
 
     # disable labels (add in illustrator)
     plt.xlabel("")
     plt.ylabel("")
     plt.title("")
+    # use helvetica font
+    for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] + ax.get_xticklabels() + ax.get_yticklabels()):
+        item.set_fontname("Helvetica")
+        item.set_fontsize(8)
 
     plt.savefig(plot_p)
     plt.savefig(plot_p.with_suffix(".png"), dpi=300)
@@ -187,4 +183,16 @@ def run_main():
 
 
 if __name__ == "__main__":
-    run_main()
+    models_to_plot = ["AF3",
+                      "AF3 (no templates)",
+                      "AF2 (no templates)",
+                      "AF2",
+                      "RF-AA (no templates)",
+                      "RF-AA",
+                      "Neuralplexer",
+                      "D-SCRIPT",
+                      "ESMFold",
+                      "Peptriever",
+                      "Chai-1"
+    ]
+    run_main(models_to_plot)

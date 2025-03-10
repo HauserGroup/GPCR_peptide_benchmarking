@@ -27,7 +27,98 @@ from collections import OrderedDict
 from scipy.stats import spearmanr
 import sys 
 sys.path.append(".")
-from colors import COLOR
+# from colors import COLOR
+from colors_subanalysis import COLOR
+from matplotlib import colors as mcolors
+
+# def corr_plot_peptriever_vs_af2(plot_p):
+#     """ On y-axis, rank of agonist, on x-axis, agonist length
+#     """
+#     script_dir = pathlib.Path(__file__).parent.absolute()
+
+#     # get color from COLOR
+#     peptriever_color = COLOR["Peptriever"]
+#     af2_color = COLOR["AF2 (no templates)"]
+
+#     attributes = get_attributes()
+#     rankings = load_rankings()
+
+#     # keep only models to keep
+#     models_to_keep = ["Peptriever", "AF2 (no templates)"]
+
+#     # get the rankings
+#     peptriever_rankings = rankings[rankings["Model"] == "Peptriever"]
+#     af2_rankings = rankings[rankings["Model"] == "AF2 (no templates)"]
+
+#     # get the gpcrs
+#     peptriever_gpcrs = peptriever_rankings["GPCR"].unique()
+#     af2_gpcrs = af2_rankings["GPCR"].unique()
+
+#     # get the attributes
+#     peptriever_attributes = attributes.loc[peptriever_gpcrs]
+#     af2_attributes = attributes.loc[af2_gpcrs]
+
+#     # get the agonist lengths
+#     peptriever_agonist_lengths = peptriever_attributes["agonist length"]
+#     af2_agonist_lengths = af2_attributes["agonist length"]
+
+#     # get the rankings
+#     peptriever_ranks = peptriever_rankings.set_index("GPCR")["AgonistRank"]
+#     af2_ranks = af2_rankings.set_index("GPCR")["AgonistRank"]
+
+#     # get the spearman rank correlation
+#     rho_peptriever, p_val_peptriever = spearmanr(peptriever_ranks, peptriever_agonist_lengths)
+#     rho_af2, p_val_af2 = spearmanr(af2_ranks, af2_agonist_lengths)
+
+#     # plot not as scatter plot, but as a regplot
+#     plt.figure(figsize=(2.6, 2.6))
+#     sns.set_context("paper")
+#     sns.set_style("whitegrid")
+#     # use grid with opacity 0,5
+#     plt.grid()
+#     plt.grid(axis="y", linestyle="--", alpha=0.5)
+#     plt.grid(axis="x", linestyle="--", alpha=0.5)
+#     scatter_kws={'s': 6}
+#     sns.regplot(
+#         x=peptriever_agonist_lengths,
+#         y=peptriever_ranks,
+#         y_jitter=0.1,
+#         color=peptriever_color,
+#         label="",
+#         marker='.',
+#         # size
+#         line_kws={"linewidth": 2},
+#         scatter_kws=scatter_kws,
+#     )
+#     sns.regplot(
+#         x=af2_agonist_lengths,
+#         y=af2_ranks,
+#         y_jitter=0.1,
+#         marker='.',
+#         color=af2_color,
+#         label="",
+#         scatter_kws=scatter_kws,
+#     )
+
+#     # create a legend using the colors and a lineplot
+#     plt.plot([], [], color=peptriever_color, marker='.', 
+#              label=f"Peptriever\n(rho = {rho_peptriever:.3f})")
+#     plt.plot([], [], color=af2_color, marker='.',
+#              label=f"AF2 (no templates)\n(rho = {rho_af2:.3f})")
+
+#     # save the plot
+#     plt.yticks(range(1, 12))
+#     plt.xlabel("Agonist length")
+#     plt.ylabel("Rank")
+#     plt.title("Rank vs agonist length")
+#     plt.legend(fontsize=8)
+  
+#     plt.tight_layout()
+#     plt.savefig(plot_p)
+#     plt.savefig(plot_p.with_suffix(".png"))
+#     plt.close()
+
+
 
 def load_classifier_df():
     """
@@ -251,51 +342,190 @@ def create_correlation_df(attributes, rankings):
     plot_save_dir = script_dir / 'ranking_vs_peptide_characteristics'
     os.makedirs(plot_save_dir, exist_ok=True)
 
-    # for each model
-    for model in rankings["Model"].unique():
+    fig, axes = plt.subplots(
+                             len(rankings["Model"].unique()), 
+                             len(unique_attributes), 
+                             figsize=(1*len(unique_attributes), 4.5),
+                             # share y-axis
+                             sharey=True,
+                             # reduce padding
+                             gridspec_kw={'wspace': 0.05, 'hspace': 0.1,
+                                          'left': 0.05, 'right': 0.95, 'top': 0.95, 'bottom': 0.05},
+                             # share x axis per row
+                             sharex='col',
+                             constrained_layout=True,
+    )
+
+    max_corr = 0.4
+    min_corr = -0.4
+    # create a colorbar
+    cmap = plt.get_cmap("coolwarm")
+    cmap = mcolors.ListedColormap([(r, g, b, 0.5) for r, g, b, _ in cmap(np.linspace(0, 1, cmap.N))])
+    norm = mcolors.Normalize(vmin=min_corr, vmax=max_corr)
+    sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
+
+    
+    # first loop, plot each model and attribute, calculate p-values
+    for model_i, model in enumerate(sorted(rankings["Model"].unique())):
+        print(model)
         model_rankings = rankings[rankings["Model"] == model]
         model_gpcrs = model_rankings["GPCR"].unique()
         gpcr_to_rank = model_rankings.set_index("GPCR")["AgonistRank"]
         model_ranks = gpcr_to_rank[model_gpcrs]
 
         # for each attribute (column)
-        for attribute in unique_attributes:
+        for attribute_i, attribute in enumerate(unique_attributes):
             model_attributes = [attributes.loc[gpcr, attribute] for gpcr in model_gpcrs]
             rho, p_val = spearmanr(model_ranks, model_attributes, nan_policy="omit")
             
-            # save spearman rank correlation, p-value and sample count
-            plt_p = plot_save_dir / f"{model}_{attribute}.svg"
-            plt.figure(figsize=(2.5, 2.5))
+            # select axis
+            ax = axes[model_i, attribute_i]
+            # background fill (red to blue) to indicate correlation quality
+            fill_color = cmap(norm(rho))
+
+            # fill the background
+            ax.axhspan(0.5, 11.5, 
+                       # color=COLOR.get(model, 'white'),
+                       color=fill_color,
+                       alpha=0.25,
+                       zorder=0,
+                       )
+        
+            # label correlation quality
+            corr_qual = f"r={rho:.2f}"#, p={p_val:.2f}"
+ 
+            # set title background to fill color
+            p_val_label = get_pval_label(p_val)
+            ax.text(1.0,
+                    0.95, 
+                    p_val_label,
+                    horizontalalignment='right',
+                    verticalalignment='top',
+                    transform=ax.transAxes,
+                    fontsize=16,
+                    # bold
+                    fontweight='bold',
+                    color='black')
+
+            corr_qual = corr_qual # + p_val_label
+            ax.set_title(corr_qual, fontsize=8, pad=0,
+                        # color the title bbox
+                        #bbox=dict(facecolor=fill_color, alpha=0.5, boxstyle='round,pad=0.1'),
+                        # face right
+                        loc='center',
+                         )
+
             sns.regplot(x=model_attributes,
                         y=model_ranks, 
-                        scatter_kws={"alpha": 0.5},
-                        y_jitter=0.2,                    
-            )
-            plt.yticks(range(1 + max(model_ranks)))
-            plt.xlabel(attribute)
-            plt.ylabel("Rank")
-            plt.title(f"{model} vs {attribute}")
-            # add spearman correlation
-            plt.text(
-                0.6,
-                0.95,
-                f"rho = {rho:.2f}\np = {p_val:.2e}",
-                transform=plt.gca().transAxes,
-                verticalalignment="top",
-            )
-            # force square aspect ratio
-            # plt.gca().set_aspect('equal', adjustable='box')
-            plt.tight_layout()
-            plt.savefig(plt_p)
-            plt.savefig(plt_p.with_suffix(".png"))
-            plt.close()
+                        y_jitter=0.1,             
+                        # color=COLOR.get(model, 'black'),
+                        color='black',
+                        ax=ax,
+                        marker='.',
+                        # no outline
+                        line_kws={"linewidth": 1.5,
+                                  # "color": COLOR.get(model, 'black'),
+                                  'color': 'black',
+                                  'alpha': 0.8,
+                                  'linestyle': '-',
+                                  #'dashes': (2, 2)
+                                  },
+                        # marker not too big
+                        scatter_kws={'s': 1},
+            ) 
+            ax.set_xlabel('')
+            ax.set_ylabel("")
+            ax.tick_params(axis='x', pad=-3)  # Adjust pad for x-axis labels
+
+            # set yticks 1 - 11
+            yticks = range(1, 12)
+            yticklabels = [str(i) if i in (1, 6, 11) else "" for i in yticks]
+            ax.set_yticks(yticks)
+            ax.set_yticklabels(yticklabels)
+            ax.tick_params(axis='y', pad=-2)  # Adjust pad for y-axis labels
+            
+            # ax.set_xlim(0, None)
+            ax.set_ylim(0.5, 11.5)
+
+            # set xticks based on attribute
+            model_attributes = model_attributes.copy()
+            model_attributes = [x for x in model_attributes if not np.isnan(x)]
+            if attribute == "agonist length":
+                ax.set_xticks(range(0, 500, 200))
+                assert max(model_attributes) < 500
+                assert min(model_attributes) > 0
+            elif attribute == "pKi":
+                ax.set_xticks(range(6, 12, 2))
+                assert max(model_attributes) < 12
+                assert min(model_attributes) > 6
+            elif attribute == "gpcr selectivity":
+                ax.set_xticks(range(0, 12, 5))
+                assert max(model_attributes) < 12
+                assert min(model_attributes) > 0
+            # set a grid with opacity 0.5
+            ax.grid(axis="y", linestyle="--", alpha=0.0)
+            ax.grid(axis="x", linestyle="-", alpha=0.0)
 
             # count non-nan samples
             sample_count = len(model_ranks) - np.isnan(model_ranks).sum()
-
             correlation_df.loc[model, attribute] = (rho, p_val, sample_count)
+   
+    # lastly, do p-value correction
+    for model_i, model in enumerate(sorted(rankings["Model"].unique())):
+        for attribute_i, attribute in enumerate(unique_attributes):
 
+
+    # force square aspect ratio
+    # transparent grid
+    # plt.gca().set_aspect('equal')
+    plt.savefig(plot_save_dir / 'merged.png', dpi=600)
+    plt.savefig(plot_save_dir / 'merged.svg')
+    plt.close()
     return correlation_df
+
+
+def save_custom_cbar_with_opacity(plot_save_dir):
+    # save colorbar separately
+    fig, ax = plt.subplots(figsize=(2,0.75))
+    # Load colormap
+    cmap = plt.cm.get_cmap("coolwarm")  # Replace with your desired colormap
+    # Convert colormap to an array and modify alpha
+    colors = cmap(np.linspace(0, 1, cmap.N))  # Get RGBA values
+    colors[:, -1] = 0.25  # Set alpha to 0.5
+    # Create new transparent colormap
+    cmap_transparent = mcolors.ListedColormap(colors)
+    # Normalize color range
+    norm = plt.Normalize(vmin=-0.5, vmax=0.5)
+    plt.tight_layout()
+    # add cmap ticks
+    plt.cm.ScalarMappable(
+        cmap=cmap_transparent, norm=norm
+    ).set_array([])  # Create a mappable object
+    cb = plt.colorbar(plt.cm.ScalarMappable(cmap=cmap_transparent, norm=norm), 
+                 cax=ax,
+                 # set ticks
+                 ticks=[-0.5, -0.25, 0, 0.25, 0.50],
+                 orientation='horizontal',
+                 label='Spearman rank correlation',
+                 shrink=0.5,
+                 # height to width ratio
+                 aspect=0.5,
+    )
+    # shrink
+    cb.ax.tick_params(labelsize=8)
+    cb.set_label('Spearman rank correlation', fontsize=8)
+    cb.ax.xaxis.set_label_position('top')
+    # total size of colorbar should be reduced
+    plt.tight_layout()
+    # set horizontal aspect ratio
+    cb.ax.set_aspect(0.025)
+    # rotate x-ticks
+    cb.ax.set_yticklabels(cb.ax.get_yticklabels(), rotation=90)
+    # set vertical aspect ratio
+    # cb.ax.set_aspect(0.5, adjustable='box')
+
+    plt.savefig(plot_save_dir / 'colorbar.png', dpi=600)
+    plt.savefig(plot_save_dir / 'colorbar.svg')
 
 
 def get_pval_label(p_val):
@@ -346,15 +576,19 @@ def plot_correlation_heatmap(correlation_df, plot_p):
     outer = max(abs(max_corr), abs(min_corr))
 
     # order models in a logical way
-    model_order = ['AF2 (no templates)', 'AF2 LIS (no templates)', 'Peptriever']
+    model_order = ['AF2 (no templates)', 'AF2 (no templates) LIS', 'Peptriever']
     other_models = [m for m in correlation_df.index if m not in model_order]
     model_order.extend(other_models)
     rho = rho.loc[model_order]
     annotations = annotations.loc[model_order]    
 
     # order attributes in a logical way
-    attribute_order = ['agonist length_rho', 'agonist msa depth_rho', 'agonist selectivity_rho',
-                       'pKi_rho', 'N-term length_rho', 'gpcr selectivity_rho']
+    attribute_order = ['agonist length_rho', 
+                       'agonist msa depth_rho',
+                       'agonist selectivity_rho',
+                       'pKi_rho', 
+                       'N-term length_rho',
+                       'gpcr selectivity_rho',]
     other_attributes = [a for a in rho.columns if a not in attribute_order]
     attribute_order.extend(other_attributes)
     rho = rho[attribute_order]
@@ -396,116 +630,38 @@ def plot_correlation_heatmap(correlation_df, plot_p):
     plt.savefig(plot_path)
     plt.savefig(plot_path.with_suffix(".png"), dpi=600)
     plt.close()
+    return correlation_df
 
 
-def main(models_to_keep, plot_p):
+def main(models_to_keep, attributes_to_keep, plot_p):
     attributes = get_attributes()
+    attributes = attributes[attributes_to_keep]
     rankings = load_rankings()
+    rankings = rankings[rankings["Model"].isin(models_to_keep)]
 
     # models to keep
     correlation_df = create_correlation_df(attributes, rankings)
     
     # keep only models to keep
-    if len(models_to_keep) > 0:
-        correlation_df = correlation_df.loc[models_to_keep]
-    plot_correlation_heatmap(correlation_df, plot_p)
+    correlation_df = correlation_df.loc[models_to_keep]
+    # plot_correlation_heatmap(correlation_df, plot_p)
 
     # to csv
     script_dir = pathlib.Path(__file__).parent.absolute()
     correlation_df.to_csv(script_dir / "peptide_correlation_characteristics.csv")
+
+    models = correlation_df.index 
+    attributes = correlation_df.columns
+    for m in models:
+        print(m, end=',')
+        for a in attributes:
+            rho, p_val, n_gpcrs = correlation_df.loc[m, a]
+            print(f'{rho},{p_val}', end=',')
+        print("")
     #                             agonist length  ...                                     N-term length
     # AF2 (no templates)       (0.24687015266979925, 0.005910457810487032, 123)  ...  (-0.07952563609671996, 0.38192090669073486, 123)
     
     
-
-def corr_plot_peptriever_vs_af2(plot_p):
-    """ On y-axis, rank of agonist, on x-axis, agonist length
-    """
-    script_dir = pathlib.Path(__file__).parent.absolute()
-
-    # get color from COLOR
-    peptriever_color = COLOR["Peptriever"]
-    af2_color = COLOR["AF2 (no templates)"]
-
-    attributes = get_attributes()
-    rankings = load_rankings()
-
-    # keep only models to keep
-    models_to_keep = ["Peptriever", "AF2 (no templates)"]
-
-    # get the rankings
-    peptriever_rankings = rankings[rankings["Model"] == "Peptriever"]
-    af2_rankings = rankings[rankings["Model"] == "AF2 (no templates)"]
-
-    # get the gpcrs
-    peptriever_gpcrs = peptriever_rankings["GPCR"].unique()
-    af2_gpcrs = af2_rankings["GPCR"].unique()
-
-    # get the attributes
-    peptriever_attributes = attributes.loc[peptriever_gpcrs]
-    af2_attributes = attributes.loc[af2_gpcrs]
-
-    # get the agonist lengths
-    peptriever_agonist_lengths = peptriever_attributes["agonist length"]
-    af2_agonist_lengths = af2_attributes["agonist length"]
-
-    # get the rankings
-    peptriever_ranks = peptriever_rankings.set_index("GPCR")["AgonistRank"]
-    af2_ranks = af2_rankings.set_index("GPCR")["AgonistRank"]
-
-    # get the spearman rank correlation
-    rho_peptriever, p_val_peptriever = spearmanr(peptriever_ranks, peptriever_agonist_lengths)
-    rho_af2, p_val_af2 = spearmanr(af2_ranks, af2_agonist_lengths)
-
-    # plot not as scatter plot, but as a regplot
-    plt.figure(figsize=(2.6, 2.6))
-    sns.set_context("paper")
-    sns.set_style("whitegrid")
-    # use grid with opacity 0,5
-    plt.grid()
-    plt.grid(axis="y", linestyle="--", alpha=0.5)
-    plt.grid(axis="x", linestyle="--", alpha=0.5)
-    scatter_kws={'s': 6}
-    sns.regplot(
-        x=peptriever_agonist_lengths,
-        y=peptriever_ranks,
-        y_jitter=0.1,
-        color=peptriever_color,
-        label="",
-        marker='.',
-        # size
-        line_kws={"linewidth": 2},
-        scatter_kws=scatter_kws,
-    )
-    sns.regplot(
-        x=af2_agonist_lengths,
-        y=af2_ranks,
-        y_jitter=0.1,
-        marker='.',
-        color=af2_color,
-        label="",
-        scatter_kws=scatter_kws,
-    )
-
-    # create a legend using the colors and a lineplot
-    plt.plot([], [], color=peptriever_color, marker='.', 
-             label=f"Peptriever\n(rho = {rho_peptriever:.3f})")
-    plt.plot([], [], color=af2_color, marker='.',
-             label=f"AF2 (no templates)\n(rho = {rho_af2:.3f})")
-
-    # save the plot
-    plt.yticks(range(1, 12))
-    plt.xlabel("Agonist length")
-    plt.ylabel("Rank")
-    plt.title("Rank vs agonist length")
-    plt.legend(fontsize=8)
-  
-    plt.tight_layout()
-    plt.savefig(plot_p)
-    plt.savefig(plot_p.with_suffix(".png"))
-    plt.close()
-
-
 
 
 
@@ -516,21 +672,32 @@ if __name__ == "__main__":
     # helvetica font
     plt.rcParams["font.family"] = "Helvetica"
     # default font size is 10
-    plt.rcParams.update({"font.size": 10})
-    plt.rcParams.update({"axes.labelsize": 10})
-    plt.rcParams.update({"xtick.labelsize": 10})
-    plt.rcParams.update({"ytick.labelsize": 10})
-    plt.rcParams.update({"legend.fontsize": 10})
-    plt.rcParams.update({"legend.title_fontsize": 10})
-    plt.rcParams.update({"axes.titlesize": 10})
+    plt.rcParams.update({"font.size": 8})
+    plt.rcParams.update({"axes.labelsize": 8})
+    plt.rcParams.update({"xtick.labelsize": 8})
+    plt.rcParams.update({"ytick.labelsize": 8})
+    plt.rcParams.update({"legend.fontsize": 8})
+    plt.rcParams.update({"legend.title_fontsize": 8})
+    plt.rcParams.update({"axes.titlesize": 8})
 
+    save_custom_cbar_with_opacity(script_dir / 'ranking_vs_peptide_characteristics')
 
-    main(models_to_keep = ["AF2 (no templates)", "Peptriever", "AF2 LIS (no templates)"],
-         plot_p = script_dir / "peptide_correlation_characteristics.svg")
+    main(models_to_keep = ["AF2 (no templates)",
+                           "AF2 (no templates) LIS",
+                           "Chai-1",
+                           "AF3",
+                           "AF3 LIS",
+                           "RF-AA",
+                           "Peptriever",
+                          ],
+        attributes_to_keep=["agonist length", 
+                            # "agonist msa depth", 
+                            # "agonist selectivity", 
+                            "pKi",
+                            # "N-term length",
+                            "gpcr selectivity"],
+        plot_p = script_dir / "peptide_correlation_characteristics.svg"
+        )
     
-    # main(models_to_keep=[],
-    #      plot_p=script_dir / "peptide_correlation_characteristics_all_models.svg")
-    
-    # now plot a correlation that plots the agonist length of 
-    # Peptriever vs AlphaFold2 (no templates)
-    corr_plot_peptriever_vs_af2(plot_p=script_dir / "peptide_correlation_characteristics_peptriever_vs_af2.svg")
+    # 
+    # corr_plot_peptriever_vs_af2(plot_p=script_dir / "peptide_correlation_characteristics_peptriever_vs_af2.svg")

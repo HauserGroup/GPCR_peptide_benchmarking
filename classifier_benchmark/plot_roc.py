@@ -42,7 +42,7 @@ def create_roc(invalid_identifiers, plot_p, log_p,
     # set sns style
     sns.set_context("paper")
     sns.set_style("whitegrid") 
-    fig, ax = plt.subplots(figsize=(4, 4))
+    fig, ax = plt.subplots(figsize=(3.55, 3.55))
     
     # grid with opacity
     plt.grid()
@@ -124,8 +124,16 @@ def create_roc(invalid_identifiers, plot_p, log_p,
     ax.legend(handles, labels,
               # place legend outside of plot (right)
               # bbox_to_anchor=(1.05, 1),
-                loc='upper left',
-                borderaxespad=0.)
+       loc="lower right",
+        fontsize=8,
+        title_fontsize=10,
+        # tight layout
+        bbox_to_anchor=(1.0, 0.0),
+        # shrink legend
+        borderaxespad=0,
+        # shrink space between legend items
+        labelspacing=0.2,
+    )
     
     # disable labels
     if disable_labels:
@@ -152,14 +160,19 @@ def create_roc(invalid_identifiers, plot_p, log_p,
     # plt.xticks(np.arange(0, 1.1, 0.1))
     # plt.yticks(np.arange(0, 1.1, 0.1))
 
-    plt.tight_layout()
 
     # remove the legend
     if disable_labels:
         plt.legend().remove()
+    # use helvetica font
+    for item in ([ax.title, ax.xaxis.label, ax.yaxis.label] + ax.get_xticklabels() + ax.get_yticklabels()):
+        item.set_fontname("Helvetica")
+        item.set_fontsize(8)
 
     # ensure the roc plot is square
     plt.gca().set_aspect("equal", adjustable="box")
+    plt.tight_layout()
+
     print("saving to ", plot_p)
     # adjust so plot is total height
     plt.savefig(plot_p.with_suffix('.png'), dpi=300)
@@ -182,6 +195,7 @@ def main(models_to_plot):
         plot_p=script_dir / "plots/roc_all.svg",
         log_p=script_dir / "plots/roc_all.log",
         disable_labels=False,
+        label_missing=False,
     )
 
     # create roc WITHOUT similar decoys
@@ -199,14 +213,14 @@ def main(models_to_plot):
     # create roc for ONLY most dissimilar. 
     # Use AF3 as reference as decoys were redefined in step 2
     for m, pred in get_models(script_dir / "models"):
-        if "AF3" in m:
-            af3_identifiers = list(pred["identifier"])
+        if "AF3_server" in m:
+            af3_server_identifiers = list(pred["identifier"])
             break
     # add missing identifier to af3 (trfr_human), which is missing it's principal agonist
-    af3_identifiers.append("trfr_human___2139")
+    af3_server_identifiers.append("trfr_human___2139")
 
     all_identifiers = list(ground_truth["identifier"])
-    not_included = list(set(all_identifiers) - set(af3_identifiers))
+    not_included = list(set(all_identifiers) - set(af3_server_identifiers))
     # print which type the identifiers are
     for i, row in ground_truth.iterrows():
         if row["identifier"] not in not_included:
@@ -218,13 +232,15 @@ def main(models_to_plot):
         plot_p=script_dir / "plots/roc_most_dissimilar.svg",
         log_p=script_dir / "plots/roc_most_dissimilar.log",
         label_missing=False,
-        disable_labels=True,
+        disable_labels=False,
     )
 
 
 
 if __name__ == "__main__":
     models_to_plot = ["AF3",
+                      # "AF3_server",
+                      "AF3 (no templates) iptm+ptm",
                       "AF3 (no templates)",
                       "AF2 (no templates)",
                       "AF2",

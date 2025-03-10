@@ -5,8 +5,6 @@ from scipy.stats import mannwhitneyu
 import itertools
 
 
-from plot_class_comparison_new import get_all_plot_df
-
 
 def mannwhitneyu_is_greater(ranks0, ranks1):
     """ Perform Mann-Whitney U test to compare the performance of the models.
@@ -18,9 +16,16 @@ def mannwhitneyu_is_greater(ranks0, ranks1):
     ranks0: a list of integers, where each integer represents the rank of the agonist
     ranks1: a list of integers, where each integer represents the rank of the agonist
     """
+    # turn ranks0 into a list
+    if not isinstance(ranks0, list):
+        ranks0 = list(itertools.chain(ranks0))
+    if not isinstance(ranks1, list):
+        ranks1 = list(itertools.chain(ranks1))
+    # print value count of ranks
+    print(pd.Series(ranks1).value_counts(dropna=False))
     # assert there are no 0 values
-    assert 0 not in ranks0, "ranks0 cannot contain 0 values"
-    assert 0 not in ranks1, "ranks1 cannot contain 0 values"
+    assert 0 not in ranks0, f"ranks0 cannot contain 0 values {pd.Series(ranks0).value_counts(dropna=False)}"
+    assert 0 not in ranks1, f"ranks1 cannot contain 0 values {pd.Series(ranks1).value_counts(dropna=False)}"
     
     # calculate if ranks0 are significantly higher than ranks1, return p-value and statistic
     statistic, p = mannwhitneyu(ranks0, ranks1, alternative='greater')

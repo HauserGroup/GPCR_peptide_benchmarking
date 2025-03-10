@@ -175,7 +175,7 @@ def get_metrics_for_all():
     # get data
     ground_truth = get_ground_truth_df()
     models = get_models(model_dir)
-    models = [model for model in models if model[0] != "AF3"]
+    models = [model for model in models if model[0] != "AF3_server"]
 
     # apply first pick to predictions
     models = [
@@ -199,7 +199,7 @@ def get_metrics_for_similar():
     ground_truth = get_ground_truth_df()
     models = get_models(model_dir)
     # drop "AF3" model
-    models = [model for model in models if model[0] != "AF3"]
+    models = [model for model in models if model[0] != "AF3_server"]
 
     # filter ground truth, for decoy type in ["Dissimilar", "Principal Agonist"]
     filtered = ground_truth["Decoy Type"].isin(["Similar", "Principal Agonist"])
@@ -233,7 +233,7 @@ def get_metrics_for_dissimilar():
     ground_truth = get_ground_truth_df()
     models = get_models(model_dir)
     # drop "AF3" model
-    models = [model for model in models if model[0] != "AF3"]
+    models = [model for model in models if model[0] != "AF3_server"]
 
     # filter ground truth, for decoy type in ["Dissimilar", "Principal Agonist"]
     filtered = ground_truth["Decoy Type"].isin(["Dissimilar", "Principal Agonist"])
@@ -270,7 +270,7 @@ def get_metrics_for_1on1():
 
     # get 1on1 identifiers from af3 predictions
     for m in models:
-        if m[0] == "AF3":
+        if m[0] == "AF3_server":
             af3 = m[1]
             valid_identifiers = af3["identifier"].values
             break
@@ -369,11 +369,11 @@ def plot_combined():
     models = [model for model in models if "LIS" not in model and "APPRAISE" not in model.upper()]
     # place AF3 after 'AF2'
     af2_index = models.index("AF2")
-    models = models[:af2_index + 1] + ["AF3"] + models[af2_index + 1:]
+    models = models[:af2_index + 1] + ["AF3_server"] + models[af2_index + 1:]
     rows = models
     cols = ["Accuracy", "Precision", "Recall", "F1"]
     for col in cols:
-        metric_all.loc["AF3", col] = np.nan
+        metric_all.loc["AF3_server", col] = np.nan
     metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
     metric_all = metric_all.loc[rows, cols]
 
@@ -385,14 +385,14 @@ def plot_combined():
 
     metric_similar = get_metrics_for_similar()
     for col in cols:
-        metric_similar.loc["AF3", col] = np.nan
+        metric_similar.loc["AF3_server", col] = np.nan
     metric_similar = metric_similar.apply(pd.to_numeric, errors="coerce")
     metric_similar = add_random(metric_similar, 5)
     metric_similar = metric_similar.loc[rows, cols]
 
     metric_dissimilar = get_metrics_for_dissimilar()
     for col in cols:
-        metric_dissimilar.loc["AF3", col] = np.nan
+        metric_dissimilar.loc["AF3_server", col] = np.nan
     metric_dissimilar = metric_dissimilar.apply(pd.to_numeric, errors="coerce")
     metric_dissimilar = add_random(metric_dissimilar, 5)
     metric_dissimilar = metric_dissimilar.loc[rows, cols]
@@ -584,7 +584,7 @@ def plot_10_to_1_only():
     rows = models
     cols = ["Accuracy", "Precision", "Recall", "F1"]
     for col in cols:
-        metric_all.loc["AF3", col] = np.nan
+        metric_all.loc["AF3_server", col] = np.nan
     metric_all = metric_all.apply(pd.to_numeric, errors="coerce")
     metric_all = metric_all.loc[rows, cols]
 

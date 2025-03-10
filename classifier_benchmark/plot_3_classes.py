@@ -20,7 +20,7 @@ import sys
 # append "."
 sys.path.append(".")
 from colors import COLOR
-
+COLOR=plt.cm.tab10.colors
 
 def get_principal_agonist_identifiers(ground_truth):
     """ """
@@ -133,7 +133,7 @@ def add_legend(plot_df, models, ax, bins, bin_width, last_index=3):
     # remove background
     ax[last_index].set_axis_off()
     ax[last_index].legend(
-        handles=legend.legendHandles,
+        handles=legend.legend_handles,
         labels=[model[0] for model in models],
         loc="center",
         title="Model",
