@@ -7,6 +7,17 @@ import scipy.stats as stats
 import sys
 import requests 
 import json
+import numpy as np
+from statsmodels.stats.multitest import multipletests
+
+
+def round_to_significant_digits(number, significant_digits=3):
+    if pd.isnull(number) or not isinstance(number, (int, float)):
+        return number
+    if number == 0:
+        return 0
+    else:
+        return round(number, significant_digits - int(np.floor(np.log10(abs(number)))) - 1)
 
 def get_ligand_data(receptor_name):
     url = f"https://gpcrdb.org/services/ligands/{receptor_name}/"
@@ -176,14 +187,14 @@ legend.get_title().set_fontproperties(fm.FontProperties(size=0))
 frame = legend.get_frame()
 frame.set_linewidth(0.0)  
 
-ax.title.set_text("DockQ vs Peptide Length")
+ax.title.set_text(f"DockQ vs Peptide Length (n={dockq_df['pdb'].nunique()})")
 ax.title.set_fontsize(16)
 
 # Save the plot
 plt.ylim(0, 1)
 plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
-plt.savefig(f"{plot_dir}/DockQ_vs_PeptideLength.svg", dpi=600)
+plt.savefig(f"{plot_dir}/DockQ_vs_PeptideLength.png", dpi=600)
 
 # Loop through each model and calculate the Pearson correlation between LIS and DockQ
 results = []
@@ -193,6 +204,12 @@ for model in dockq_df["model"].unique():
     results.append([model, correlation, p_value])
 
 results_df = pd.DataFrame(results, columns=["Model", "Pearson correlation", "P-value"])
+_, corrected_p_values, _, _ = multipletests(results_df['P-value'], method='fdr_bh')
+results_df['Corrected P-value'] = corrected_p_values
+
+for col in results_df.columns:
+    results_df[col] = results_df[col].apply(lambda x: round_to_significant_digits(x, 4) if pd.to_numeric(x, errors='coerce') is not None else x)
+
 results_df.to_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/peptide_length_vs_dockq.csv", index=False)
 
 ###############################
@@ -272,14 +289,14 @@ legend.get_title().set_fontproperties(fm.FontProperties(size=0))
 frame = legend.get_frame()
 frame.set_linewidth(0.0)  
 
-ax.title.set_text("DockQ vs pKi")
+ax.title.set_text(f"DockQ vs pKi (n={activity_df['pdb'].nunique()})")
 ax.title.set_fontsize(16)
 
 # Save the plot
 plt.ylim(0, 1)
 plt.rcParams['svg.fonttype'] = 'none'
 plt.tight_layout()
-plt.savefig(f"{plot_dir}/DockQ_vs_pKi.svg", dpi=600)
+plt.savefig(f"{plot_dir}/DockQ_vs_pKi.png", dpi=600)
 
 # Loop through each model and calculate the Pearson correlation between LIS and DockQ
 results = []
@@ -289,4 +306,10 @@ for model in activity_df["model"].unique():
     results.append([model, correlation, p_value])
 
 results_df = pd.DataFrame(results, columns=["Model", "Pearson correlation", "P-value"])
+_, corrected_p_values, _, _ = multipletests(results_df['P-value'], method='fdr_bh')
+results_df['Corrected P-value'] = corrected_p_values
+
+for col in results_df.columns:
+    results_df[col] = results_df[col].apply(lambda x: round_to_significant_digits(x, 4) if pd.to_numeric(x, errors='coerce') is not None else x)
+
 results_df.to_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/activity_vs_dockq.csv", index=False)

@@ -4,6 +4,7 @@ import pandas as pd
 from scipy.stats import friedmanchisquare
 import sys
 import numpy as np
+from statsmodels.stats.multitest import multipletests
 
 def round_to_significant_digits(number, significant_digits=3):
     if pd.isnull(number) or not isinstance(number, (int, float)):
@@ -68,6 +69,11 @@ sd_summary = sd_summary.round(6)
 
 friedman_results_df = pd.merge(friedman_results_df, sd_summary, on="model")
 friedman_results_df = friedman_results_df[["model",  "DockQ_sd", "chisq", "p_value"]]
+
+_, corrected_p_values, _, _ = multipletests(friedman_results_df['p_value'], method='fdr_bh')
+friedman_results_df['P-value'] = friedman_results_df['p_value']
+friedman_results_df = friedman_results_df.drop(columns=["p_value"])
+friedman_results_df['Corrected P-value'] = corrected_p_values
 
 # Apply function to all numeric columns in the DataFrame
 for col in friedman_results_df.columns:

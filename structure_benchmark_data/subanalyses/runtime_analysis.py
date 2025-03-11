@@ -192,7 +192,7 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
     # Perform pairwise Wilcoxon signed-rank tests between all models
     results = []
     for model1, model2 in itertools.combinations(data[model_col].unique(), 2):
-
+        
         # Get subset of data for each model
         var1 = data[data[model_col] == model1][[variable, pdb_col, model_col]].dropna()
         var2 = data[data[model_col] == model2][[variable, pdb_col, model_col]].dropna()
