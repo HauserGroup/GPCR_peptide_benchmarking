@@ -19,6 +19,7 @@ import sys
 from plot_enrichment import get_peptide_protein_GPCRs
 from plot_peptide_correlation_characteristics_heatmap import get_pval_label
 from class_unseen_mannwhitneyu import mannwhitneyu_is_greater
+from statsmodels.stats.multitest import multipletests
 
 # append "."
 sys.path.append(".")
@@ -103,6 +104,31 @@ def get_all_plot_df():
     all_plot_df = pd.concat(all_plot_df)
     all_plot_df["Class"] = all_plot_df["GPCR"].apply(lambda x: gpcr_to_class_dict[x])
     return all_plot_df
+
+
+
+def apply_p_val_correction(stat_df):
+    """ Per group, apply p-value correction using Benjamini-Hochberg
+            group                   model    stat     p_val
+    0    Class      AF2 (no templates)   910.0  0.139311
+    1    Class  AF2 (no templates) LIS   871.5  0.204087
+    2    Class                     AF3   880.0  0.194790
+    3    Class                 AF3 LIS   891.5  0.150189
+    4    Class                  Chai-1  1058.0  0.013713
+    """
+    # apply p-value correction per group
+    groups = stat_df["group"].unique()
+    for group in groups:
+        group_df = stat_df[stat_df["group"] == group]
+        p_vals = group_df["p_val"]
+        _, p_vals_corrected, _, _ = multipletests(p_vals,
+                                                  # bonferroni
+                                                  method='bonferroni')
+        
+        stat_df.loc[stat_df["group"] == group, "p_val_corrected"] = p_vals_corrected
+       
+        
+    return stat_df
 
 
 
@@ -259,20 +285,47 @@ def run_main_barplot(plot_p, models_to_keep, gpcr_groups):
 
             # store stat, pval in df
             stats.append((gpcr_group, model, stat, p_val))            
-            
             ax.set_title(" ", fontsize=8, pad=0, loc="center")
-            p_val_label = get_pval_label(p_val)
-            ax.text(0.5,
-                    0.95, 
-                    p_val_label,
-                    horizontalalignment='center', # instead of center
-                    verticalalignment='top',
-                    transform=ax.transAxes,
-                    fontsize=16,
-                    # bold
-                    fontweight='bold',
-                    color='black')
+
+    # now add p-value corrected stats
+    stats = pd.DataFrame(stats, columns=["group", "model", "stat", "p_val"])
+    stats = apply_p_val_correction(stats)
+    # set 'Unseen,AF2 (no templates)' to a random number to see if the p-value correction works
+    # stats.loc[(stats["group"] == "Unseen") & (stats["model"] == "AF2 (no templates)"), "p_val"] = 0.213
+    # correct p-values per group
+    for group_i, group in enumerate(gpcr_groups):
+        for model_i, model in enumerate(sorted(models_to_keep)):
+            ax = axes[model_i, group_i]
+            p_val_corrected = stats[(stats["group"] == group) & (stats["model"] == model)]["p_val_corrected"]
+            assert len(p_val_corrected) == 1
+            p_val_corrected = p_val_corrected.values[0]
             
+            text_type = "normal"
+            # if <0.05, bol text
+            # if p_val_corrected < 0.05:
+            #     text_type = "bold"
+
+            if round(p_val_corrected, 3) == 0.000:
+                p_val_text = "p<0.001"
+            else:
+                p_val_text = f'p≈{p_val_corrected:.3f}'
+
+            # p_val_label = get_pval_label(p_val)
+            if p_val_corrected < 0.05:
+                ax.set_title(p_val_text, fontsize=8, pad=0, loc="center", fontweight=text_type)
+                p_val_label = get_pval_label(p_val_corrected)
+                # ax.text(0.5,
+                #         1.0, 
+                #         p_val_label,
+                #         horizontalalignment='center', # instead of center
+                #         verticalalignment='top',
+                #         transform=ax.transAxes,
+                #         fontsize=18,
+                #         # bold
+                #         fontweight="bold",
+                #         color='black')
+            else:
+                ax.set_title(" ", fontsize=8, pad=0, loc="center", fontweight=text_type)
             ax.set_xlabel("")
             ax.set_ylabel("")
 
@@ -286,9 +339,12 @@ def run_main_barplot(plot_p, models_to_keep, gpcr_groups):
     print("Saved plot df to", plot_p.with_suffix(".csv"))
 
     # save stats
-    stats = pd.DataFrame(stats, columns=["group", "model", "stat", "p_val"])
     stat_p = plot_p.parent / f'{plot_p.stem}_stats.csv'
     stats.to_csv(stat_p, index=False)
+    # only corrected p-val
+    corrected_pval_df = stats[["p_val_corrected"]]
+    corrected_pval_df.to_csv(plot_p.parent / f'{plot_p.stem}_corrected_pval.csv', index=False)
+
 
 if __name__ == "__main__":
     script_dir = pathlib.Path(__file__).parent
@@ -296,17 +352,17 @@ if __name__ == "__main__":
     sns.set_context("paper")
     sns.set_palette("colorblind")
     # set default fontsize to 10
-    plt.rcParams.update({"font.size": 10})
-    # helvetica font
-    plt.rcParams["font.family"] = "Helvetica"
-    # default font size is 10
     plt.rcParams.update({"font.size": 8})
-    plt.rcParams.update({"axes.labelsize": 8})
-    plt.rcParams.update({"xtick.labelsize": 8})
-    plt.rcParams.update({"ytick.labelsize": 8})
-    plt.rcParams.update({"legend.fontsize": 8})
-    plt.rcParams.update({"legend.title_fontsize": 8})
-    plt.rcParams.update({"axes.titlesize": 8})
+    # helvetica font
+    # plt.rcParams["font.family"] = "Helvetica"
+    # default font size is 10
+    # plt.rcParams.update({"font.size": 8})
+    # plt.rcParams.update({"axes.labelsize": 8})
+    # plt.rcParams.update({"xtick.labelsize": 8})
+    # plt.rcParams.update({"ytick.labelsize": 8})
+    # plt.rcParams.update({"legend.fontsize": 8})
+    # plt.rcParams.update({"legend.title_fontsize": 8})
+    # plt.rcParams.update({"axes.titlesize": 8})
 
     models_to_keep = [
         "AF2 (no templates)",

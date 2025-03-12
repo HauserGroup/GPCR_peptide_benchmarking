@@ -30,6 +30,8 @@ sys.path.append(".")
 # from colors import COLOR
 from colors_subanalysis import COLOR
 from matplotlib import colors as mcolors
+# p-val corrections
+from statsmodels.stats.multitest import multipletests
 
 # def corr_plot_peptriever_vs_af2(plot_p):
 #     """ On y-axis, rank of agonist, on x-axis, agonist length
@@ -322,6 +324,38 @@ def get_attributes():
     return correlation_df
 
 
+
+def apply_pval_correction(correlation_df):
+    """
+    Apply bonferroni to p-values separately for each attribute.
+    
+    Parameters:
+    correlation_df : pd.DataFrame
+        DataFrame where each cell contains a tuple (rho, p_val, sample_count)
+    
+    Returns:
+    pd.DataFrame
+        DataFrame with corrected p-values.
+    """
+    corrected_df = correlation_df.copy()
+    
+    for attribute in correlation_df.columns:
+        # Extract p-values for the current attribute
+        p_values = [correlation_df.loc[model, attribute][1] for model in correlation_df.index]
+        
+        # Apply Benjamini-Hochberg correction
+        _, p_corrected, _, _ = multipletests(p_values, method='bonferroni')
+        
+        # Replace corrected p-values back into the dataframe
+        for i, model in enumerate(correlation_df.index):
+            rho, _, sample_count = correlation_df.loc[model, attribute]
+            corrected_df.loc[model, attribute] = (rho, p_corrected[i], sample_count)
+    
+    return corrected_df
+
+
+
+
 def create_correlation_df(attributes, rankings):
     """
     attributes:
@@ -338,12 +372,34 @@ def create_correlation_df(attributes, rankings):
     correlation_df = pd.DataFrame(
         index=rankings["Model"].unique(), columns=unique_attributes
     )
+   
+    # first loop, calculate the correlation df
+    for model_i, model in enumerate(sorted(rankings["Model"].unique())):
+        model_rankings = rankings[rankings["Model"] == model]
+        model_gpcrs = model_rankings["GPCR"].unique()
+        gpcr_to_rank = model_rankings.set_index("GPCR")["AgonistRank"]
+        model_ranks = gpcr_to_rank[model_gpcrs]
 
+        # for each attribute (column)
+        for attribute_i, attribute in enumerate(unique_attributes):
+            model_attributes = [attributes.loc[gpcr, attribute] for gpcr in model_gpcrs]
+            rho, p_val = spearmanr(model_ranks, model_attributes, nan_policy="omit")
+            # count non-nan samples
+            sample_count = len(model_ranks) - np.isnan(model_ranks).sum()
+            correlation_df.loc[model, attribute] = (rho, p_val, sample_count)
+    return correlation_df
+
+
+def plot_merged_correlation_overview(correlation_df, plot_p, 
+                             attributes, rankings):
     plot_save_dir = script_dir / 'ranking_vs_peptide_characteristics'
     os.makedirs(plot_save_dir, exist_ok=True)
 
+    # create empty plot
+    models = correlation_df.index
+    unique_attributes = correlation_df.columns
     fig, axes = plt.subplots(
-                             len(rankings["Model"].unique()), 
+                             len(models),
                              len(unique_attributes), 
                              figsize=(1*len(unique_attributes), 4.5),
                              # share y-axis
@@ -356,6 +412,7 @@ def create_correlation_df(attributes, rankings):
                              constrained_layout=True,
     )
 
+    # create colorbar
     max_corr = 0.4
     min_corr = -0.4
     # create a colorbar
@@ -365,24 +422,21 @@ def create_correlation_df(attributes, rankings):
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
 
     
-    # first loop, plot each model and attribute, calculate p-values
-    for model_i, model in enumerate(sorted(rankings["Model"].unique())):
-        print(model)
+    # second loop, plot the regplots
+    for model_i, model in enumerate(sorted(models)):
         model_rankings = rankings[rankings["Model"] == model]
         model_gpcrs = model_rankings["GPCR"].unique()
         gpcr_to_rank = model_rankings.set_index("GPCR")["AgonistRank"]
         model_ranks = gpcr_to_rank[model_gpcrs]
 
-        # for each attribute (column)
+
         for attribute_i, attribute in enumerate(unique_attributes):
             model_attributes = [attributes.loc[gpcr, attribute] for gpcr in model_gpcrs]
-            rho, p_val = spearmanr(model_ranks, model_attributes, nan_policy="omit")
-            
             # select axis
             ax = axes[model_i, attribute_i]
+            rho, p_val, sample_count = correlation_df.loc[model, attribute]
             # background fill (red to blue) to indicate correlation quality
             fill_color = cmap(norm(rho))
-
             # fill the background
             ax.axhspan(0.5, 11.5, 
                        # color=COLOR.get(model, 'white'),
@@ -390,31 +444,6 @@ def create_correlation_df(attributes, rankings):
                        alpha=0.25,
                        zorder=0,
                        )
-        
-            # label correlation quality
-            corr_qual = f"r={rho:.2f}"#, p={p_val:.2f}"
- 
-            # set title background to fill color
-            p_val_label = get_pval_label(p_val)
-            ax.text(1.0,
-                    0.95, 
-                    p_val_label,
-                    horizontalalignment='right',
-                    verticalalignment='top',
-                    transform=ax.transAxes,
-                    fontsize=16,
-                    # bold
-                    fontweight='bold',
-                    color='black')
-
-            corr_qual = corr_qual # + p_val_label
-            ax.set_title(corr_qual, fontsize=8, pad=0,
-                        # color the title bbox
-                        #bbox=dict(facecolor=fill_color, alpha=0.5, boxstyle='round,pad=0.1'),
-                        # face right
-                        loc='center',
-                         )
-
             sns.regplot(x=model_attributes,
                         y=model_ranks, 
                         y_jitter=0.1,             
@@ -465,23 +494,40 @@ def create_correlation_df(attributes, rankings):
             # set a grid with opacity 0.5
             ax.grid(axis="y", linestyle="--", alpha=0.0)
             ax.grid(axis="x", linestyle="-", alpha=0.0)
+            
+            # add pvalue label
+            # p_val_label = get_pval_label(p_val)
+            # ax.text(1.0, 0.95, p_val_label,
+            #         horizontalalignment='right', verticalalignment='top', transform=ax.transAxes,
+            #         fontsize=18, fontweight='bold',color='black')
+            
+            # check if round by 2 decimals makes it 0.00, if so, write <0.01
+            if round(p_val, 3) == 0.000:
+                corr_qual = f"p<0.001"
+            else:
+                corr_qual = f"p≈{p_val:.3f}"
 
-            # count non-nan samples
-            sample_count = len(model_ranks) - np.isnan(model_ranks).sum()
-            correlation_df.loc[model, attribute] = (rho, p_val, sample_count)
-   
-    # lastly, do p-value correction
-    for model_i, model in enumerate(sorted(rankings["Model"].unique())):
-        for attribute_i, attribute in enumerate(unique_attributes):
+            fontweight = 'normal'
+            if p_val < 0.05:
+                # ax.title.set_bbox({
+                #     'facecolor': 'lightgrey',
+                #     'alpha': 0.8,
+                #     'edgecolor': None,
+                #     'pad': 1,  # Reduce padding
+                #     'boxstyle': 'round,pad=0.1'  # Control box shrinkage
+                # })
+                # fontweight = 'bold'
+                ax.set_title(corr_qual, fontsize=8, pad=0,loc='center', fontweight=fontweight,
+                             # move to bottom
+                             #y=0.8,
+                              )
+            else:
+                ax.set_title(" ", fontsize=8, pad=0,loc='center', fontweight=fontweight)
 
 
-    # force square aspect ratio
-    # transparent grid
-    # plt.gca().set_aspect('equal')
     plt.savefig(plot_save_dir / 'merged.png', dpi=600)
     plt.savefig(plot_save_dir / 'merged.svg')
     plt.close()
-    return correlation_df
 
 
 def save_custom_cbar_with_opacity(plot_save_dir):
@@ -537,6 +583,7 @@ def get_pval_label(p_val):
         return "*"
     else:
         return ""
+
 
 def plot_correlation_heatmap(correlation_df, plot_p):
     script_dir = pathlib.Path(__file__).parent.absolute()
@@ -642,6 +689,12 @@ def main(models_to_keep, attributes_to_keep, plot_p):
     # models to keep
     correlation_df = create_correlation_df(attributes, rankings)
     
+
+    print("APPLYING P-VAL CORRECTION")
+    correlation_df = apply_pval_correction(correlation_df)
+
+    plot_merged_correlation_overview(correlation_df, plot_p, attributes, rankings)
+
     # keep only models to keep
     correlation_df = correlation_df.loc[models_to_keep]
     # plot_correlation_heatmap(correlation_df, plot_p)
@@ -652,9 +705,11 @@ def main(models_to_keep, attributes_to_keep, plot_p):
 
     models = correlation_df.index 
     attributes = correlation_df.columns
+    attributes = sorted(attributes)
+    print(','.join(attributes))
     for m in models:
         print(m, end=',')
-        for a in attributes:
+        for a in sorted(attributes):
             rho, p_val, n_gpcrs = correlation_df.loc[m, a]
             print(f'{rho},{p_val}', end=',')
         print("")
@@ -670,7 +725,7 @@ if __name__ == "__main__":
     sns.set_style("whitegrid")
     sns.set_context("paper")
     # helvetica font
-    plt.rcParams["font.family"] = "Helvetica"
+    # plt.rcParams["font.family"] = "Helvetica"
     # default font size is 10
     plt.rcParams.update({"font.size": 8})
     plt.rcParams.update({"axes.labelsize": 8})

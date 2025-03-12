@@ -162,7 +162,7 @@ def run_main():
     sns.set_context("paper")
     sns.set_style("whitegrid") 
     # two subplots, 1 for curve and 1 for legend
-    fig, axes = plt.subplots(1, 2, figsize=(8, 5))
+    fig, axes = plt.subplots(1, 2, figsize=(7, 3))
     ax = axes[0]
 
     # automatically use diverse colors and styles for the lineplot
@@ -235,6 +235,7 @@ def run_main():
     plt.ylabel("Agonists retained ratio")
     plt.title("Performance of RoseTTAInterfaceAnalyzer\nmetrics on GPCR agonist prediction")
 
+
     # remove legend from ax[0]
     ax.get_legend().remove()
 
@@ -242,13 +243,19 @@ def run_main():
     ax = axes[1]
     plt.sca(ax)
     ax.axis("off")
-    ax.legend(handles, labels, title="", loc="center", fontsize=11,
-              markerscale=1.5)
-    
-
+    ax.legend(handles, labels, title="", loc="upper right", fontsize=8,
+              markerscale=1.5,
+              # center right
+                bbox_to_anchor=(1.0, 1.2),
+                # remove padding
+                borderaxespad=0,
+                # reduce size between handles
+                columnspacing=0.2,
+                # reduce size between rows
+                labelspacing=0.2,
+    )
 
     plt.tight_layout()
-
     plt.savefig(plot_p)
     print(f"Saved plot to {plot_p}")
 

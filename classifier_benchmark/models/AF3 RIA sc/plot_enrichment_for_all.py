@@ -27,8 +27,21 @@ import pandas as pd
 from colors import COLOR
 from plot_heatmap_combined import apply_first_pick_to_predictions
 
+sns.set_style("whitegrid")
+sns.set_context("paper")
+# helvetica font
+# plt.rcParams["font.family"] = "Helvetica"
+# default font size is 10
+plt.rcParams.update({"font.size": 8})
+plt.rcParams.update({"axes.labelsize": 8})
+plt.rcParams.update({"xtick.labelsize": 8})
+plt.rcParams.update({"ytick.labelsize": 8})
+plt.rcParams.update({"legend.fontsize": 8})
+plt.rcParams.update({"legend.title_fontsize": 8})
+plt.rcParams.update({"axes.titlesize": 8})
 
-def get_models_af2():
+
+def get_models_af3():
     """
     should be a list of tuples.
     ("name of model", pd.DataFrame)
@@ -38,7 +51,7 @@ def get_models_af2():
 
     """
     script_dir = pathlib.Path(__file__).parent
-    df = script_dir / 'benchmark_AF2_no_templates.csv'
+    df = script_dir / 'AF3.csv'
     df = pd.read_csv(df)
 
     #    total_score  complex_normalized  dG_cross  ...  side2_normalized  side2_score              description
@@ -50,6 +63,13 @@ def get_models_af2():
     columns = list(df.columns)
     columns.remove('description')
     columns.remove('identifier')
+
+
+    # only keep columns from the AF2 df 
+    af2_df = script_dir.parent / 'AF2 (no templates) RIA sc/benchmark_AF2_no_templates.csv'
+    af2_df = pd.read_csv(af2_df)
+    af2_columns = list(af2_df.columns)
+    columns = [c for c in columns if c in af2_columns]
 
 
     # invert the columns for some, so higher val is better complex
@@ -79,7 +99,7 @@ def run_main():
     """ """
     
     script_dir = pathlib.Path(__file__).parent
-    models = get_models_af2()
+    models = get_models_af3()
 
     unique_models = list([m[0] for m in models])
     plot_p = script_dir / "enrichment.svg"
@@ -189,9 +209,6 @@ def run_main():
     #         color=COLOR.get(model_name, "black"),
     #     )
 
-    # plt.legend(title="Model", loc="lower right", fontsize=11, title_fontsize=12,
-    #            markerscale=1.5, ncol=2, bbox_to_anchor=(1.5, 1), borderaxespad=0.)
-
     # plot dashed line at random performance
     random_performance_yvals = 1 / 11 * plot_df["keep_top_n"]
     ax.plot(
@@ -247,6 +264,7 @@ def run_main():
                 # reduce size between rows
                 labelspacing=0.2,
     )
+
     plt.tight_layout()
 
     plt.savefig(plot_p)

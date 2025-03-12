@@ -28,7 +28,7 @@ from colors import COLOR
 from plot_heatmap_combined import apply_first_pick_to_predictions
 
 
-def get_models_af2():
+def get_models():
     """
     should be a list of tuples.
     ("name of model", pd.DataFrame)
@@ -38,7 +38,7 @@ def get_models_af2():
 
     """
     script_dir = pathlib.Path(__file__).parent
-    df = script_dir / 'benchmark_AF2_no_templates.csv'
+    df = script_dir / 'Chai-1.csv'
     df = pd.read_csv(df)
 
     #    total_score  complex_normalized  dG_cross  ...  side2_normalized  side2_score              description
@@ -79,7 +79,7 @@ def run_main():
     """ """
     
     script_dir = pathlib.Path(__file__).parent
-    models = get_models_af2()
+    models = get_models()
 
     unique_models = list([m[0] for m in models])
     plot_p = script_dir / "enrichment.svg"
