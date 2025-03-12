@@ -12,7 +12,6 @@ import numpy as np
 import glob
 import json
 
-
 file_dir = os.getcwd()
 repo_name = "GPCR_peptide_benchmarking"
 index = file_dir.find(repo_name)
@@ -32,11 +31,32 @@ af3_runtime_path = f"{repo_dir}/structure_benchmark/AF3"
 af3_runtime_no_templates_path = f"{repo_dir}/structure_benchmark/AF3_no_templates"
 af2_runtime_path = f"{repo_dir}/structure_benchmark/AF2"
 af2_runtime_no_templates_path = f"{repo_dir}/structure_benchmark/AF2_no_templates"
+neuralplexer_runtime_path = f"{repo_dir}/structure_benchmark/NeuralPLexer/NeuralPLexer_runtimes.txt"
+neuralplexer_folder_path = f"{repo_dir}/structure_benchmark/NeuralPLexer"
 
+def get_neuralplexer_runtimes(filepath, folderpath, avg = True):
+    runtime_dict = {}
+    pattern = re.compile(r"Processed (.+?) in (\d+) seconds")
 
-# ADD NEURALPLEXER RUNTIMES
+    # List pdb files in folderpath
+    pdb_files = [f for f in os.listdir(folderpath) if f.endswith(".pdb")]
 
-def get_af2_total_runtime(timings_json, avg = False):
+    # Open file
+    with open(filepath, "r") as f:
+        lines = f.readlines()
+        
+    for line in lines:
+        match = pattern.search(line)
+        if match and match.group(1) + ".pdb" in pdb_files:
+            pdb_code = match.group(1)
+            runtime = float(match.group(2))
+            runtime_dict[pdb_code] = runtime
+            if avg:
+                runtime_dict[pdb_code] /= 16
+    
+    return runtime_dict
+
+def get_af2_total_runtime(timings_json, avg = True):
 
     with open(timings_json, "r") as f:
         timings = json.load(f)
@@ -49,11 +69,8 @@ def get_af2_total_runtime(timings_json, avg = False):
             total_time += timings[key]
     
     # Get average
-    print("Total time:", total_time)
-    print("Number of models:", c)
     if c > 0 and avg:
         total_time /= c
-        print("Average time:", total_time)
 
     return total_time
 
@@ -84,15 +101,15 @@ def parse_esm_rfaa_runtimes(filepath, model_dir):
             file_path = match_fasta.group(1)
             runtime = float(match_fasta.group(2))
             file_name = file_path.split('/')[-1].split('.')[0]  # Extract filename without extension
-            if not os.path.exists(f"{model_dir}/{file_name}/{file_name}.pdb"):
-                print(f"{model_dir}/{file_name}/{file_name}.pdb does not exist")
+            if not os.path.exists(f"{model_dir}/{file_name}.pdb"):
+                print(f"{model_dir}/{file_name}.pdb does not exist")
                 continue
             runtime_dict[file_name] = runtime
     
     return runtime_dict
 
 
-def parse_chai_runtime(folder_path):
+def parse_chai_runtime(folder_path, avg = True):
     runtime_dict = {}
     pattern = re.compile(r"Done running inference for (.+?) in (\d+) seconds")
     
@@ -112,11 +129,13 @@ def parse_chai_runtime(folder_path):
                         runtime = float(match.group(2))
                         file_name = file_path.split('/')[-1].split('.')[0]  # Extract filename without extension
                         runtime_dict[file_name] = runtime
+                        if avg:
+                            runtime_dict[file_name] /= 5
     
     return runtime_dict
 
 
-def parse_alphafold3_runtime(folder_path):
+def parse_alphafold3_runtime(folder_path, avg = True):
     runtime_dict = {}
     pattern = re.compile(r"Running model inference and extracting output structures for seeds .* took\s+(\d+\.\d+) seconds")
     
@@ -138,6 +157,8 @@ def parse_alphafold3_runtime(folder_path):
                     if match:
                         runtime = float(match.group(1))
                         runtime_dict[model_name.upper().split("_")[0]] = runtime
+                        if avg:
+                            runtime_dict[model_name.upper().split("_")[0]] /= 5
     
     return runtime_dict
 
@@ -165,17 +186,19 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
     # Order dataframe by model and then by PDB code
     data = data.sort_values(by=[model_col, pdb_col])
 
+    # Replace "\n" with " " in model names
+    data[model_col] = data[model_col].replace("\n", " ", regex=True)
+
     # Perform pairwise Wilcoxon signed-rank tests between all models
     results = []
     for model1, model2 in itertools.combinations(data[model_col].unique(), 2):
+        
         # Get subset of data for each model
         var1 = data[data[model_col] == model1][[variable, pdb_col, model_col]].dropna()
         var2 = data[data[model_col] == model2][[variable, pdb_col, model_col]].dropna()
 
         # Merge the two subsets on PDB code
         merged = var1.merge(var2, on=pdb_col, suffixes=(f'_{model1}', f'_{model2}'))
-        print(merged)
-
         if merged.shape[0] < 2:
             # Skip if there are not enough data points for the test
             continue
@@ -230,8 +253,36 @@ af3_no_templates = parse_alphafold3_runtime(af3_runtime_no_templates_path)
 
 # List timings.json files in the subdirectories of the above two folders and parse them
 # to get the runtimes for each model
-af2_timings = glob.glob(f"{af2_runtime_path}/*_1/timings.json")
-af2_no_templates_timings = glob.glob(f"{af2_runtime_no_templates_path}/*_1/timings.json")
+af2_timings = glob.glob(f"{af2_runtime_path}/*/timings.json")
+af2_no_templates_timings = glob.glob(f"{af2_runtime_no_templates_path}/*/timings.json")
+
+# List AF2 models run on A100
+af2_a100 = {}
+dir_path = f"{repo_dir}/structure_benchmark/AF2/*/AF_pred*.txt"
+log_files = glob.glob(dir_path)
+log_files.sort(key=lambda x: int(x.split("/")[-2].split("_")[1]))
+for file in log_files:
+    pdb_code = file.split("/")[-2].split("_")[0]
+    with open(file, 'r') as f:
+        lines = f.readlines()
+        if "node263.cluster" in lines[4] and pdb_code not in af2_a100:
+            af2_a100[pdb_code] = file.split("/")[-2] 
+
+# List AF2 models run on A100
+af2_no_templates_a100 = {}
+dir_path = f"{repo_dir}/structure_benchmark/AF2_no_templates/*/AF_pred*.txt"
+log_files = glob.glob(dir_path)
+log_files.sort(key=lambda x: int(x.split("/")[-2].split("_")[1]))
+for file in log_files:
+    pdb_code = file.split("/")[-2].split("_")[0]
+    with open(file, 'r') as f:
+        lines = f.readlines()
+        if "node263.cluster" in lines[4] and pdb_code not in af2_no_templates_a100:
+            af2_no_templates_a100[pdb_code] = file.split("/")[-2] 
+
+# Keep only af2_timings that were run on A100
+af2_timings = [timings for timings in af2_timings if timings.split("/")[-2] in af2_a100.values()]
+af2_no_templates_timings = [timings for timings in af2_no_templates_timings if timings.split("/")[-2] in af2_no_templates_a100.values()]
 
 af2 = {}
 af2_no_templates = {}
@@ -243,74 +294,105 @@ for timings_file in af2_timings:
 for timings_file in af2_no_templates_timings:
     model = os.path.basename(os.path.dirname(timings_file)).split("_1")[0].upper()
     af2_no_templates[model] = get_af2_total_runtime(timings_file)
+
+# Get neuralplexer runtimes
+neuralplexer_runtimes = get_neuralplexer_runtimes(neuralplexer_runtime_path, neuralplexer_folder_path)
     
-
 # Make a dataframe from the runtimes
-rfaa_df = pd.DataFrame(rfaa_with_templates.items(), columns=["Model", "Runtime"])
-rfaa_no_templates_df = pd.DataFrame(rfaa_no_templates.items(), columns=["Model", "Runtime"])
-esm_df = pd.DataFrame(esmfold.items(), columns=["Model", "Runtime"])
-chai_df = pd.DataFrame(chai1.items(), columns=["Model", "Runtime"])
-af3_df = pd.DataFrame(af3.items(), columns=["Model", "Runtime"])
-af3_no_templates_df = pd.DataFrame(af3_no_templates.items(), columns=["Model", "Runtime"])
-af2_df = pd.DataFrame(af2.items(), columns=["Model", "Runtime"])
-af2_no_templates_df = pd.DataFrame(af2_no_templates.items(), columns=["Model", "Runtime"])
-
+rfaa_df = pd.DataFrame(rfaa_with_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+rfaa_no_templates_df = pd.DataFrame(rfaa_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+esm_df = pd.DataFrame(esmfold.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+chai_df = pd.DataFrame(chai1.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af3_df = pd.DataFrame(af3.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af3_no_templates_df = pd.DataFrame(af3_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af2_df = pd.DataFrame(af2.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+af2_no_templates_df = pd.DataFrame(af2_no_templates.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
+neuralplexer_df = pd.DataFrame(neuralplexer_runtimes.items(), columns=["Model", "Runtime"]).sort_values(by="Model")
 
 # Add the model type to the dataframes
 rfaa_df["Model Type"] = "RF-AA"
-rfaa_no_templates_df["Model Type"] = "RF-AA (no templates)"
+rfaa_no_templates_df["Model Type"] = "RF-AA\n(no templates)"
 esm_df["Model Type"] = "ESMFold"
 chai_df["Model Type"] = "Chai-1"
 af3_df["Model Type"] = "AF3"
-af3_no_templates_df["Model Type"] = "AF3 (no templates)"
+af3_no_templates_df["Model Type"] = "AF3\n(no templates)"
 af2_df["Model Type"] = "AF2"
-af2_no_templates_df["Model Type"] = "AF2 (no templates)"
+af2_no_templates_df["Model Type"] = "AF2\n(no templates)"
+neuralplexer_df["Model Type"] = "NeuralPLexer"
+
+colors = {
+    'NeuralPLexer' : COLOR["NeuralPLexer"],
+    'ESMFold': COLOR["ESMFold"],
+    'RF-AA': COLOR["RF-AA"], 
+    'RF-AA\n(no templates)': COLOR["RF-AA (no templates)"], 
+    'Chai-1': COLOR["Chai-1"],
+    'AF2': COLOR["AF2"], 
+    'AF2\n(no templates)': COLOR["AF2 (no templates)"],
+    'AF3': COLOR["AF3"],
+    'AF3\n(no templates)': COLOR["AF3 (no templates)"],
+} 
 
 # Concatenate the dataframes
-all_runtimes = pd.concat([rfaa_df, rfaa_no_templates_df, esm_df, chai_df, af3_df, af3_no_templates_df, af2_df, af2_no_templates_df])
+all_runtimes = pd.concat([neuralplexer_df, esm_df, rfaa_df, rfaa_no_templates_df, chai_df, af2_df, af2_no_templates_df, af3_df, af3_no_templates_df])
+all_runtimes["Runtime"] = all_runtimes["Runtime"].astype(float)
 
-### Plot the runtimes
+# Statistical analysis of the runtimes
+all_runtimes["Model"] = all_runtimes["Model"].str.upper()
+all_runtimes["Model"] = [i.split("_")[0] for i in all_runtimes["Model"]]
+all_runtimes = all_runtimes[["Model","Model Type","Runtime"]]
+all_runtimes = all_runtimes.sort_values(by=["Model", "Model Type"])
+
+# Replace new line characters in model names
+runtime_csv = all_runtimes.copy()
+runtime_csv["Model Type"] = runtime_csv["Model Type"].replace("\n", " ", regex=True)
+runtime_csv.to_csv(f'{repo_dir}/structure_benchmark_data/model_runtimes.csv', index=False)
+
+# Perform Wilcoxon signed-rank tests for DockQ scores
+all_runtimes = all_runtimes.rename(columns={"Model": "pdb", "Model Type": "model"})
+get_significance(all_runtimes, 'Runtime')
 
 # Get consistent order
-model_order = all_runtimes["Model Type"].unique()
+model_order = colors.keys()
+
+### Plot the runtimes
 
 # Create figure
 fig, ax = plt.subplots()
 
-# Bar plot (invisible bars, just for error bars)
-sns.barplot(
-    x="Model Type",
-    y="Runtime",
-    hue="Model Type",
-    data=all_runtimes,
-    capsize=0.5,
-    alpha=0.0,  # Make bars invisible
-    ax=ax,
-    err_kws={'linewidth': 1.0},
-    legend=False,
-    palette=COLOR,
-    order=model_order, 
-    hue_order=model_order
-)
-
 # Swarm plot (dots)
 sns.swarmplot(
     data=all_runtimes,
-    x="Model Type",
+    x="model",
     y="Runtime",
-    hue="Model Type",
+    hue="model",
     dodge=False,  # Prevent offset
     ax=ax,
     size=1.5,
-    palette=COLOR,
+    palette=colors,
     order=model_order, 
     hue_order=model_order,
     zorder=3  # Ensure dots appear above error bars
 )
 
+# Bar plot (invisible bars, just for error bars)
+sns.barplot(
+    x="model",
+    y="Runtime",
+    hue="model",
+    data=all_runtimes,
+    capsize=0.5,
+    alpha=0.2,  # Make bars invisible
+    ax=ax,
+    err_kws={'linewidth': 1.0},
+    legend=False,
+    palette=colors,
+    order=model_order, 
+    hue_order=model_order
+)
+
 plt.rcParams['svg.fonttype'] = 'none'
-plt.ylim(0, 10000)
-plt.title("Runtime comparison between different models")
+plt.ylim(0, 200)
+plt.title("Runtime comparison between structural modelling tools\nGPU: NVIDIA A100")
 ax.set_xlabel("")
 plt.ylabel("Runtime (seconds)", fontsize="large")
 plt.xticks(rotation=90)
@@ -325,12 +407,3 @@ ax.tick_params(axis='y', direction='in')
 plt.tight_layout()
 plt.savefig(f"{repo_dir}/structure_benchmark_data/plots/runtime_comparison.svg", format="svg")
 plt.close()
-
-# Statistical analysis of the runtimes
-all_runtimes["Model"] = all_runtimes["Model"].str.upper()
-all_runtimes["Model"] = [i.split("_")[0] for i in all_runtimes["Model"]]
-all_runtimes.to_csv(f'{repo_dir}/structure_benchmark_data/model_runtimes.csv', index=False)
-
-# Perform Wilcoxon signed-rank tests for DockQ scores
-all_runtimes = all_runtimes.rename(columns={"Model": "pdb", "Model Type": "model", "Runtime": "Runtime"})
-get_significance(all_runtimes, 'Runtime')

@@ -24,10 +24,14 @@ def get_closest_training_structures(input_path):
         if file.endswith(".m8"):
             # Define the full path to the file
             full_path = os.path.join(input_path, file)
+        else:
+            continue
 
         # Read first line of the file
         with open(full_path, "r") as f:
             line = f.readline()
+            if len(line) == 0:
+                continue
             # Split the line by whitespace
             parts = line.split("\t")
             # Extract the e-value
@@ -88,23 +92,30 @@ def calculate_average_plddt(pdb_file_path):
 def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", x="Identity", y="DockQ"):
     data = pd.read_csv(dockq_path)
     data = data[data["model"] == model]
+    data = data[data["seed"] == 1]
     data = data.merge(training_struct_df, left_on="pdb", right_on="pdb", how="left")
 
     # Get the top-level directory and build the path to the plot directory
-    repo_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    file_dir = os.path.dirname(__file__)
+    repo_name = "GPCR_peptide_benchmarking"
+    index = file_dir.find(repo_name)
+    repo_dir = file_dir[:index + len(repo_name)]
     if plot_path == "":
-        plot_path = f"{repo_dir}/structure_benchmark_data/subanalysis/plots"
+        plot_path = f"{repo_dir}/structure_benchmark_data/subanalyses/plots"
 
     # Get average pLDDT scores for predictions
     for pdb in data["pdb"]:
         model_extension = ""
-        if "RFAA" in model:
-            model_name = "RFAA_chain"
-            if "no_templates" in model:
-                model_name += "_no_templates"
-                model_extension = "_no_templates"
+        if "RFAA" in model and "no_templates" in model:
+            model_name = model
+            model_extension = "_no_templates"
+        elif "RFAA" in model:
+            model_name = model
+        elif model == "AF3_server":
+            model_name = model
         else:
             model_name = model
+            model_extension = "_1"
         pdb_file_path = (
             f"{repo_dir}/structure_benchmark/{model_name}/{pdb}{model_extension}.pdb"
         )
@@ -196,12 +207,12 @@ def identity_vs_dockq_plot(model, dockq_path, training_struct_df, plot_path="", 
 if __name__ == "__main__":
     # Get the file directory
     file_dir = os.path.dirname(__file__)
-    known_structs = pd.read_csv(f"{repo_dir}/classifier_benchmark_data/output/3f_known_structures.csv")
-    pdb_to_protein = dict(zip(known_structs["pdb_code"], known_structs["protein"]))
+    known_structs = pd.read_csv(f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset.csv")
+    pdb_to_protein = dict(zip(known_structs["pdb"], known_structs["receptor"]))
 
     # Input paths to the search results
-    rfaa_input_path = f"{file_dir}/mmseqs2_results/RFAA/search_results"
-    af_input_path = f"{file_dir}/mmseqs2_results/AF/search_results"
+    rfaa_input_path = f"{file_dir}/mmseqs2_results/RFAA"
+    af_input_path = f"{file_dir}/mmseqs2_results/AF"
 
     # Get the closest training structures
     af_training_struct = get_closest_training_structures(af_input_path)
@@ -219,7 +230,7 @@ if __name__ == "__main__":
     dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 
     # Get only AF2, AF3 and RFAA models
-    input_models = ["AF2", "AF2_no_templates", "AF3", "RFAA", "RFAA_no_templates"]
+    input_models = ["AF2", "AF2_no_templates", "AF3", "RFAA", "RFAA_no_templates", "AF3", "AF3_no_templates", "AF3_server"]
     for model in input_models:
         if "AF" in model:
             training_struct_df = af_training_struct

@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from scipy.spatial.distance import pdist, squareform
+from pathlib import Path
 
 # Script to calculate AF2 and AF3 LIS scores
 # From the original developers:
@@ -82,18 +83,22 @@ def process_alphafold_output(base_directory: str, model_numbers: int = 5, recycl
                     # Accessing the length of chain 'A' from the dictionary
                     protein_a_len = chain_lengths.get('B', 0)  # Default to 0 if 'A' chain is not found
 
-            pkl_name = f"result_model_{model_num}_multimer_v3_pred_{recycling_num}.pkl"
+            pkl_name = f"result_model_{model_num}_multimer_v3_pred_{recycling_num}_filtered.pkl"
             pkl_file_path = os.path.join(base_directory, pkl_name)
             d = pickle.load(open(pkl_file_path,'rb'))
-            iptm = d.get('iptm')
-            ptm = d.get('ptm')
-            # added on 2024/03/28 #
             pae = d.get('predicted_aligned_error')
-            # added on 2024/03/28 #
             plddt = np.mean(d.get('plddt'))
             confidence = d.get('ranking_confidence')
-            pae_cutoff = 12
 
+            # Get missing data from the pkl file
+            pae_name = f"result_model_{model_num}_multimer_v3_pred_{recycling_num}.json"
+            pae_file_path = os.path.join(base_directory, pae_name)
+            with open(pae_file_path, 'r') as file:
+                json_data = json.load(file)
+            iptm = json_data.get('iptm')
+            ptm = json_data.get('ptm')
+
+            pae_cutoff = 12
             thresholded_pae = np.where(pae < pae_cutoff, 1, 0)
 
             # Calculate the interaction amino acid numbers
@@ -431,14 +436,14 @@ def afm3_plot_average_to_df(af3_jsons, pae_cutoff=12, distance_cutoff=8, result_
 if __name__ == "__main__":
     # Get directory where the current script is located
     script_dir = os.path.dirname(os.path.realpath(__file__))
-    repo_name = "GPRC_peptide_benchmarking"
+    repo_name = "GPCR_peptide_benchmarking"
     index = script_dir.find(repo_name)
     repo_dir = script_dir[:index + len(repo_name)]
     print(f"Repository directory: {repo_dir}")
 
     # Get paths to AF2 models
-    af2_path = "/projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_StructuralBenchmark/structural_benchmark_2021-09-30"
-    af2_no_templates = "/projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_StructuralBenchmark_no_templates/structural_benchmark_2021-09-30"
+    af2_path = "/projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_StructuralBenchmark/updated_structural_benchmark/processed_data/seed_1"
+    af2_no_templates = "/projects/ilfgrid/data/Interspecies_GPCR_pipeline/3_models/AF-2.3.1/AF_model_StructuralBenchmark_no_templates/updated_structural_benchmark_no_templates/processed_data/seed_1"
     af2_paths = glob.glob(f"{af2_path}/*")
     af2_no_templates_paths = glob.glob(f"{af2_no_templates}/*")
     af2_lis_paths = []
@@ -448,26 +453,27 @@ if __name__ == "__main__":
     print(f"Number of AF2 models: {len(af2_subfolders)}")
 
     # Get paths to AF3 jsons
-    af3 = f"{repo_dir}/structure_benchmark/AF3/full_results"
+    af3 = f"{repo_dir}/structure_benchmark/AF3_server"
     af3_lis_paths = glob.glob(f"{af3}/*")
+    af3_lis_paths = [d for d in af3_lis_paths if Path(d).is_dir()]
     af3_jsons = {}
     for path in af3_lis_paths:
         model = path.split("/")[-1].split("_")[-1]
         json_files = glob.glob(f"{path}/*full_data*.json")
         af3_jsons[model] = json_files
     print(f"Number of AF3 models: {len(af3_jsons)}")
-    print(af3_jsons)
 
     # Create a subdirectory for LIS results
-    lis_results_dir = f"{repo_dir}/structure_benchmark_data/subanalyses/AF_LIS_results"
+    lis_results_dir = f"{repo_dir}/structure_benchmark_data/subanalyses/AFM-LIS_results"
     os.makedirs(lis_results_dir, exist_ok=True)
     print(f"LIS results directory: {lis_results_dir}")
 
     # Calculate LIS for AF2 models
     af2_results = []
     for model_dir in af2_subfolders:
-        try: 
-            total_prediction =  process_alphafold_output(model_dir, model_numbers = 5, recycling_numbers = 5, Protein_1 = "A", Protein_2 = "B")
+        try:
+            model_name = model_dir.split("/")[-1]
+            total_prediction = process_alphafold_output(f"{model_dir}/{model_name}", model_numbers = 5, recycling_numbers = 5, Protein_1 = "A", Protein_2 = "B")
             af2_results.append(total_prediction)
         except Exception as e:
             print(f"Error processing {model_dir}: {e}", flush=True)

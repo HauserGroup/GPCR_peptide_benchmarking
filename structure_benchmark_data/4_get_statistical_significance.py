@@ -90,16 +90,19 @@ def get_significance(data, variable, model_col='model', pdb_col='pdb'):
 # Read DockQ data
 dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 data = pd.read_csv(dockq_path)
+data = data[data["seed"] == 1]
 
 # Merge with RMSD data and rename model names
 rmsd_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
 rmsd_df = pd.read_csv(rmsd_path)
+rmsd_df = rmsd_df[rmsd_df["seed"] == 1]
 data = data.merge(rmsd_df, on=["pdb", "model"])
 data["model"] = data["model"].replace({
     "RFAA_no_templates": "RF-AA (no templates)",
     "RFAA": "RF-AA",
     "AF2_no_templates": "AF2 (no templates)",
-    "Chai-1_no_MSAs": "Chai-1 (no MSAs)"
+    "AF3_no_templates": "AF3 (no templates)",
+    "AF3_server": "AF3 (server)",
 })
 
 # Perform Wilcoxon signed-rank tests for DockQ scores

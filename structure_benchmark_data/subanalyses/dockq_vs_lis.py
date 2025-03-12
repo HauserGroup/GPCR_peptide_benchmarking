@@ -19,17 +19,18 @@ if __name__ == "__main__":
     # Read in DockQ data
     dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
     dockq_df = pd.read_csv(dockq_path)
-    dockq_df = dockq_df[dockq_df["model"].isin(["AF2", "AF3", "AF2_no_templates"])]
+    dockq_df = dockq_df[dockq_df["model"].isin(["AF2", "AF3_server", "AF2_no_templates"])]
+    dockq_df = dockq_df[dockq_df["seed"] == 1]
     dockq_df.rename(columns = {"model": "MODEL_NAME"}, inplace = True)
     dockq_df.columns = dockq_df.columns.str.upper()
 
     # Load AF LIS data
-    af2_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/AF_LIS_results/AF2_LIS_results.csv", sep = ",")
-    af3_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/AF_LIS_results/AF3_LIS_results.csv", sep = ",")
+    af2_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/AFM-LIS_results/AF2_LIS_results.csv", sep = ",")
+    af3_lis_df = pd.read_csv(f"{repo_dir}/structure_benchmark_data/subanalyses/AFM-LIS_results/AF3_LIS_results.csv", sep = ",")
     af3_lis_df["pdb"] = [i.split("_")[-1].upper() for i in af3_lis_df["folder_name"]]
     af2_lis_df["pdb"] = [i.split("/")[-1].upper() for i in af2_lis_df["saved folder"]]
     af2_lis_df["MODEL_NAME"] = af2_lis_df["saved folder"].apply(lambda x: "AF2_no_templates" if "no_templates" in x else "AF2")
-    af3_lis_df["MODEL_NAME"] = "AF3"
+    af3_lis_df["MODEL_NAME"] = "AF3_server"
 
     # Make column names uppercase
     af2_lis_df.columns = af2_lis_df.columns.str.upper()
@@ -49,6 +50,7 @@ if __name__ == "__main__":
     # Merge lis_df with dockq_df
     lis_dockq_df = pd.merge(dockq_df, lis_df, on = ["PDB", "MODEL_NAME"], how = "inner")
     lis_dockq_df["MODEL_NAME"] = lis_dockq_df["MODEL_NAME"].replace("AF2_no_templates", "AF2 (no templates)")
+    lis_dockq_df["MODEL_NAME"] = lis_dockq_df["MODEL_NAME"].replace("AF3_server", "AF3 (server)")
 
     # Prepare the data for plotting
     x = lis_dockq_df['LIS']
@@ -62,13 +64,13 @@ if __name__ == "__main__":
     custom_color_mapping = {
         'AF2': COLOR["AF2"],
         'AF2 (no templates)': COLOR["AF2 (no templates)"],
-        'AF3': COLOR["AF3"]
+        'AF3 (server)': COLOR["AF3"]
     }
 
     custom_marker_mapping = {
         'AF2': 'o',  # Circle
         'AF2 (no templates)': 's',  # Square
-        'AF3': '^'  # Triangle
+        'AF3 (server)': '^'  # Triangle
     }
 
     # Plot each model separately with its own color and shape
@@ -115,13 +117,13 @@ if __name__ == "__main__":
         framealpha=1, 
         loc = "lower right", 
         handletextpad=0.0, 
-        borderaxespad = 0.1,
-        borderpad = 0.1,
+        borderaxespad = 0.01,
+        borderpad = 0.01,
         labelspacing = 0.2
     )
     legend.get_title().set_fontproperties(fm.FontProperties(size=0))
     frame = legend.get_frame()
-    frame.set_linewidth(0.25)  
+    frame.set_linewidth(0.1)  
 
     # Save the plot
     plt.rcParams['svg.fonttype'] = 'none'

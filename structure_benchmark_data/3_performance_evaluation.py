@@ -26,9 +26,14 @@ data = pd.read_csv(dockq_path)
 # Load receptor RMSD data
 receptor_rmsd_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
 receptor_rmsd = pd.read_csv(receptor_rmsd_path)
+receptor_rmsd = receptor_rmsd[receptor_rmsd["seed"] == 1]
+receptor_rmsd = receptor_rmsd.drop(columns=["seed"])
 
 # Merge with data
 data = data.merge(receptor_rmsd, on=["pdb", "model"])
+
+# Drop rows where "seed" is not 1
+data = data[data["seed"] == 1]
 
 # Output path for plots 
 if not os.path.exists(plot_dir):
@@ -37,9 +42,9 @@ if not os.path.exists(plot_dir):
 # Rename RFAA_no_templates to RF-AA (without templates)
 data["model"] = data["model"].replace("RFAA_no_templates", "RF-AA\n(no templates)")
 data["model"] = data["model"].replace("RFAA", "RF-AA")
-data["model"] = data["model"].replace("AF2", "AF2")
 data["model"] = data["model"].replace("AF2_no_templates", "AF2\n(no templates)")
-data["model"] = data["model"].replace("Chai-1_no_MSAs", "Chai-1\n(no MSAs)")
+data["model"] = data["model"].replace("AF3_no_templates", "AF3\n(no templates)")
+data["model"] = data["model"].replace("AF3_server", "AF3 (server)")
 
 # Color the points based on model
 colors = {
@@ -48,13 +53,22 @@ colors = {
     'RF-AA': COLOR["RF-AA"], 
     'RF-AA\n(no templates)': COLOR["RF-AA (no templates)"], 
     'Chai-1': COLOR["Chai-1"],
-    'Chai-1\n(no MSAs)': COLOR["Chai-1 (no MSAs)"],
     'AF2': COLOR["AF2"], 
     'AF2\n(no templates)': COLOR["AF2 (no templates)"],
     'AF3': COLOR["AF3"],
+    'AF3\n(no templates)': COLOR["AF3 (no templates)"],
+    'AF3 (server)': "#02bfe7"
 } 
 data = data.sort_values(by='model', key=lambda x: pd.Categorical(x, categories=list(colors.keys()), ordered=True))
 data = data.reset_index(drop=True)
+
+# Print most and least accurate AF2 models
+af2_models = data[data["model"] == "AF2"]
+af2_models = af2_models.sort_values(by='DockQ', ascending=False)
+print("Most accurate AF2 model:")
+print(af2_models.iloc[0])
+print("\nLeast accurate AF2 model:")
+print(af2_models.iloc[-1])
 
 # DockQ plot
 # Creating a swarm plot

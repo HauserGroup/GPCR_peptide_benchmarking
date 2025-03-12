@@ -42,72 +42,88 @@ set ray_shadows, 0
 
 set_color experimental_color, [0.976, 0.667, 0.263]
 set_color AF3, [0.024, 0.122, 0.290]
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7WQ4_AB.pdb, 7WQ4_experimental
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7WQ4.pdb, 7WQ4_AF3
-align 7WQ4_AF3, 7WQ4_experimental
-color grey70, chain A and 7WQ4_AF3
-color white, chain A and 7WQ4_experimental
-color AF3, 7WQ4_AF3 and chain B
-color experimental_color, 7WQ4_experimental and chain B
-create 7WQ4_exp_ligand, 7WQ4_experimental and chain B
-create 7WQ4_AF3_ligand, 7WQ4_AF3 and chain B
-show cartoon, 7WQ4_exp_ligand
-show cartoon, 7WQ4_AF3_ligand
-set cartoon_oval_width, 0.7, 7WQ4_exp_ligand
-set cartoon_oval_width, 0.7, 7WQ4_AF3_ligand
-set cartoon_loop_radius, 0.7, 7WQ4_exp_ligand
-set cartoon_loop_radius, 0.7, 7WQ4_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8DWG_AB.pdb, 8DWG_experimental
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/8DWG.pdb, 8DWG_AF3
-align 8DWG_experimental, 7WQ4_experimental 
-align 8DWG_AF3, 8DWG_experimental
-color grey70, chain A and 8DWG_AF3
-color white, chain A and 8DWG_experimental
-color AF3, 8DWG_AF3 and chain B
-color experimental_color, 8DWG_experimental and chain B
-create 8DWG_exp_ligand, 8DWG_experimental and chain B
-create 8DWG_AF3_ligand, 8DWG_AF3 and chain B
-show cartoon, 8DWG_exp_ligand
-show cartoon, 8DWG_AF3_ligand
-set cartoon_oval_width, 0.7, 8DWG_exp_ligand
-set cartoon_oval_width, 0.7, 8DWG_AF3_ligand
-set cartoon_loop_radius, 0.7, 8DWG_exp_ligand
-set cartoon_loop_radius, 0.7, 8DWG_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7P00_AB.pdb, 7P00_experimental
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7P00.pdb, 7P00_AF3
-align 7P00_experimental, 7WQ4_experimental 
-align 7P00_AF3, 7P00_experimental
-color grey70, chain A and 7P00_AF3
-color white, chain A and 7P00_experimental
-color AF3, 7P00_AF3 and chain B
-color experimental_color, 7P00_experimental and chain B
-create 7P00_exp_ligand, 7P00_experimental and chain B
-create 7P00_AF3_ligand, 7P00_AF3 and chain B
-show cartoon, 7P00_exp_ligand
-show cartoon, 7P00_AF3_ligand
-set cartoon_oval_width, 0.7, 7P00_exp_ligand
-set cartoon_oval_width, 0.7, 7P00_AF3_ligand
-set cartoon_loop_radius, 0.7, 7P00_exp_ligand
-set cartoon_loop_radius, 0.7, 7P00_AF3_ligand
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7W56_AB.pdb, 7W56_experimental
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7W56.pdb, 7W56_AF3
-align 7W56_experimental, 7WQ4_experimental 
-align 7W56_AF3, 7W56_experimental
-color grey70, chain A and 7W56_AF3
-color white, chain A and 7W56_experimental
-color AF3, 7W56_AF3 and chain B
-color experimental_color, 7W56_experimental and chain B
-create 7W56_exp_ligand, 7W56_experimental and chain B
-create 7W56_AF3_ligand, 7W56_AF3 and chain B
-show cartoon, 7W56_exp_ligand
-show cartoon, 7W56_AF3_ligand
-set cartoon_oval_width, 0.7, 7W56_exp_ligand
-set cartoon_oval_width, 0.7, 7W56_AF3_ligand
-set cartoon_loop_radius, 0.7, 7W56_exp_ligand
-set cartoon_loop_radius, 0.7, 7W56_AF3_ligand
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8XGM_AB.pdb, 8XGM_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/8XGM_1.pdb, 8XGM_AF3
+align 8XGM_AF3, 8XGM_experimental
+color grey70, chain A and 8XGM_AF3
+color white, chain A and 8XGM_experimental
+color AF3, 8XGM_AF3 and chain B
+color experimental_color, 8XGM_experimental and chain B
+create 8XGM_exp_ligand, 8XGM_experimental and chain B
+create 8XGM_AF3_ligand, 8XGM_AF3 and chain B
+show cartoon, 8XGM_exp_ligand
+show cartoon, 8XGM_AF3_ligand
+set cartoon_oval_width, 0.7, 8XGM_exp_ligand
+set cartoon_oval_width, 0.7, 8XGM_AF3_ligand
+set cartoon_loop_radius, 0.7, 8XGM_exp_ligand
+set cartoon_loop_radius, 0.7, 8XGM_AF3_ligand
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8WVY_AB.pdb, 8WVY_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/8WVY_1.pdb, 8WVY_AF3
+align 8WVY_experimental, 8XGM_experimental 
+align 8WVY_AF3, 8WVY_experimental
+color grey70, chain A and 8WVY_AF3
+color white, chain A and 8WVY_experimental
+color AF3, 8WVY_AF3 and chain B
+color experimental_color, 8WVY_experimental and chain B
+create 8WVY_exp_ligand, 8WVY_experimental and chain B
+create 8WVY_AF3_ligand, 8WVY_AF3 and chain B
+show cartoon, 8WVY_exp_ligand
+show cartoon, 8WVY_AF3_ligand
+set cartoon_oval_width, 0.7, 8WVY_exp_ligand
+set cartoon_oval_width, 0.7, 8WVY_AF3_ligand
+set cartoon_loop_radius, 0.7, 8WVY_exp_ligand
+set cartoon_loop_radius, 0.7, 8WVY_AF3_ligand
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8JGF_AB.pdb, 8JGF_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/8JGF_1.pdb, 8JGF_AF3
+align 8JGF_experimental, 8XGM_experimental 
+align 8JGF_AF3, 8JGF_experimental
+color grey70, chain A and 8JGF_AF3
+color white, chain A and 8JGF_experimental
+color AF3, 8JGF_AF3 and chain B
+color experimental_color, 8JGF_experimental and chain B
+create 8JGF_exp_ligand, 8JGF_experimental and chain B
+create 8JGF_AF3_ligand, 8JGF_AF3 and chain B
+show cartoon, 8JGF_exp_ligand
+show cartoon, 8JGF_AF3_ligand
+set cartoon_oval_width, 0.7, 8JGF_exp_ligand
+set cartoon_oval_width, 0.7, 8JGF_AF3_ligand
+set cartoon_loop_radius, 0.7, 8JGF_exp_ligand
+set cartoon_loop_radius, 0.7, 8JGF_AF3_ligand
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/8JGB_AB.pdb, 8JGB_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/8JGB_1.pdb, 8JGB_AF3
+align 8JGB_experimental, 8XGM_experimental 
+align 8JGB_AF3, 8JGB_experimental
+color grey70, chain A and 8JGB_AF3
+color white, chain A and 8JGB_experimental
+color AF3, 8JGB_AF3 and chain B
+color experimental_color, 8JGB_experimental and chain B
+create 8JGB_exp_ligand, 8JGB_experimental and chain B
+create 8JGB_AF3_ligand, 8JGB_AF3 and chain B
+show cartoon, 8JGB_exp_ligand
+show cartoon, 8JGB_AF3_ligand
+set cartoon_oval_width, 0.7, 8JGB_exp_ligand
+set cartoon_oval_width, 0.7, 8JGB_AF3_ligand
+set cartoon_loop_radius, 0.7, 8JGB_exp_ligand
+set cartoon_loop_radius, 0.7, 8JGB_AF3_ligand
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7XWO_AB.pdb, 7XWO_experimental
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7XWO_1.pdb, 7XWO_AF3
+align 7XWO_experimental, 8XGM_experimental 
+align 7XWO_AF3, 7XWO_experimental
+color grey70, chain A and 7XWO_AF3
+color white, chain A and 7XWO_experimental
+color AF3, 7XWO_AF3 and chain B
+color experimental_color, 7XWO_experimental and chain B
+create 7XWO_exp_ligand, 7XWO_experimental and chain B
+create 7XWO_AF3_ligand, 7XWO_AF3 and chain B
+show cartoon, 7XWO_exp_ligand
+show cartoon, 7XWO_AF3_ligand
+set cartoon_oval_width, 0.7, 7XWO_exp_ligand
+set cartoon_oval_width, 0.7, 7XWO_AF3_ligand
+set cartoon_loop_radius, 0.7, 7XWO_exp_ligand
+set cartoon_loop_radius, 0.7, 7XWO_AF3_ligand
 load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark_data/cleaned_pdbs/7RYC_AB.pdb, 7RYC_experimental
-load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7RYC.pdb, 7RYC_AF3
-align 7RYC_experimental, 7WQ4_experimental 
+load /Users/pqh443/Documents/Git_projects/GPCR_peptide_benchmarking/structure_benchmark/AF3/7RYC_1.pdb, 7RYC_AF3
+align 7RYC_experimental, 8XGM_experimental 
 align 7RYC_AF3, 7RYC_experimental
 color grey70, chain A and 7RYC_AF3
 color white, chain A and 7RYC_experimental
@@ -125,26 +141,30 @@ set cartoon_loop_radius, 0.7, 7RYC_AF3_ligand
 
 
 set grid_mode, 1
-set grid_slot, 1, 7WQ4_experimental
-set grid_slot, 1, 7WQ4_exp_ligand
-set grid_slot, 1, 7WQ4_AF3
-set grid_slot, 1, 7WQ4_AF3_ligand
-set grid_slot, 2, 8DWG_experimental
-set grid_slot, 2, 8DWG_exp_ligand
-set grid_slot, 2, 8DWG_AF3
-set grid_slot, 2, 8DWG_AF3_ligand
-set grid_slot, 3, 7P00_experimental
-set grid_slot, 3, 7P00_exp_ligand
-set grid_slot, 3, 7P00_AF3
-set grid_slot, 3, 7P00_AF3_ligand
-set grid_slot, 4, 7W56_experimental
-set grid_slot, 4, 7W56_exp_ligand
-set grid_slot, 4, 7W56_AF3
-set grid_slot, 4, 7W56_AF3_ligand
-set grid_slot, 5, 7RYC_experimental
-set grid_slot, 5, 7RYC_exp_ligand
-set grid_slot, 5, 7RYC_AF3
-set grid_slot, 5, 7RYC_AF3_ligand
+set grid_slot, 1, 8XGM_experimental
+set grid_slot, 1, 8XGM_exp_ligand
+set grid_slot, 1, 8XGM_AF3
+set grid_slot, 1, 8XGM_AF3_ligand
+set grid_slot, 2, 8WVY_experimental
+set grid_slot, 2, 8WVY_exp_ligand
+set grid_slot, 2, 8WVY_AF3
+set grid_slot, 2, 8WVY_AF3_ligand
+set grid_slot, 3, 8JGF_experimental
+set grid_slot, 3, 8JGF_exp_ligand
+set grid_slot, 3, 8JGF_AF3
+set grid_slot, 3, 8JGF_AF3_ligand
+set grid_slot, 4, 8JGB_experimental
+set grid_slot, 4, 8JGB_exp_ligand
+set grid_slot, 4, 8JGB_AF3
+set grid_slot, 4, 8JGB_AF3_ligand
+set grid_slot, 5, 7XWO_experimental
+set grid_slot, 5, 7XWO_exp_ligand
+set grid_slot, 5, 7XWO_AF3
+set grid_slot, 5, 7XWO_AF3_ligand
+set grid_slot, 6, 7RYC_experimental
+set grid_slot, 6, 7RYC_exp_ligand
+set grid_slot, 6, 7RYC_AF3
+set grid_slot, 6, 7RYC_AF3_ligand
 set cartoon_transparency, 0.25, chain A
 hide (hydro)
 hide everything, not polymer

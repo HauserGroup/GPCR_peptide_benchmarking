@@ -41,8 +41,6 @@ def pymol_script(config_path, repo_dir, pdbs, colors, model, name):
         model_color = model_color.replace("RFAA", "RF-AA")
     if "no_templates" in model:
         model_color = model_color.replace("_no_templates", " (no templates)")
-    if "no_MSAs" in model:
-        model_color = model_color.replace("_no_MSAs", " (no MSAs)")
     
     # Write the pymol script and define custom colors
     script = "".join(config_file)
@@ -53,20 +51,15 @@ def pymol_script(config_path, repo_dir, pdbs, colors, model, name):
 
     # Parse model folder
     model_folder = model
-    if "RFAA" in model:
-        model_folder = model_folder.replace("RFAA", "RFAA_chain")
-    if "neuralplexer" in model.lower():
-        model_folder = "neuralplexer_chain"
-
-    if "Chai" in model:
-        model_folder += "/renamed_chains"
 
     for pdb in pdbs:
         # Parse path to the experimental structure
         exp_path = f"{repo_dir}/structure_benchmark_data/cleaned_pdbs/{pdb}_AB.pdb"
 
-        if "no_MSAs" in model:
-            model_path = f"{repo_dir}/structure_benchmark/{model_folder}/{pdb}_no_MSAs.pdb"
+        if model == "RFAA_no_templates":
+            model_path = f"{repo_dir}/structure_benchmark/{model_folder}/{pdb}_no_templates.pdb"
+        elif model in ["AF2", "AF2_no_templates", "AF3", "AF3_no_templates", "Chai-1"]:
+            model_path = f"{repo_dir}/structure_benchmark/{model_folder}/{pdb}_1.pdb"
         else:
             model_path = f"{repo_dir}/structure_benchmark/{model_folder}/{pdb}.pdb"
 
@@ -125,20 +118,24 @@ def pymol_script(config_path, repo_dir, pdbs, colors, model, name):
         f.write(script)
 
 # Benchmark data path
-structural_benchmark_path = f"{repo_dir}/structure_benchmark_data/3f_known_structures_benchmark_2021-09-30_cleaned.csv"
+structural_benchmark_path = f"{repo_dir}/structure_benchmark_data/structural_benchmark_dataset_cleaned.csv"
 structural_benchmark_df = pd.read_csv(structural_benchmark_path)
 
 # Receptor RMSD data
 receptor_rmsd_path = f"{repo_dir}/structure_benchmark_data/subanalyses/receptor_rmsds.csv"
 receptor_rmsd_df = pd.read_csv(receptor_rmsd_path)
+receptor_rmsd_df = receptor_rmsd_df[receptor_rmsd_df["seed"] == 1]
 
 # Load DockQ data
 dockq_path = f"{repo_dir}/structure_benchmark_data/DockQ_results.csv"
 dockq_df = pd.read_csv(dockq_path)
+dockq_df = dockq_df[dockq_df["seed"] == 1]
 
 # Merge the DockQ data with the structural benchmark data and RMSD data
 dockq_df = dockq_df.merge(structural_benchmark_df, on="pdb")
-dockq_df = dockq_df.merge(receptor_rmsd_df, on=["pdb", "model"])
+dockq_df = dockq_df.merge(receptor_rmsd_df, on=["pdb", "model", "seed"])
+
+print(dockq_df)
 
 # Check whether DockQ score is significantly correlated with the number of residues in the receptor
 dockq_df["receptor_length"] = dockq_df["receptor_pdb_seq"].str.len()
@@ -169,17 +166,34 @@ failed_rf_aa = rf_aa_templates[rf_aa_templates["success"] == "Fail"]
 print("\nPDB codes of failed RF-AA predictions:")
 print(failed_rf_aa["pdb"].values)
 
+# Color the points based on model
+colors = {
+    'NeuralPLexer' : COLOR["NeuralPLexer"],
+    'ESMFold': COLOR["ESMFold"],
+    'RF-AA': COLOR["RF-AA"], 
+    'RF-AA (no templates)': COLOR["RF-AA (no templates)"], 
+    'Chai-1': COLOR["Chai-1"],
+    'AF2': COLOR["AF2"], 
+    'AF2 (no templates)': COLOR["AF2 (no templates)"],
+    'AF3': COLOR["AF3"],
+    'AF3 (no templates)': COLOR["AF3 (no templates)"],
+    'AF3_server': "#02bfe7",
+    'Agonist': COLOR["Agonist"]
+} 
+
 # Make pymol scripts for failed predictions of each model
 config_path = f"{repo_dir}/structure_benchmark_data/pymol_scripts/pymol_config.txt"
 failed_pdbs = {}
 for model in dockq_df["model"].unique():
     failed_pdbs[model] = dockq_df[(dockq_df["model"] == model) & (dockq_df["success"] == "Fail")]["pdb"].values
     name = f"{model}_failed_predictions"
-    pymol_script(config_path, repo_dir, failed_pdbs[model], COLOR, model, name)
+    pymol_script(config_path, repo_dir, failed_pdbs[model], colors, model, name)
 
 # Visualize failed predictions of RF-AA in specific instances (large extracellular loops and large receptors)
-extracellular_pdb = ["7F6I", "7W40", "7W3Z", "7W56", "7W53"]
-pymol_script(config_path, repo_dir, extracellular_pdb, COLOR, "RFAA", "RFAA_extracellular_fail")
+extracellular_pdb = ["7F6I", "8HCQ", "8YW4", "7W3Z", "8WVY", "8INR", "7W56"]
+print("Large extracellular loops: ", len(extracellular_pdb))
+pymol_script(config_path, repo_dir, extracellular_pdb, colors, "RFAA", "RFAA_extracellular_fail")
 
-receptor_fold_pdb = ["8IA8", "8HK2", "7P00", "7Y64", "7W55", "8F7W", "8F7Q", "8F7X", "7T10", "7T11", "7XMS"]
-pymol_script(config_path, repo_dir, receptor_fold_pdb, COLOR, "RFAA", "RFAA_receptor_fold_fail")
+receptor_fold_pdb = ["8IA8", "8I95", "8HK2", "7XA3", "7WQ4", "8JBF", "8F7W", "8F7Q", "8F7X", "7T10", "7T11"]
+print("Receptor folding on itself: ", len(receptor_fold_pdb))
+pymol_script(config_path, repo_dir, receptor_fold_pdb, colors, "RFAA", "RFAA_receptor_fold_fail")
