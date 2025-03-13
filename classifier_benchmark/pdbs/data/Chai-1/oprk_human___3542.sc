@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              9.174           1523.855             40.167     1523.855                 40.167      2441.417  3793.822    1352.405            43.000            0.000      1.000    422.000    141.000      0.000                 17.914                  0.491           14.645    1508.466           26.775    1017.450 oprk_human___3542_0001

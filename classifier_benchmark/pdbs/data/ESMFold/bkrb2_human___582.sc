@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              9.413              0.028              0.341        0.028                  0.341         2.562     8.171       5.609             0.000            0.000      0.000    398.000      2.000      0.000                 67.245                  0.000           15.668      15.668          118.821     118.821 bkrb2_human___582_0001

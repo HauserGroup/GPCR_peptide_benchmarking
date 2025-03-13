@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              9.876             -0.122             -0.149       -0.122                 -0.149        55.860    81.895      26.035             0.000           -0.000      0.000    410.000      8.000      0.000                  6.058                  0.325           12.379      49.516           -0.263      -1.050 ackr1_human___573_0001

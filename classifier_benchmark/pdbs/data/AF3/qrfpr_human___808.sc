@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              1.560            204.230              9.321      204.230                  9.321      1370.467  2191.018     820.551            20.000            0.000      0.000    501.000     85.000      0.000                  2.589                  0.459            2.619     136.167            2.542      83.873 qrfpr_human___808_0001

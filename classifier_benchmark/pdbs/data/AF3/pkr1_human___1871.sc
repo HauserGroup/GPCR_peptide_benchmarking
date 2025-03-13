@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              2.312            468.238             15.934      468.238                 15.934      1781.733  2938.603    1156.870            34.000           -0.006      4.000    413.000    100.000      0.000                  5.962                  0.480            3.836     306.909           14.464     289.279 pkr1_human___1871_0001

@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              9.749             81.350              3.301       81.350                  3.301      1391.081  2464.469    1073.388            27.000           -0.023      3.000    536.000     76.000      0.000                 15.639                  0.509           17.698    1097.295            6.522      91.305 npff2_human___11417_0001

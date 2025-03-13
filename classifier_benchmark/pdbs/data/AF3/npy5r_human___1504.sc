@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              0.844              2.544              0.074        2.544                  0.074      1905.787  3433.833    1528.045            27.000           -2.918     11.000    481.000    104.000      0.000                 -0.324                  0.656           -0.021      -1.486           -1.007     -32.219 npy5r_human___1504_0001

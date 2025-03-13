@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              1.061            140.312              7.970      140.323                  7.970      1048.281  1760.562     712.281            13.000           -0.004      1.000    408.000     69.000      0.000                  2.408                  0.486            0.184      10.842           15.532     155.316 trfr_human___613_0001

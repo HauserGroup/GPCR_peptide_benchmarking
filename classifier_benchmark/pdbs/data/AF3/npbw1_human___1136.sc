@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000             -0.294             79.864              3.277       79.864                  3.277      1243.858  2436.864    1193.007            24.000           -0.020      6.000    357.000     78.000      0.000                  0.603                  0.645           -0.246     -14.517            3.238      61.525 npbw1_human___1136_0001

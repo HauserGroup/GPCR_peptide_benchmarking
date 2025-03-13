@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000             10.616            668.832             42.138      668.832                 42.138      1049.837  1587.242     537.405             1.000            0.000      0.000    495.000     57.000      0.000                 22.771                  0.354           20.014     720.498           27.498     577.464 vipr1_human___921_0001

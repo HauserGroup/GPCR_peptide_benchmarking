@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              2.351            523.619             16.032      523.619                 16.032      1890.868  3266.049    1375.181            37.000            0.000      2.000    497.000    115.000      0.000                  5.628                  0.503            4.160     332.825            8.982     314.376 v1br_human___819_0001

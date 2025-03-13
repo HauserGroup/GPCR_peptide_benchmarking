@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              4.004            411.891             14.928      411.891                 14.928      1866.094  2759.268     893.173            21.000            0.000      1.000    369.000     94.000      0.000                  8.769                  0.464           10.223     582.704            6.530     241.603 mc4r_human___687_0001

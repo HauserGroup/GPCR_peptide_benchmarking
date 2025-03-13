@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              4.462            916.368             25.853      916.368                 25.853      2223.275  3544.532    1321.257            45.000           -0.001      3.000    443.000    102.000      0.000                 12.629                  0.465           11.515     806.034           15.067     482.142 ntr2_human___1140_0001

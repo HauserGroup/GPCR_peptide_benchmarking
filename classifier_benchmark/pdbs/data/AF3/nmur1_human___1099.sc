@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              2.547             32.888              1.554       32.888                  1.554      1181.085  2116.992     935.907             9.000           -0.064      1.000    454.000     71.000      0.000                  0.676                  0.477           -0.400     -22.377            4.690      70.348 nmur1_human___1099_0001

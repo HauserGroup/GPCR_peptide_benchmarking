@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000             11.813              1.920              0.534        1.920                  0.534       250.871   359.587     108.716             0.000            0.000      0.000    387.000     16.000      0.000                  9.988                  0.510            8.390      92.293           13.504      67.520 apj_human___585_0001

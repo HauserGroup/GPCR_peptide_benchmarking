@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000             12.363            774.723            107.750      774.723                107.750       383.021   719.001     335.980             6.000            0.000      0.000    491.000     34.000      0.000                 31.742                  0.373           26.182     497.464           38.784     581.753 gasr_human___2270_0001

@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              1.700            288.529              6.600      288.529                  6.600      2708.755  4371.633    1662.879            27.000           -0.027     11.000    502.000    125.000      0.000                  2.446                  0.514            1.787     160.792            4.141     144.946 gipr_human___1790_0001

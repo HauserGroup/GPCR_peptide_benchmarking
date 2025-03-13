@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              6.288           1564.432             22.779     1564.432                 22.779      3995.415  6867.751    2872.337            64.000           -0.004     13.000    459.000    197.000      0.000                 12.710                  0.565            8.937    1072.434           18.591    1431.526 cxcr5_human___3645_0001

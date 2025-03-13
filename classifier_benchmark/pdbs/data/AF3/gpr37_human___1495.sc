@@ -1,0 +1,3 @@
+SEQUENCE: 
+SCORE: total_score complex_normalized           dG_cross dG_cross/dSASAx100 dG_separated dG_separated/dSASAx100 dSASA_hphobic dSASA_int dSASA_polar delta_unsatHbonds hbond_E_fraction hbonds_int   nres_all   nres_int   packstat per_residue_energy_int               sc_value side1_normalized side1_score side2_normalized side2_score description 
+SCORE:       0.000              3.674             71.334              3.320       71.334                  3.320      1256.398  2148.406     892.009            16.000           -0.026      3.000    636.000     75.000      0.000                  1.082                  0.385           -0.310     -16.740            4.663      97.920 gpr37_human___1495_0001
