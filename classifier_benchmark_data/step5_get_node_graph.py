@@ -269,7 +269,7 @@ def get_subgraph_plot_grid_component(g, component, default_size,
 
     # store the image of this subgraph into a list, so we can later combine them into one image
     buff = io.BytesIO()
-    plt.savefig(buff, format="png",  pad_inches=0.1)
+    plt.savefig(buff, format="jpeg",  pad_inches=0.1, dpi=200)
     buff.seek(0)
     im = PIL.Image.open(buff)
     im = np.asarray(im)
@@ -294,10 +294,13 @@ def plot_interactions_network_components_style(g, ligand_name_to_index, receptor
 
     # reverse all images
     grid = combine_images_of_different_sizes_left_to_right(all_images,
-                                                           output_height=2000,
-                                                           output_width=2500)
+                                                           output_height=4000,
+                                                           output_width=5000)
     
-    grid.save(save_path)
+    grid.save(save_path,
+                format="png",
+                # use high quality
+                quality=1000)
 
 
 def run_main(interactions_with_principal_agonists_path,
