@@ -76,4 +76,4 @@ if __name__ == "__main__":
         out_p = out_dir / f'{identifier}.cif'
         best_pdb.rename(out_p)
         print(f"Moved {best_pdb} to {out_p}")
-        
+
