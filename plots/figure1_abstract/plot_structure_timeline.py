@@ -12,6 +12,12 @@ import datetime
 import json
 
 
+def save(save_p):
+    plt.savefig(save_p.with_suffix(".svg"))
+    plt.savefig(save_p.with_suffix(".png"), dpi=600)
+    plt.close()
+
+
 def plot_structure_discovery(df, cutoff_datetime, save_path):
     """On x-axis plot the month of the year.
     On the y-axis the number of structures discovered.
@@ -81,7 +87,8 @@ def plot_structure_discovery(df, cutoff_datetime, save_path):
                               fontsize=12)
     fontsize = 12 
     # plt.xlabel("Date")
-    plt.ylabel("Total number of structures discovered", fontsize=fontsize)
+    plt.xlabel("")
+    plt.ylabel("Total structures discovered", fontsize=fontsize)
     plt.title("Number of GPCR structures discovered per month", fontsize=fontsize,
               # align left
                 loc="left")
@@ -93,9 +100,7 @@ def plot_structure_discovery(df, cutoff_datetime, save_path):
     plt.xticks(fontsize=fontsize)
     plt.yticks(fontsize=fontsize)
     plt.tight_layout()
-    plt.savefig(save_path)
-    plt.close()
-
+    save(save_path)
 
 
 def add_training_cutoff_dates(ymax, fontsize=12):
@@ -229,10 +234,10 @@ def plot_gpcr_status_per_month(df, cutoff_datetime, save_path):
         
     # plot
     plt.figure(figsize=(5, 3))
-    plt.plot(months, without_structures, label="Without any complex")
+    # plt.plot(months, without_structures, label="Without resolved complex")
     # plt.plot(months, with_complexes, label="With any complex")
-    plt.plot(months, with_peptide_complex, label="With peptide complex")
-    plt.plot(months, without_peptide_complex, label="Without peptide complex")
+    plt.plot(months, with_peptide_complex, label="With resolved\npeptide complex")
+    # plt.plot(months, without_peptide_complex, label="Without resolved complex (peptide)")
 
     add_training_cutoff_dates(ymax=df["Target GPCRdb ID"].nunique())
 
@@ -243,16 +248,16 @@ def plot_gpcr_status_per_month(df, cutoff_datetime, save_path):
 
     plt.xlim(min_date, max_date)
     # plt.xlabel("Date")
+    plt.xlabel("")
     # add xticks every 12 months
     plt.xticks(months[::12], [month.strftime("%Y") for month in months[::12]], rotation=45)
     plt.ylabel("Number of GPCRs")
-    plt.title("Structure status of GPCRs with peptide agonists")
+    plt.title("Structurally resolved status of peptide GPCRs")
     
     # place the cutoff labels next to the lines
     plt.legend()
     plt.tight_layout()
-    plt.savefig(save_path, dpi=300)
-    plt.close()
+    save(save_path)
 
 
 def run_main():
@@ -260,7 +265,7 @@ def run_main():
     main_dir = script_dir.parent.parent
     cutoff_datetime = datetime.datetime(2021, 9, 30)
 
-    structure_dir = main_dir / "structure_benchmark_data"
+    structure_dir = main_dir / "classifier_benchmark_data/output"
     known_structs = structure_dir / "3f_known_structures.csv"
     known_df = pd.read_csv(known_structs)
     known_df["publication_date"] = pd.to_datetime(known_df["publication_date"])
