@@ -35,6 +35,7 @@ regions = {
 
 # Read in interaction data and get chosen generic residue numbers
 interactions_df = pd.read_csv(interaction_csv_path)
+# Print unique pdb codes
 chosen_grns, _, _ = get_chosen_grns(f"{file_dir}/grn_frequencies.csv", interaction_csv_path)
 interactions_chosen_grns = interactions_df[interactions_df["generic_residue_number_a"].isin(chosen_grns)]
 

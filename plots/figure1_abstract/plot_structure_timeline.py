@@ -231,7 +231,8 @@ def plot_gpcr_status_per_month(df, cutoff_datetime, save_path):
         with_peptide_complex.append(len(with_peptide))
         without_peptide_complex.append(len(without_struct) - len(with_peptide))
 
-        
+    print(with_peptide_complex[-1])
+
     # plot
     plt.figure(figsize=(5, 3))
     # plt.plot(months, without_structures, label="Without resolved complex")
